@@ -1,8 +1,11 @@
-from django.http import JsonResponse
 from rest_framework import viewsets
 
+from api.model.movie.models import Movie
 
-class MovieViewSet(viewsets.ViewSet):
+from .serializers import MovieSerializer
 
-    def retrieve(self, request):
-        return JsonResponse({'test': True})
+
+class MovieViewSet(viewsets.ModelViewSet):
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
+    lookup_url_kwarg = 'id'
