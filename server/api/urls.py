@@ -1,8 +1,12 @@
-from api.views import MovieViewSet
+from django.conf.urls import include, url
 from django.urls import path
+from rest_framework import routers
+
+from api.views import MovieViewSet
+
+router = routers.DefaultRouter()
+router.register(r'movie', MovieViewSet, basename='movie')
 
 urlpatterns = [
-    path('movie', MovieViewSet.as_view({
-        'get': 'retrieve',
-    })),
+    url(r'^', include(router.urls)),
 ]
