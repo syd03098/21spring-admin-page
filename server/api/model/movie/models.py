@@ -9,3 +9,7 @@ class Movie(models.Model):
 
     def __str__(self):
         return self.title
+
+class MovieImage(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="")
