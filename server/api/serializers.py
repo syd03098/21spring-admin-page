@@ -9,7 +9,7 @@ class MovieImageSerializer(serializers.ModelSerializer):
 
 
 class MovieSerializer(serializers.ModelSerializer):
-    images = MovieImageSerializer(many=True)
+    images = MovieImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Movie
