@@ -59,7 +59,9 @@ module.exports = {
         'no-alert': 0,
         'no-plusplus': 0,
         'no-continue': 0,
-        '@typescript-eslint/explicit-function-return-type': 2,
+        '@typescript-eslint/explicit-function-return-type': 0,
         'react/require-default-props': 0,
+        '@typescript-eslint/no-unused-vars': 'off',
+        '@typescript-eslint/no-empty-function': 0,
     },
 };
