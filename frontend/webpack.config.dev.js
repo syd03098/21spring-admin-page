@@ -3,28 +3,28 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     mode: 'development',
-    devtool: 'eval-source-map',
+    devtool: 'cheap-module-source-map',
     entry: './src/index.tsx',
     cache: true,
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
         symlinks: false,
         alias: {
+            'react-dom': '@hot-loader/react-dom',
             '@components': path.resolve(__dirname, 'src/components'),
             '@hooks': path.resolve(__dirname, 'src/hooks'),
             '@services': path.resolve(__dirname, 'src/services'),
-            '@styles': path.resolve(__dirname, 'src/styles'),
+            '@pages': path.resolve(__dirname, 'src/pages'),
         },
     },
     output: {
         path: path.join(__dirname, '/dist'),
-        filename: 'bundle.js',
+        filename: 'bundle.[hash].js',
         publicPath: '/',
     },
     optimization: {
-        splitChunks: {
-            chunks: 'all',
-        },
+        runtimeChunk: true,
+        splitChunks: false,
     },
     module: {
         rules: [
