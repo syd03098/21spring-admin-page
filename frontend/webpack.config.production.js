@@ -2,6 +2,7 @@ const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const { merge } = require('webpack-merge');
 const TerserPlugin = require('terser-webpack-plugin');
+const { ESBuildPlugin, ESBuildMinifyPlugin } = require('esbuild-loader');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const commonWebpackConfig = require('./webpack.config.common');
 
@@ -18,25 +19,8 @@ module.exports = merge(commonWebpackConfig, {
     optimization: {
         minimize: true,
         minimizer: [
-            new TerserPlugin({
-                parallel: true,
-                terserOptions: {
-                    ecma: undefined,
-                    parse: {},
-                    compress: {
-                        drop_console: true,
-                        drop_debugger: true,
-                    },
-                    mangle: true, // Note `mangle.properties` is `false` by default.
-                    module: false,
-                    output: {},
-                    toplevel: false,
-                    nameCache: null,
-                    ie8: false,
-                    keep_classnames: undefined,
-                    keep_fnames: true,
-                    safari10: false,
-                },
+            new ESBuildMinifyPlugin({
+                sourcemap: false,
             }),
         ],
     },

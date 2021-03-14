@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { ESBuildPlugin } = require('esbuild-loader');
 
 module.exports = {
     resolve: {
@@ -16,11 +17,9 @@ module.exports = {
         rules: [
             {
                 test: /\.(tsx|ts)?$/,
-                loader: 'babel-loader',
-                include: path.resolve(__dirname, 'src'),
-                exclude: /node_modules/,
+                loader: 'esbuild-loader',
                 options: {
-                    cacheDirectory: true,
+                    loader: 'tsx',
                 },
             },
         ],
@@ -39,9 +38,9 @@ module.exports = {
         },
     },
     plugins: [
+        new ESBuildPlugin(),
         new HtmlWebpackPlugin({
             template: './src/index.html',
         }),
-        new Dotenv({ path: '.env' }),
     ],
 };
