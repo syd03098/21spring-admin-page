@@ -1,5 +1,4 @@
 import React, { ReactNode } from 'react';
-import { TiWarningOutline } from 'react-icons/ti';
 import Sty from './index.style';
 
 interface ErrorBoundaryProps {
@@ -27,14 +26,12 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
         };
     }
 
-    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    render() {
+    render(): ReactNode {
         const { hasError, error } = this.state;
         const { children } = this.props;
 
         return hasError ? (
             <Sty.Container>
-                <TiWarningOutline size={32} />
                 <h1>페이지 로드중 에러가 발생했습니다.</h1>
                 <span>자세한 내역은 이하 에러코드를 참조하세요.</span>
                 {error && <pre>{error.toString()}</pre>}
