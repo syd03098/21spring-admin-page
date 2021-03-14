@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import * as Sty from './ThemedButton.style';
+import Sty from './ThemedButton.style';
 
 interface Props {
     backgroundColor?: string;
