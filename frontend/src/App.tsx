@@ -1,24 +1,22 @@
-import React, { Suspense } from 'react';
-import { configure } from 'mobx';
-import { GlobalStyles } from '@components/global/GlobalStyles';
+import React, { Suspense, lazy } from 'react';
 import ErrorBoundary from '@components/errorBoundary/index';
-import { hot } from 'react-hot-loader/root';
+import GlobalThemeProvider from '@components/theme';
+import { RootStoreProvider } from '@pages/main/services/stores/RootStore';
 
-configure({ enforceActions: 'always' });
-
-const AdminMainPage = React.lazy(() => import('@components/index'));
+const MainPage = lazy(() => import('@pages/main'));
 
 const App = (): JSX.Element => {
     return (
-        <>
-            <GlobalStyles />
+        <GlobalThemeProvider>
             <Suspense fallback={<div />}>
                 <ErrorBoundary>
-                    <AdminMainPage />
+                    <RootStoreProvider>
+                        <MainPage />
+                    </RootStoreProvider>
                 </ErrorBoundary>
             </Suspense>
-        </>
+        </GlobalThemeProvider>
     );
 };
 
-export default hot(App);
+export default App;

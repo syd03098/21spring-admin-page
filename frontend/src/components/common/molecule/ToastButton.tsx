@@ -2,7 +2,7 @@ import React from 'react';
 import ThemedButton from '@components/common/atom/ThemedButton';
 import { HiCheck, HiOutlineX } from 'react-icons/hi';
 import usePortalHook from '@hooks/usePortalHook';
-import * as Sty from './ToastButton.style';
+import Sty from './ToastButton.style';
 
 const ToastButton = (): JSX.Element => {
     const { isPortalOpen, Portal, openPortal, closePortal } = usePortalHook({});
@@ -18,7 +18,7 @@ const ToastButton = (): JSX.Element => {
                     <Sty.Overlay>
                         <Sty.Contents>
                             <span>등록이 완료되었습니다.</span>
-                            <HiOutlineX style={{ cursor: 'pointer' }} size={24} onClick={closePortal} />
+                            <HiOutlineX style={{ cursor: 'pointer' }} size={16} onClick={closePortal} />
                         </Sty.Contents>
                     </Sty.Overlay>
                 </Portal>
