@@ -35,8 +35,8 @@ export default class TestStore {
         });
     }
 
-    setTestId = (num: number): void => {
-        this.testId = num;
+    setTestId = (): void => {
+        this.testId += 1;
     };
 
     setTestString = (string: string): void => {
