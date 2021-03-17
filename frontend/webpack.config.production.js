@@ -9,18 +9,27 @@ const commonWebpackConfig = require('./webpack.config.common');
 module.exports = merge(commonWebpackConfig, {
     mode: 'production',
     devtool: false,
-    entry: './src/index',
+    entry: ['./src/index'],
     cache: true,
     output: {
         path: path.join(__dirname, '/dist'),
         filename: '[name].[contenthash].js',
-        publicPath: '/dist/',
+        publicPath: '/',
     },
     optimization: {
         minimize: true,
         minimizer: [
-            new ESBuildMinifyPlugin({
-                sourcemap: false,
+            // new ESBuildMinifyPlugin({
+            //     sourcemap: false,
+            // }),
+            new TerserPlugin({
+                parallel: true,
+                terserOptions: {
+                    compress: {
+                        unused: true,
+                        drop_console: true,
+                    },
+                },
             }),
         ],
     },
@@ -28,6 +37,8 @@ module.exports = merge(commonWebpackConfig, {
         new CleanWebpackPlugin(),
         new BundleAnalyzerPlugin({
             analyzerMode: 'static',
+            // openAnalyzer: true,
+            // generateStatsFile: true,
             openAnalyzer: false,
             generateStatsFile: false,
         }),

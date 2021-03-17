@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const path = require('path');
 const { merge } = require('webpack-merge');
 const commonWebpackConfig = require('./webpack.config.common');
@@ -5,7 +6,7 @@ const commonWebpackConfig = require('./webpack.config.common');
 module.exports = merge(commonWebpackConfig, {
     mode: 'development',
     devtool: 'inline-source-map',
-    entry: './src/index',
+    entry: ['./src/index'],
     cache: true,
     resolve: {
         alias: { 'react-dom': '@hot-loader/react-dom' },
@@ -20,4 +21,5 @@ module.exports = merge(commonWebpackConfig, {
         hot: true,
         compress: true,
     },
+    plugins: [new webpack.HotModuleReplacementPlugin()],
 });
