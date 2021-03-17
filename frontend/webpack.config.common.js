@@ -15,11 +15,20 @@ module.exports = {
     },
     module: {
         rules: [
+            // {
+            //     test: /\.(tsx|ts)?$/,
+            //     loader: 'esbuild-loader',
+            //     options: {
+            //         loader: 'tsx',
+            //     },
+            // },
             {
                 test: /\.(tsx|ts)?$/,
-                loader: 'esbuild-loader',
+                loader: 'babel-loader',
+                include: path.resolve(__dirname, 'src'),
+                exclude: /node_modules/,
                 options: {
-                    loader: 'tsx',
+                    cacheDirectory: true,
                 },
             },
         ],
@@ -38,7 +47,7 @@ module.exports = {
         },
     },
     plugins: [
-        new ESBuildPlugin(),
+        // new ESBuildPlugin(),
         new HtmlWebpackPlugin({
             template: './src/index.html',
         }),

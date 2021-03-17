@@ -5,7 +5,7 @@
   "main": "index.tsx",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server --hot --progress --config webpack.config.dev.js",
+    "dev": "webpack-dev-server --progress --config webpack.config.dev.js",
     "build": "webpack --config webpack.config.production.js"
   },
   "keywords": [],
@@ -17,7 +17,6 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-google-login": "^5.2.2",
-    "react-hot-loader": "^4.13.0",
     "react-icons": "^4.2.0",
     "react-responsive": "^8.2.0",
     "styled-components": "^5.2.1",
@@ -30,7 +29,6 @@
     "@babel/preset-env": "^7.12.13",
     "@babel/preset-react": "^7.12.13",
     "@babel/preset-typescript": "^7.12.13",
-    "@hot-loader/react-dom": "^17.0.1",
     "@types/react": "^17.0.1",
     "@types/react-dom": "^17.0.0",
     "@types/styled-components": "^5.1.7",

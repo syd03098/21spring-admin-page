@@ -9,6 +9,7 @@ module.exports = {
             'babel-plugin-styled-components',
             {
                 fileName: true,
+                minify: true,
             },
         ],
         [
@@ -17,6 +18,5 @@ module.exports = {
                 loose: true,
             },
         ],
-        ['react-hot-loader/babel'],
     ],
 };
