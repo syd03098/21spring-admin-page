@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack-dev-server --progress --config webpack.config.dev.js",
-    "build": "webpack --config webpack.config.production.js"
+    "build": "webpack --config webpack.config.production.js",
+    "deploy": "aws s3 sync ./dist s3://test.database.kr"
   },
   "keywords": [],
   "author": "",
