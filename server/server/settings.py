@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 import os
 import json
+import logging
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -31,7 +32,9 @@ def get_secret(setting, secrets=secrets):
     try:
         return secrets[setting]
     except KeyError:
-        raise KeyError(f'Set the {setting} environment variable')
+        # raise KeyError(f'Set the {setting} environment variable')
+        logging.critical(f'Set the {setting} environment variable')
+        return None
 
 
 SECRET_KEY = get_secret('SECRET_KEY')
@@ -39,7 +42,7 @@ SECRET_KEY = get_secret('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [get_secret('GCP_DOMAIN')]
 
 # Application definition
 
