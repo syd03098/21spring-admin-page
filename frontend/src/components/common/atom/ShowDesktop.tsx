@@ -1,5 +1,9 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
+import { useMediaQuery } from 'react-responsive';
 
-export default (): JSX.Element => {
-    return <></>;
+const ShowDesktop = ({ children }: { children: ReactNode }): JSX.Element => {
+    const isDesktop = useMediaQuery({ query: '(min-width:800px)' });
+    return <>{isDesktop && children}</>;
 };
+
+export default ShowDesktop;
