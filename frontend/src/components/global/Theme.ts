@@ -19,6 +19,17 @@ const colors = {
     dangerRed: `#ed4c6b`,
 };
 
+const displaySize = {
+    mobile: 799,
+    desktop: 800,
+};
+
+const responsive = {
+    mobile: `(max-width: ${displaySize.mobile}px)`,
+    desktop: `(min-width: ${displaySize.desktop}px)`,
+};
+
 export default {
     ...colors,
+    ...responsive,
 };
