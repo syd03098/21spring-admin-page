@@ -1,5 +1,9 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
+import { useMediaQuery } from 'react-responsive';
 
-export default (): JSX.Element => {
-    return <></>;
+const ShowMobile = ({ children }: { children: ReactNode }): JSX.Element => {
+    const isMobile = useMediaQuery({ query: '(max-width:799px)' });
+    return <>{isMobile && children}</>;
 };
+
+export default ShowMobile;
