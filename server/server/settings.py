@@ -42,7 +42,7 @@ SECRET_KEY = get_secret('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', get_secret('GCP_DOMAIN')]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', get_secret('GCP_DOMAIN')]
 
 # Application definition
 
