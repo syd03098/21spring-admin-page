@@ -8,9 +8,6 @@ module.exports = merge(commonWebpackConfig, {
     devtool: 'inline-source-map',
     entry: ['./src/index'],
     cache: true,
-    resolve: {
-        alias: { 'react-dom': '@hot-loader/react-dom' },
-    },
     output: {
         path: path.join(__dirname, 'dist'),
         filename: '[name].[hash].js',
