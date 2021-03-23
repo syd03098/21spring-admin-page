@@ -18,6 +18,7 @@ $ source venv/bin/activate
 ```
 
 포트번호 미설정시 기본 포트번호 8000으로 실행
+sqlplus 디렉토리 $HOME/bin/instantclient_21_1
 
 ## API 명세 확인
 
