@@ -42,7 +42,7 @@ SECRET_KEY = get_secret('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [get_secret('GCP_DOMAIN')]
+ALLOWED_HOSTS = ['127.0.0.1', get_secret('GCP_DOMAIN')]
 
 # Application definition
 
@@ -112,12 +112,25 @@ WSGI_APPLICATION = 'server.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+name = get_secret('DB_NAME')
+if name:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.oracle',
+            'NAME': name,
+            'USER': get_secret('DB_USER'),
+            'PASSWORD': get_secret('DB_PASSWORD'),
+            'HOST': get_secret('GCP_IP'),
+            'PORT': get_secret('DB_PORT')
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
