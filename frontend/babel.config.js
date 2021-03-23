@@ -8,8 +8,9 @@ module.exports = {
         [
             'babel-plugin-styled-components',
             {
-                fileName: true,
+                fileName: false,
                 minify: true,
+                pure: true,
             },
         ],
         [
