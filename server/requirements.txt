@@ -1,7 +1,11 @@
 cx_oracle==8.1.0
-Django==3.1.6
-djangorestframework==3.11.0
+django==2.2.16
+django-allauth==0.44.0
+django-model-utils==4.1.1
+django-rest-auth==0.9.5
 django-stubs==1.7.0
+djangorestframework==3.11.0
+djangorestframework_jwt==1.11.0
 drf-yasg==1.20.0
-user-agents==2.2.0
 pycryptodome==3.10.1
+user-agents==2.2.0
