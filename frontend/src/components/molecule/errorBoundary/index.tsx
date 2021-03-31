@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import Warning from '@components/common/atom/Warning';
+import Warning from '@components/atom/icons/Warning';
 import Sty from './index.style';
 
 interface ErrorBoundaryProps {

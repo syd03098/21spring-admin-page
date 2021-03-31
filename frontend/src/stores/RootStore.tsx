@@ -1,6 +1,6 @@
 import React, { createContext } from 'react';
 import useAsyncErrorHook, { UseAsyncErrorReturnType } from '@hooks/useAsyncErrorHook';
-import TestStore from '@pages/main/services/stores/TestStore';
+import TestStore from '@stores/TestStore';
 
 export default class RootStore {
     testStore: TestStore;
