@@ -2,7 +2,6 @@ const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const { merge } = require('webpack-merge');
 const TerserPlugin = require('terser-webpack-plugin');
-const { ESBuildMinifyPlugin } = require('esbuild-loader');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const commonWebpackConfig = require('./webpack.config.common');
 
@@ -19,9 +18,6 @@ module.exports = merge(commonWebpackConfig, {
     optimization: {
         minimize: true,
         minimizer: [
-            // new ESBuildMinifyPlugin({
-            //     sourcemap: false,
-            // }),
             new TerserPlugin({
                 parallel: true,
                 terserOptions: {
