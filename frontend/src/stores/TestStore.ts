@@ -1,5 +1,5 @@
 import { action, autorun, makeObservable, observable } from 'mobx';
-import RootStore from '@pages/main/services/stores/RootStore';
+import RootStore from '@stores/RootStore';
 
 export default class TestStore {
     rootStore: RootStore;

@@ -1,7 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import useRootStore from '@pages/main/hooks/useRootStore';
-import ToastButton from '@components/common/molecule/ToastButton';
+import useRootStore from '@hooks/useRootStore';
 
 export default observer(
     (): JSX.Element => {
@@ -12,8 +11,8 @@ export default observer(
             <>
                 <h2>메인화면 테스트</h2>
                 <>{testId}</>
-                <ToastButton />
                 <button
+                    style={{ display: 'flex', border: '1px solid black', margin: '8px 0' }}
                     type="button"
                     onClick={(): void => {
                         testStore.setTestId();

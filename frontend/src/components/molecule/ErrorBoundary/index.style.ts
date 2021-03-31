@@ -20,7 +20,7 @@ export default {
             white-space: pre-wrap;
             word-break: break-word;
             margin: 10px 0;
-            color: ${(props) => props.theme.dangerRed};
+            color: ${(props) => props.theme.pink};
             font-weight: bold;
             font-size: 12px;
         }

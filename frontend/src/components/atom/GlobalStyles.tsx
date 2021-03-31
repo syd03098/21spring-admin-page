@@ -6,6 +6,7 @@ const globalStyle = css`
         box-sizing: border-box;
         margin: 0;
         padding: 0;
+        border: 0;
     }
 
     *:focus {
@@ -13,6 +14,7 @@ const globalStyle = css`
     }
 
     button {
+        background: none;
         outline: none;
     }
 

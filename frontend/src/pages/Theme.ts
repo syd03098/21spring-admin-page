@@ -6,7 +6,8 @@ const colors = {
     black30: `#777777`,
 
     smoke100: `#bfbfbf`,
-    smoke50: `#f5f7fa`,
+    smoke80: `#e0e0e0`,
+    smoke50: `#f3f3f4`,
     smoke1: `#fafafa`,
 
     white: `#ffffff`,
@@ -16,7 +17,7 @@ const colors = {
 
     green: `#22cc88`,
 
-    dangerRed: `#ed4c6b`,
+    pink: `#ed4c6b`,
 };
 
 const displaySize = {
