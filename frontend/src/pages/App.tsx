@@ -1,13 +1,16 @@
 import React, { Suspense, lazy } from 'react';
-import ErrorBoundary from '@components/errorBoundary/index';
-import GlobalThemeProvider from '@components/theme';
-import { RootStoreProvider } from '@pages/main/services/stores/RootStore';
+import ErrorBoundary from '@components/molecule/errorBoundary';
+import { RootStoreProvider } from '@stores/RootStore';
+import Theme from '@pages/Theme';
+import { ThemeProvider } from 'styled-components';
+import GlobalStyles from '@components/atom/GlobalStyles';
 
 const MainPage = lazy(() => import('@pages/main'));
 
 const App = (): JSX.Element => {
     return (
-        <GlobalThemeProvider>
+        <ThemeProvider theme={Theme}>
+            <GlobalStyles />
             <Suspense fallback={<div />}>
                 <ErrorBoundary>
                     <RootStoreProvider>
@@ -15,7 +18,7 @@ const App = (): JSX.Element => {
                     </RootStoreProvider>
                 </ErrorBoundary>
             </Suspense>
-        </GlobalThemeProvider>
+        </ThemeProvider>
     );
 };
 
