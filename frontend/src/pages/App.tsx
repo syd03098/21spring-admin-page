@@ -1,21 +1,28 @@
 import React, { Suspense, lazy } from 'react';
-import ErrorBoundary from '@components/molecule/errorBoundary';
 import { RootStoreProvider } from '@stores/RootStore';
-import Theme from '@pages/Theme';
+import theme from '@utils/theme';
 import { ThemeProvider } from 'styled-components';
 import GlobalStyles from '@components/atom/GlobalStyles';
+import ErrorBoundary from '@components/molecule/ErrorBoundary';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-const MainPage = lazy(() => import('@pages/main'));
+const entrance = lazy(() => import('@pages/EntranceHallPage'));
+const login = lazy(() => import('@pages/LoginPage'));
 
 const App = (): JSX.Element => {
     return (
-        <ThemeProvider theme={Theme}>
+        <ThemeProvider theme={theme}>
             <GlobalStyles />
             <Suspense fallback={<div />}>
                 <ErrorBoundary>
-                    <RootStoreProvider>
-                        <MainPage />
-                    </RootStoreProvider>
+                    <Router>
+                        <RootStoreProvider>
+                            <Switch>
+                                <Route exact path="/" component={entrance} />
+                                <Route exact path="/login" component={login} />
+                            </Switch>
+                        </RootStoreProvider>
+                    </Router>
                 </ErrorBoundary>
             </Suspense>
         </ThemeProvider>
