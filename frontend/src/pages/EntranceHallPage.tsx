@@ -1,20 +1,19 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import useRootStore from '@hooks/useRootStore';
+import { useRootStore } from '@stores/RootStore';
 
-export default observer(
+const EntranceHallPage = observer(
     (): JSX.Element => {
         const { testStore } = useRootStore();
-        const { testId } = testStore;
+        const { testId, setTestId } = testStore;
 
         return (
             <>
-                <h2>메인화면 테스트</h2>
-                <>{testId}</>
+                <div>{testId}</div>
                 <button
                     type="button"
                     onClick={(): void => {
-                        testStore.setTestId();
+                        setTestId();
                     }}
                 >
                     +1
@@ -23,3 +22,5 @@ export default observer(
         );
     },
 );
+
+export default EntranceHallPage;
