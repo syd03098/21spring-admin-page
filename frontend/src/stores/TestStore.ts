@@ -4,25 +4,19 @@ import RootStore from '@stores/RootStore';
 export default class TestStore {
     rootStore: RootStore;
 
+    @observable
     testId: number;
 
+    @observable
     testString: string;
 
+    @observable
     testBoolean: boolean;
 
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
 
-        makeObservable(this, {
-            testId: observable,
-            testString: observable,
-            testBoolean: observable,
-
-            // actions
-            setTestId: action,
-            setTestString: action,
-            setTestBoolean: action,
-        });
+        makeObservable(this);
 
         this.testId = 0;
         this.testString = '';
@@ -35,14 +29,17 @@ export default class TestStore {
         });
     }
 
+    @action
     setTestId = (): void => {
         this.testId += 1;
     };
 
+    @action
     setTestString = (string: string): void => {
         this.testString = string;
     };
 
+    @action
     setTestBoolean = (): void => {
         this.testBoolean = !this.testBoolean;
     };

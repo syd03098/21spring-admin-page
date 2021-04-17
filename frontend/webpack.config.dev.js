@@ -17,6 +17,13 @@ module.exports = merge(commonWebpackConfig, {
         port: 8080,
         hot: true,
         compress: true,
+        historyApiFallback: true,
+        proxy: {
+            '/api/*': {
+                target: 'http://localhost:4000',
+                changeOrigin: true,
+            },
+        },
     },
     plugins: [new webpack.HotModuleReplacementPlugin()],
 });

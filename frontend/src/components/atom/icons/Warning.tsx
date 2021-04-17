@@ -1,8 +1,12 @@
 import React from 'react';
 
-export default (): JSX.Element => {
+interface Props {
+    size?: number;
+}
+
+export default ({ size = 16 }: Props): JSX.Element => {
     return (
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill="currentColor"
                 d="M 12 5.511 c 0.561 0 1.119 0.354 1.544 1.062 l 5.912 9.854 c 0.851 1.415 0.194 2.573 -1.456 2.573 h -12 c -1.65 0 -2.307 -1.159 -1.456 -2.573 l 5.912 -9.854 c 0.425 -0.708 0.983 -1.062 1.544 -1.062 m 0 -2 c -1.296 0 -2.482 0.74 -3.259 2.031 l -5.912 9.856 c -0.786 1.309 -0.872 2.705 -0.235 3.83 s 1.879 1.772 3.406 1.772 h 12 c 1.527 0 2.77 -0.646 3.406 -1.771 s 0.551 -2.521 -0.235 -3.83 l -5.912 -9.854 c -0.777 -1.294 -1.963 -2.034 -3.259 -2.034 Z"

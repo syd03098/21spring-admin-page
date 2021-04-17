@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import Warning from '@components/atom/icons/Warning';
-import Sty from './index.style';
+import FlexBox from '@components/atom/Flexbox';
+import styled from 'styled-components';
 
 interface ErrorBoundaryProps {
     children: ReactNode;
@@ -32,16 +33,41 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
         const { children } = this.props;
 
         return hasError ? (
-            <Sty.Container>
-                <Warning />
+            <ErrorContainer>
+                <Warning size={32} />
                 <h1>페이지 로드중 에러가 발생했습니다.</h1>
                 <span>자세한 내역은 이하 에러코드를 참조하세요.</span>
                 {error && <pre>{error.toString()}</pre>}
-            </Sty.Container>
+            </ErrorContainer>
         ) : (
             children
         );
     }
 }
+
+const ErrorContainer = styled(FlexBox)`
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    height: 100vw;
+
+    h1 {
+        font-size: 20px;
+    }
+
+    span {
+        color: ${({ theme }) => theme.black80};
+    }
+
+    pre {
+        white-space: pre-wrap;
+        word-break: break-word;
+        margin: 10px 0;
+        color: ${({ theme }) => theme.red};
+        font-weight: bold;
+        font-size: 12px;
+    }
+`;
 
 export default ErrorBoundary;
