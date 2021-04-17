@@ -6,17 +6,16 @@ const colors = {
     black30: `#777777`,
 
     smoke100: `#bfbfbf`,
-    smoke50: `#f5f7fa`,
+    smoke80: `#e0e0e0`,
+    smoke50: `#f3f3f4`,
     smoke1: `#fafafa`,
 
     white: `#ffffff`,
-
     primary100: `#4276C9`,
     primary50: `#4285f4`,
-
     green: `#22cc88`,
-
-    dangerRed: `#ed4c6b`,
+    red: `#ff5555`,
+    pink: `#ed4c6b`,
 };
 
 const displaySize = {
