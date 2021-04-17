@@ -34,6 +34,7 @@ module.exports = {
         'react/display-name': 'off',
         'react/jsx-filename-extension': 'off',
         'react/require-default-props': 'off',
+        'react/jsx-props-no-spreading': 'off',
         'no-console': 'off',
         'import/no-unresolved': 'off',
         'no-use-before-define': 'off',

@@ -8,9 +8,15 @@ module.exports = {
         [
             'babel-plugin-styled-components',
             {
-                fileName: false,
+                fileName: true,
                 minify: true,
                 pure: true,
+            },
+        ],
+        [
+            '@babel/plugin-proposal-decorators',
+            {
+                legacy: true,
             },
         ],
         [
