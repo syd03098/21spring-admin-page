@@ -15,15 +15,15 @@ interface Props {
     targetEl?: HTMLElement | null;
 }
 
-type PortalHookReturnType = {
+export interface PortalHookReturnType {
     isPortalOpen: boolean;
     openPortal: () => void;
     closePortal: () => void;
     Portal: ({ children }: { children: ReactNode }) => ReactPortal | null;
     overlayRef: MutableRefObject<null>;
-};
+}
 
-const usePortalHook = ({ targetEl }: Props): PortalHookReturnType => {
+const usePortalHook = ({ targetEl }: Props = {}): PortalHookReturnType => {
     const [isOpen, makePortal] = useState(false);
     const portalRef = useRef<HTMLDivElement | null>(null);
     const overlayRef = useRef(null);
