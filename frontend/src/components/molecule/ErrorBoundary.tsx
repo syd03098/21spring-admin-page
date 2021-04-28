@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import Warning from '@components/atom/icons/WarningIcon';
+import Warning from '@components/atom/icons/Warning';
 import styled from 'styled-components';
 import FlexBox from '@components/atom/FlexBox';
 
