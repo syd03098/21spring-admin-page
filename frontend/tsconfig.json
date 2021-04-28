@@ -73,6 +73,7 @@
     "skipLibCheck": true,                     /* Skip type checking of declaration files. */
     "forceConsistentCasingInFileNames": true,  /* Disallow inconsistently-cased references to the same file. */
     "useDefineForClassFields": true,
+    "resolveJsonModule": true
   },
   "exclude": ["node_modules"],
   "include": ["**/*.ts", "**/*.tsx"]
