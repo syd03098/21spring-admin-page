@@ -1,8 +1,8 @@
 import React, { ReactNode } from 'react';
-import { useMediaQuery } from 'react-responsive';
+import useMedia from 'react-use/lib/useMedia';
 
 const ShowDesktop = ({ children }: { children: ReactNode }): JSX.Element => {
-    const isDesktop = useMediaQuery({ query: '(min-width:700px)' });
+    const isDesktop = useMedia('(min-width:700px)');
     return <>{isDesktop && children}</>;
 };
 

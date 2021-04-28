@@ -12,6 +12,7 @@ const globalStyle = css`
     input,
     button {
         margin: 0;
+        padding: 0;
         border: 0;
         background: none;
         outline: none;
@@ -20,7 +21,8 @@ const globalStyle = css`
     body {
         margin: 0;
         padding: 0;
-        font-family: 'Helvetica Neue', -apple-system, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji',
+            'Segoe UI Emoji', 'Segoe UI Symbol';
         -moz-osx-font-smoothing: grayscale;
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;

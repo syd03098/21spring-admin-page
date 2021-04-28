@@ -1,8 +1,8 @@
 import React, { ReactNode } from 'react';
-import { useMediaQuery } from 'react-responsive';
+import useMedia from 'react-use/lib/useMedia';
 
 const ShowMobile = ({ children }: { children: ReactNode }): JSX.Element => {
-    const isMobile = useMediaQuery({ query: '(max-width:699px)' });
+    const isMobile = useMedia('(max-width:699px)');
     return <>{isMobile && children}</>;
 };
 
