@@ -1,8 +1,12 @@
 import React, { useEffect, useRef } from 'react';
-import CloseIcon from '@components/atom/icons/CloseIcon';
-import styled, { css, keyframes } from 'styled-components';
-import GlobeSynthesisIcon from '@components/molecule/GlobeSynthesisIcon';
-import FlexBox from '@components/atom/FlexBox';
+import CloseIcon from '@components/atom/icons/Close';
+import styled from 'styled-components';
+import Flex from '@components/atom/FlexBox';
+import { bounce } from '@utils/animations';
+import ConfirmIcon from '@components/atom/icons/Confirm';
+import ErrorIcon from '@components/atom/icons/Error';
+import InfoIcon from '@components/atom/icons/Info';
+import Globe from '@components/atom/Globe';
 
 interface Props {
     toast: Toast;
@@ -20,10 +24,15 @@ const Toast = ({ toast, onclose }: Props): JSX.Element => {
 
     return (
         <Animation>
-            <Container type={type} onClick={onclose}>
-                <Notification>
-                    <GlobeSynthesisIcon iconType={type} />
-                </Notification>
+            <Container className={type} onClick={onclose}>
+                <Flex align="center" justify="center" style={{ minWidth: '40px' }}>
+                    <StyledGlobe className={type} />
+                    <IconWrap>
+                        {type === 'success' && <ConfirmIcon size={16} />}
+                        {type === 'error' && <ErrorIcon size={24} />}
+                        {type === 'default' && <InfoIcon size={20} />}
+                    </IconWrap>
+                </Flex>
                 <Contents>{message}</Contents>
                 <Tail>
                     <CloseIcon />
@@ -35,49 +44,36 @@ const Toast = ({ toast, onclose }: Props): JSX.Element => {
 
 export default Toast;
 
-const bounce = keyframes`
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
-`;
-
 const Animation = styled.li`
     animation: ${bounce} 100ms ease;
     animation-delay: 100ms;
 `;
 
-const Container = styled.div<{ type: string }>`
+const Container = styled.div`
     display: flex;
     align-items: stretch;
     border-radius: 4px;
-    box-shadow: ${({ theme }) => theme.smoke100} 0 3px 8px;
+    box-shadow: ${({ theme }) => theme.smoke50} 0 0 4px 2px;
     max-height: 68px;
     min-height: 40px;
     width: 304px;
     margin-bottom: 8px;
     background-color: ${({ theme }) => theme.white};
-    ${({ type }) =>
-        (type === 'success' &&
-            css`
-                border: 1px solid ${({ theme }) => theme.green}};
-            `) ||
-        (type === 'error' &&
-            css`
-                border: 1px solid ${({ theme }) => theme.red};
-            `) ||
-        (type === 'default' &&
-            css`
-                border: 1px solid ${({ theme }) => theme.primary100};
-            `)}
+
+    &.success {
+        border: 1px solid ${({ theme }) => theme.green};
+    }
+
+    &.error {
+        border: 1px solid ${({ theme }) => theme.red};
+    }
+
+    &.default {
+        border: 1px solid ${({ theme }) => theme.primary100};
+    }
 `;
 
-const Notification = styled(FlexBox)`
-    align-items: center;
-    justify-content: center;
-    min-width: 40px;
-`;
-
-const Contents = styled(FlexBox)`
+const Contents = styled(Flex)`
     align-items: center;
     font-size: 15px;
     font-weight: 500;
@@ -87,7 +83,31 @@ const Contents = styled(FlexBox)`
     flex-grow: 1;
 `;
 
-const Tail = styled(FlexBox)`
+const StyledGlobe = styled(Globe)`
+    width: 24px;
+    height: 24px;
+
+    &.success {
+        background-color: ${({ theme }) => theme.green};
+    }
+
+    &.error {
+        background-color: ${({ theme }) => theme.red};
+    }
+
+    &.default {
+        background-color: ${({ theme }) => theme.primary100};
+    }
+`;
+
+const IconWrap = styled(Flex)`
+    align-items: center;
+    justify-content: center;
+    color: ${({ theme }) => theme.smoke1};
+    z-index: 1;
+`;
+
+const Tail = styled(Flex)`
     min-width: 32px;
     align-items: center;
     justify-content: center;
