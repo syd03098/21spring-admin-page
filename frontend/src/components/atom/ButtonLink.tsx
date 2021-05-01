@@ -5,17 +5,46 @@ import lighten from 'polished/lib/color/lighten';
 import classNames from 'classnames';
 
 interface Props {
-    type?: 'primary' | 'smoke' | 'pink' | 'red' | 'default';
+    type?: 'primary' | 'smoke' | 'pink' | 'red';
+    size?: 'small' | 'large';
+    fullHeight?: boolean;
+    stretch?: boolean;
     icon?: JSX.Element;
-    className?: string;
     style?: CSSProperties;
+    className?: string;
     href: string;
 }
 
 const ButtonLink = forwardRef<HTMLAnchorElement, PropsWithChildren<Props>>(
-    ({ children, type = 'default', icon, className, style, href, ...rest }: PropsWithChildren<Props>, ref) => {
+    (
+        {
+            children,
+            type,
+            size = 'large',
+            fullHeight = false,
+            stretch = false,
+            icon,
+            className,
+            style,
+            href,
+            ...rest
+        }: PropsWithChildren<Props>,
+        ref,
+    ) => {
         return (
-            <StyledButtonLink ref={ref} className={classNames([className, type])} href={href} style={style} {...rest}>
+            <StyledButtonLink
+                ref={ref}
+                className={classNames([
+                    className,
+                    type,
+                    size && `size-${size}`,
+                    fullHeight && 'full',
+                    stretch && 'stretch',
+                ])}
+                href={href}
+                style={style}
+                {...rest}
+            >
                 {icon !== null && icon}
                 {children !== null && children}
             </StyledButtonLink>
@@ -33,12 +62,30 @@ const StyledButtonLink = styled.a`
     text-decoration: none;
     font-size: 15px;
     font-weight: 500;
-    color: white;
-    height: 40px;
+    color: currentColor;
+
+    &.size-small {
+        height: 28px;
+        padding: 6px 8px;
+    }
+
+    &.size-large {
+        height: 40px;
+        padding: 8px 12px;
+    }
+
+    &.full {
+        height: 100%;
+    }
+
+    &.stretch {
+        display: flex;
+        width: 100%;
+    }
 
     &.primary {
-        padding: 10px 16px;
         background-color: ${({ theme }) => theme.primary100};
+        color: ${({ theme }) => theme.white};
         &:hover {
             background-color: ${({ theme }) => lighten(0.1, theme.primary100)};
         }
@@ -47,8 +94,8 @@ const StyledButtonLink = styled.a`
         }
     }
     &.smoke {
-        padding: 10px 16px;
         background-color: ${({ theme }) => theme.smoke80};
+        color: ${({ theme }) => theme.white};
         &:hover {
             background-color: ${({ theme }) => lighten(0.1, theme.smoke80)};
         }
@@ -57,18 +104,14 @@ const StyledButtonLink = styled.a`
         }
     }
     &.pink {
-        padding: 10px 16px;
         background-color: ${({ theme }) => theme.pink};
+        color: ${({ theme }) => theme.white};
         &:hover {
             background-color: ${({ theme }) => lighten(0.1, theme.pink)};
         }
         &:active {
             background-color: ${({ theme }) => darken(0.1, theme.pink)};
         }
-    }
-
-    &.default {
-        color: ${({ theme }) => theme.black80};
     }
 
     svg {
