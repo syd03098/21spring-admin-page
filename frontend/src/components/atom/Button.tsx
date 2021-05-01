@@ -6,19 +6,35 @@ import classNames from 'classnames';
 
 interface Props {
     icon?: JSX.Element;
-    radius?: '2px' | '4px' | '8px';
+    size?: 'small' | 'large';
+    fullHeight?: boolean;
+    stretch?: boolean;
     type?: 'primary' | 'smoke' | 'pink' | 'red';
-    onClick?: MouseEventHandler<HTMLDivElement>;
     className?: string;
     style?: CSSProperties;
+    onClick?: MouseEventHandler<HTMLDivElement>;
 }
 
 const Button = forwardRef<HTMLDivElement, PropsWithChildren<Props>>(
-    ({ children, icon, radius, type, onClick, className, style, ...rest }: PropsWithChildren<Props>, ref) => {
+    (
+        {
+            children,
+            icon,
+            type,
+            size = 'large',
+            stretch = false,
+            fullHeight = false,
+            onClick,
+            className,
+            style,
+            ...rest
+        }: PropsWithChildren<Props>,
+        ref,
+    ) => {
         return (
             <StyledButton
                 ref={ref}
-                className={classNames([className, radius && `radius-${radius}`, type && `type-${type}`])}
+                className={classNames([className, type, fullHeight && 'full', size && `size-${size}`])}
                 onClick={onClick}
                 style={style}
                 {...rest}
@@ -34,14 +50,32 @@ const StyledButton = styled.div`
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
+    font-size: 15px;
     cursor: pointer;
     font-weight: 500;
-    height: 40px;
-    color: initial;
+    border-radius: 4px;
+    color: currentColor;
 
-    &.type-primary {
-        padding: 10px 16px;
+    &.size-small {
+        padding: 6px 8px;
+        height: 28px;
+    }
+
+    &.size-large {
+        padding: 8px 12px;
+        height: 40px;
+    }
+
+    &.stretch {
+        display: flex;
+        width: 100%;
+    }
+
+    &.full {
+        height: 100%;
+    }
+
+    &.primary {
         background-color: ${({ theme }) => theme.primary100};
         color: ${({ theme }) => theme.white};
         &:hover {
@@ -51,8 +85,7 @@ const StyledButton = styled.div`
             background-color: ${({ theme }) => darken(0.1, theme.primary100)};
         }
     }
-    &.type-smoke {
-        padding: 10px 16px;
+    &.smoke {
         background-color: ${({ theme }) => theme.smoke80};
         color: ${({ theme }) => theme.white};
         &:hover {
@@ -62,8 +95,7 @@ const StyledButton = styled.div`
             background-color: ${({ theme }) => darken(0.1, theme.smoke80)};
         }
     }
-    &.type-pink {
-        padding: 10px 16px;
+    &.pink {
         background-color: ${({ theme }) => theme.pink};
         color: ${({ theme }) => theme.white};
         &:hover {
@@ -72,18 +104,6 @@ const StyledButton = styled.div`
         &:active {
             background-color: ${({ theme }) => darken(0.1, theme.pink)};
         }
-    }
-
-    &.radius-2px {
-        border-radius: 2px;
-    }
-
-    &.radius-4px {
-        border-radius: 4px;
-    }
-
-    &.radius-8px {
-        border-radius: 8px;
     }
 
     svg {
