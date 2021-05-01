@@ -1,5 +1,5 @@
 import { createGlobalStyle, css } from 'styled-components';
-import { normalize } from 'styled-normalize';
+import { normalize } from '@pages/Normalize';
 
 const globalStyle = css`
     * {
