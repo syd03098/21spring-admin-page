@@ -9,10 +9,9 @@ import Flex from '@components/atom/FlexBox';
 import Ticket from '@components/atom/icons/Ticket';
 import Gear from '@components/atom/icons/Gear';
 import ButtonLink from '@components/atom/ButtonLink';
-import NavbarCustomItem from '@components/organism/topNavbar/NavbarCustomItem';
 import Button from '@components/atom/Button';
 import { useModal } from '@stores/ModalStore';
-import UserMenu from '@components/organism/topNavbar/userMenu/UserMenu';
+import UserMenu from '@components/organism/topNavbar/userMenu';
 
 const GlobalNavbar = (): JSX.Element => {
     const { isOpen, appendModal, modalOverlayRef: overlayRef } = useModal();
@@ -26,22 +25,28 @@ const GlobalNavbar = (): JSX.Element => {
             <Overlay ref={overlayRef}>
                 <UserMenu />
             </Overlay>,
+            'mobile',
         );
     }, [appendModal, overlayRef]);
 
     return (
         <Wrap>
             <Desktop>
+                {/* todo: 로그인상태에 따라 다르게 표시해야함, 사용자의 권한이 어드민이 아니면 개발자모드를 비활성화 */}
                 <TopHeader>
                     <HeaderList>
-                        <NavbarCustomItem href="/" icon={<UosIcon />} />
-                        <NavbarCustomItem icon={<Gear size={20} />}>개발자모드</NavbarCustomItem>
-                        <NavbarCustomItem href="profile" icon={<Ticket size={20} />}>
+                        <ButtonLink href="/" icon={<UosIcon />} fullHeight />
+                        <Button icon={<Gear size={20} />} fullHeight size="small">
+                            개발자모드
+                        </Button>
+                        <ButtonLink href="/profile" icon={<Ticket size={20} />} fullHeight size="small">
                             사용자정보
-                        </NavbarCustomItem>
+                        </ButtonLink>
                     </HeaderList>
                     <Flex align="center">
-                        <NavbarCustomItem href="/login">로그인</NavbarCustomItem>
+                        <ButtonLink href="/login" fullHeight>
+                            로그인
+                        </ButtonLink>
                         <ButtonLink href="/create" type="pink">
                             회원가입
                         </ButtonLink>
@@ -50,8 +55,8 @@ const GlobalNavbar = (): JSX.Element => {
             </Desktop>
             <Mobile>
                 <MobileHeader>
-                    <ButtonLink href="/" icon={<UosIcon />} style={{ height: '100%' }} />
-                    <Button icon={<UserMenuIcon />} onClick={appendUserMenuHandler} style={{ height: '100%' }} />
+                    <ButtonLink href="/" icon={<UosIcon />} fullHeight />
+                    <Button icon={<UserMenuIcon />} onClick={appendUserMenuHandler} fullHeight />
                 </MobileHeader>
             </Mobile>
         </Wrap>
