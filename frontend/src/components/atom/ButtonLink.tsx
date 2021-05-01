@@ -2,20 +2,22 @@ import React, { CSSProperties, forwardRef, PropsWithChildren } from 'react';
 import styled from 'styled-components';
 import darken from 'polished/lib/color/darken';
 import lighten from 'polished/lib/color/lighten';
+import classNames from 'classnames';
 
 interface Props {
     type?: 'primary' | 'smoke' | 'pink' | 'red' | 'default';
     icon?: JSX.Element;
+    className?: string;
     style?: CSSProperties;
     href: string;
 }
 
 const ButtonLink = forwardRef<HTMLAnchorElement, PropsWithChildren<Props>>(
-    ({ children, type = 'default', icon, style, href, ...rest }: PropsWithChildren<Props>, ref) => {
+    ({ children, type = 'default', icon, className, style, href, ...rest }: PropsWithChildren<Props>, ref) => {
         return (
-            <StyledButtonLink className={type} href={href} ref={ref} style={style} {...rest}>
-                {!!icon && icon}
-                {!!children && children}
+            <StyledButtonLink ref={ref} className={classNames([className, type])} href={href} style={style} {...rest}>
+                {icon !== null && icon}
+                {children !== null && children}
             </StyledButtonLink>
         );
     },
@@ -29,9 +31,11 @@ const StyledButtonLink = styled.a`
     justify-content: center;
     border-radius: 8px;
     text-decoration: none;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 500;
     color: white;
+    height: 40px;
+
     &.primary {
         padding: 10px 16px;
         background-color: ${({ theme }) => theme.primary100};
@@ -62,7 +66,12 @@ const StyledButtonLink = styled.a`
             background-color: ${({ theme }) => darken(0.1, theme.pink)};
         }
     }
+
     &.default {
-        color: ${({ theme }) => theme.black100};
+        color: ${({ theme }) => theme.black80};
+    }
+
+    svg {
+        margin-right: 4px;
     }
 `;
