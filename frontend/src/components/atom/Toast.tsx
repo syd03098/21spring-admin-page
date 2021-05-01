@@ -1,11 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import CloseIcon from '@components/atom/icons/Close';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import Flex from '@components/atom/FlexBox';
 import Confirm from '@components/atom/icons/Confirm';
 import Error from '@components/atom/icons/Error';
 import Info from '@components/atom/icons/Info';
 import Globe from '@components/atom/Globe';
+import { bounce } from '@utils/animations';
 
 interface Props {
     toast: Toast;
@@ -42,12 +43,6 @@ const Toast = ({ toast, onclose }: Props): JSX.Element => {
 };
 
 export default Toast;
-
-const bounce = keyframes`
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
-`;
 
 const Animation = styled.li`
     animation: ${bounce} 100ms ease;
