@@ -1,4 +1,4 @@
-import React, { CSSProperties, forwardRef, PropsWithChildren } from 'react';
+import React, { CSSProperties, forwardRef, MouseEventHandler, PropsWithChildren } from 'react';
 import styled from 'styled-components';
 
 type direction = 'column' | 'row';
@@ -11,6 +11,7 @@ interface Props {
     justify?: Justify;
     align?: Align;
     style?: CSSProperties;
+    onClick?: MouseEventHandler<HTMLDivElement>;
 }
 
 // display: flex 속성을 갖고있는 컴포넌트를 구성하기위한 base component.
