@@ -1,7 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import theme from '@utils/theme';
 import { ThemeProvider } from 'styled-components';
-import GlobalStyles from '@components/atom/GlobalStyles';
+import GlobalStyles from '@pages/GlobalStyles';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ToastStoreProvider } from '@stores/ToastStore';
 import ToastList from '@components/molecule/toastList';
