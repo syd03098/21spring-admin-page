@@ -1,10 +1,14 @@
 import React, { createContext, MutableRefObject, ReactNode, useCallback, useContext, useState } from 'react';
 import usePortalHook from '@hooks/usePortalHook';
+import Desktop from '@components/atom/Desktop';
+import Mobile from '@components/atom/Mobile';
+
+type responsive = 'desktop' | 'mobile' | 'both';
 
 interface ModalContext {
     isOpen: boolean;
     modalOverlayRef: MutableRefObject<null>;
-    appendModal: (contents: JSX.Element) => void;
+    appendModal: (contents: JSX.Element, mode: responsive) => void;
     closeModal: () => void;
     Modal: ({ children }: { children: ReactNode }) => JSX.Element;
     contents: JSX.Element | null;
@@ -14,12 +18,24 @@ function CreateModalContext(): ModalContext {
     const { isPortalOpen, openPortal, closePortal, overlayRef, Portal } = usePortalHook();
     const [contents, setContents] = useState<JSX.Element | null>(null);
 
+    const makeCustomElement = useCallback((jsxElement: JSX.Element, mode: responsive) => {
+        switch (mode) {
+            case 'desktop':
+                return <Desktop>{jsxElement}</Desktop>;
+            case 'mobile':
+                return <Mobile>{jsxElement}</Mobile>;
+            default:
+                return jsxElement;
+        }
+    }, []);
+
     const appendModal = useCallback(
-        (jsxElement: JSX.Element) => {
-            setContents(jsxElement);
+        (jsxElement: JSX.Element, mode: responsive) => {
+            const customElement = makeCustomElement(jsxElement, mode);
+            setContents(customElement);
             openPortal();
         },
-        [openPortal],
+        [makeCustomElement, openPortal],
     );
 
     const closeModal = useCallback(() => {
@@ -29,7 +45,10 @@ function CreateModalContext(): ModalContext {
 
     const Modal = useCallback(
         ({ children }: { children: ReactNode }) => {
-            return <>{isPortalOpen && <Portal>{children}</Portal>}</>;
+            if (isPortalOpen) {
+                return <Portal>{children}</Portal>;
+            }
+            return <></>;
         },
         [Portal, isPortalOpen],
     );
