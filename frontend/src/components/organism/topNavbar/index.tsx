@@ -12,9 +12,11 @@ import ButtonLink from '@components/atom/ButtonLink';
 import Button from '@components/atom/Button';
 import { useModal } from '@stores/ModalStore';
 import UserMenu from '@components/organism/topNavbar/userMenu';
+import { useAdmin } from '@stores/AdminStore';
 
 const GlobalNavbar = (): JSX.Element => {
     const { isOpen, appendModal, modalOverlayRef: overlayRef } = useModal();
+    const { toggleTab } = useAdmin();
 
     const UserMenuIcon = useCallback(() => {
         return isOpen ? <Close size={24} /> : <Menu />;
@@ -22,9 +24,12 @@ const GlobalNavbar = (): JSX.Element => {
 
     const appendUserMenuHandler = useCallback(() => {
         appendModal(
-            <Overlay ref={overlayRef}>
-                <UserMenu />
-            </Overlay>,
+            <>
+                <Overlay ref={overlayRef} />
+                <Position>
+                    <UserMenu />
+                </Position>
+            </>,
             'mobile',
         );
     }, [appendModal, overlayRef]);
@@ -36,7 +41,7 @@ const GlobalNavbar = (): JSX.Element => {
                 <TopHeader>
                     <HeaderList>
                         <ButtonLink href="/" icon={<UosIcon />} fullHeight />
-                        <Button icon={<Gear size={20} />} fullHeight size="small">
+                        <Button icon={<Gear size={20} />} fullHeight size="small" onClick={toggleTab}>
                             개발자모드
                         </Button>
                         <ButtonLink href="/profile" icon={<Ticket size={20} />} fullHeight size="small">
@@ -72,6 +77,13 @@ const Overlay = styled.div`
     z-index: 11;
 `;
 
+const Position = styled.div`
+    position: fixed;
+    top: 45px;
+    right: 8px;
+    z-index: 11;
+`;
+
 export const Wrap = styled.div`
     position: fixed;
     top: 0;
@@ -91,8 +103,6 @@ export const TopHeader = styled.div`
 `;
 
 export const HeaderList = styled.ul`
-    display: flex;
-    height: 100%;
     margin: 0;
     padding: 0;
 `;

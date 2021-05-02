@@ -9,6 +9,7 @@ import {
     StyledSubmitButton,
     StyledBottomLink,
 } from '@components/molecule/forms/style';
+import { useEffectOnce } from 'react-use';
 
 interface Props {
     onRegister: () => void;
@@ -26,9 +27,9 @@ const SignUpForm = ({ onRegister }: Props): JSX.Element => {
         onRegister();
     }, [onRegister]);
 
-    useLayoutEffect(() => {
+    useEffectOnce(() => {
         setFocus('username');
-    }, [setFocus]);
+    });
 
     return (
         <>

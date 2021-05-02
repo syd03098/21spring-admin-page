@@ -8,6 +8,8 @@ import ToastList from '@components/molecule/toastList';
 import ErrorBoundary from '@components/molecule/errorBoundary';
 import { ModalStoreProvider } from '@stores/ModalStore';
 import Modal from '@components/organism/modal';
+import { AdminStoreProvider } from '@stores/AdminStore';
+import AdminComponent from '@components/organism/adminDashboard/AdminComponent';
 
 const entrance = lazy(() => import('@pages/EntranceHallPage'));
 const login = lazy(() => import('@pages/login'));
@@ -20,18 +22,21 @@ const App = (): JSX.Element => {
             <Suspense fallback={<div />}>
                 <ErrorBoundary>
                     <Router>
-                        <ModalStoreProvider>
-                            <ToastStoreProvider>
-                                <Switch>
-                                    <Route exact path="/" component={entrance} />
-                                    <Route exact path="/login" component={login} />
-                                    <Route exact path="/create" component={login} />
-                                    <Route exact path="/profile" component={profile} />
-                                </Switch>
-                                <ToastList />
-                                <Modal />
-                            </ToastStoreProvider>
-                        </ModalStoreProvider>
+                        <AdminStoreProvider>
+                            <ModalStoreProvider>
+                                <ToastStoreProvider>
+                                    <Switch>
+                                        <Route exact path="/" component={entrance} />
+                                        <Route exact path="/login" component={login} />
+                                        <Route exact path="/create" component={login} />
+                                        <Route exact path="/profile" component={profile} />
+                                    </Switch>
+                                    <ToastList />
+                                    <AdminComponent />
+                                    <Modal />
+                                </ToastStoreProvider>
+                            </ModalStoreProvider>
+                        </AdminStoreProvider>
                     </Router>
                 </ErrorBoundary>
             </Suspense>

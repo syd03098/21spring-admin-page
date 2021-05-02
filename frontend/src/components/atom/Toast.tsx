@@ -7,6 +7,7 @@ import Error from '@components/atom/icons/Error';
 import Info from '@components/atom/icons/Info';
 import Globe from '@components/atom/Globe';
 import { bounce } from '@utils/animations';
+import { lighten } from 'polished';
 
 interface Props {
     toast: Toast;
@@ -58,15 +59,14 @@ const Container = styled.div`
     min-height: 40px;
     width: 304px;
     margin-bottom: 8px;
-    background-color: ${({ theme }) => theme.white};
     &.success {
-        border: 1px solid ${({ theme }) => theme.green};
+        border: 1px solid ${({ theme }) => lighten(0.1, theme.green)};
     }
     &.error {
-        border: 1px solid ${({ theme }) => theme.red};
+        border: 1px solid ${({ theme }) => lighten(0.1, theme.red)};
     }
     &.default {
-        border: 1px solid ${({ theme }) => theme.primary100};
+        border: 1px solid ${({ theme }) => lighten(0.1, theme.primary100)};
     }
 `;
 

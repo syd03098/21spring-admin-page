@@ -34,7 +34,13 @@ const Button = forwardRef<HTMLDivElement, PropsWithChildren<Props>>(
         return (
             <StyledButton
                 ref={ref}
-                className={classNames([className, type, fullHeight && 'full', size && `size-${size}`])}
+                className={classNames([
+                    className,
+                    type,
+                    stretch && 'stretch',
+                    fullHeight && 'full',
+                    size && `size-${size}`,
+                ])}
                 onClick={onClick}
                 style={style}
                 {...rest}

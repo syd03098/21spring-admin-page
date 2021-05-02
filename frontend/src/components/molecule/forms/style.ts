@@ -22,6 +22,17 @@ export const StyledError = styled.span`
     margin: 0 3px;
 `;
 
+export const StyledSubmitButton = styled.input`
+    width: 100%;
+    background-color: ${({ theme }) => theme.pink};
+    color: white;
+    padding: 10px 0;
+    border-radius: 8px;
+    margin-top: 24px;
+    font-weight: 600;
+    cursor: pointer;
+`;
+
 export const StyledInput = styled.input`
     width: 100%;
     background-color: ${({ theme }) => theme.smoke50};
@@ -39,17 +50,6 @@ export const StyledInput = styled.input`
     &:focus {
         border: 1px solid ${({ theme }) => lighten(0.2, theme.red)};
     }
-`;
-
-export const StyledSubmitButton = styled.input`
-    width: 100%;
-    background-color: ${({ theme }) => theme.pink};
-    color: white;
-    padding: 10px 0;
-    border-radius: 8px;
-    margin-top: 24px;
-    font-weight: 600;
-    cursor: pointer;
 `;
 
 export const StyledBottomLink = styled.div`

@@ -45,10 +45,7 @@ function CreateModalContext(): ModalContext {
 
     const Modal = useCallback(
         ({ children }: { children: ReactNode }) => {
-            if (isPortalOpen) {
-                return <Portal>{children}</Portal>;
-            }
-            return <></>;
+            return isPortalOpen ? <Portal>{children}</Portal> : <></>;
         },
         [Portal, isPortalOpen],
     );
