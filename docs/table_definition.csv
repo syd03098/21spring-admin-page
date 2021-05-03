@@ -33,7 +33,7 @@ MOVIE_ID,영화ID,,NUMBER,,NOT NULL,,FK,
 테이블 설명,"상영관 번호, 상영관 크기에 대한 정보",,,,,,,
 칼럼명,속성명,도메인,데이터타입,길이,NULL여부,기본값 ,KEY,비고
 THEATER_ID,상영관번호,,NUMBER,,NOT NULL,,PK,
-THEATER_TYPE,상영관 타입,"G: 일반, I: 아이맥스",CHAR,1,NOT NULL,,,
+THEATER_TYPE,상영관 타입,,NUMBER,1,NOT NULL,1,,"1: 일반, 2: 아이맥스"
 THEATER_ROW,행 갯수,,NUMBER,2,NOT NULL,16,,
 THEATER_COL,열 갯수,,NUMBER,2,NOT NULL,24,,
 ,,,,,,,,
@@ -45,7 +45,7 @@ THEATER_COL,열 갯수,,NUMBER,2,NOT NULL,24,,
 SEAT_ID,좌석번호,,NUMBER,,NOT NULL,,PK,
 SEAT_ROW,행,,NUMBER,2,NOT NULL,,,
 SEAT_COL,열,,NUMBER,2,NOT NULL,,,
-SEAT_TYPE,좌석타입,"Y,N",CHAR,1,NOT NULL,Y,,
+SEAT_TYPE,좌석타입,,NUMBER,1,NOT NULL,1,,"0: 불가능한자리, 1: 가능한자리"
 THEATER_ID,상영관번호,,NUMBER,,NOT NULL,,FK,
 ,,,,,,,,
 엔티티 타입명,예매,,작성일,2021.05.03,,,,
@@ -53,7 +53,7 @@ THEATER_ID,상영관번호,,NUMBER,,NOT NULL,,FK,
 테이블 설명,상영관들의 예매된 내역이 저장됨,,,,,,,
 칼럼명,속성명,도메인,데이터타입,길이,NULL여부,기본값 ,KEY,비고
 TICKET_ID,예매번호,,NUMBER,,NOT NULL,,PK,
-TICKET_STATE,예매상태,"0,1,2",NUMBER,1,NOT NULL,,,"0: 정상, 1: 취소됨 2: 관리자에 의해 취소됨"
+TICKET_STATE,예매상태,"1,2,3",NUMBER,1,NOT NULL,,,"1: 정상, 2: 취소됨 3: 관리자에 의해 취소됨"
 PAY_ID,결제번호,,NUMBER,,NOT NULL,,FK,
 SEAT_ID,좌석번호,,NUMBER,,NOT NULL,,FK,
 USR_ID,회원ID,,NUMBER,,NOT NULL,,FK,
@@ -65,7 +65,7 @@ SHOW_ID,상영ID,,NUMBER,,NOT NULL,,FK,
 테이블 설명,"회원정보를 저장한다, 회원, 비회원 같은 테이블에 저장함",,,,,,,
 칼럼명,속성명,도메인,데이터타입,길이,NULL여부,기본값 ,KEY,비고
 USR_ID,회원ID,,NUMBER,,NOT NULL,,PK,
-USR_NAME,회원명,,VARCHAR2,10,-,,,비회원이면 NULL
+USR_NAME,회원명,,VARCHAR2,30,NOT NULL,,,
 USR_EMAIL,이메일,,VARCHAR2,50,NOT NULL,,,비회원인경우 이메일을 받자
 USR_PASSWORD,비밀번호,,CHAR,32,NOT NULL,,,
 USR_POINT,포인트,,NUMBER,,-,0,,비회원이면 NULL
@@ -79,7 +79,7 @@ USR_TYPE,회원타입,"0,1,2",NUMBER,1,NOT NULL,N,,"0: 관리자, 1: 회원 2: �
 칼럼명,속성명,도메인,데이터타입,길이,NULL여부,기본값 ,KEY,비고
 PAY_ID,결제번호,,NUMBER,,NOT NULL,,PK,
 PAY_TYPE,결제방법,1: 카드 2: 포인트 3: 알수없음,NUMBER,1,NOT NULL,,,
-PAY_STATE,결제상태,1: 성공 2: 실패 3: 사용자가 취소 4: 어드민이 취소,NUMBER,1,NOT NULL,,,
+PAY_STATE,결제상태,1: 진행중 2: 성공 3: 실패 4: 사용자가 취소 5: 어드민이 취소,NUMBER,1,NOT NULL,,,
 PAY_PRICE,결제금액,,NUMBER,10,-,,,
 PAY_APRV_NUM,승인번호,,NUMBER,,-,,,
 PAY_DATE,결제일자,,DATE,,-,,,
