@@ -1,8 +1,4 @@
-### /
-* /auth/validate 
-
-
-### accessToken : 로그인 성공시 해당 json 을 해쉬화해서 쿠키설정
+### accessToken : 로그인 성공시 해당 json 을 해쉬화해서 쿠키설정, 로그아웃하거나 쿠키를 수동으로 지우지않는한 계속 유지됨
   ```json
   {
     "email": "dlawnsdud@gmail.com",
@@ -22,7 +18,6 @@
 
 
 ### /auth/login 
-  
   * 성공
     ```json
     {
@@ -48,8 +43,7 @@
         "password": "34534563456745"
       }, 
       "response": {
-        "result": "false",
-        "info": null
+        "result": "false"
       }
     }
     ```
@@ -85,8 +79,7 @@
       "password": "1234567890"
     }, 
     "response": {
-      "result": "false",
-      "info": null
+      "result": "false"
     }
   }
   ```
@@ -160,13 +153,13 @@
           "moviePosterUrl": "http://~~~~567.png"
         }  
       ],
-      ... 이후 현재 상영중, 상영예정 관계없는 장르별 영화 목록(액션, 드라마...)    
+      //... 이후 현재 상영중, 상영예정 관계없는 장르별 영화 목록(액션, 드라마...)    
     }
   }
   ```
 
 ### /info/movie/:movieId
-* 영화 선택시 영화정보 불러오기
+* 메인페이지에서 영화 선택시 영화정보 불러오기
 * 성공
   ```json
   {
@@ -177,13 +170,16 @@
       "movieDistribute": "21세기폭스",
       "movieRelease": "2021-05-01",
       "Director": ["임준영"],
-      "actors": [임준영0, 임준영1, 임준영2, 임준영3, 임준영3],
+      "actors": ["임준영0", "임준영1", "임준영2", "임준영3", "임준영3"],
       "movieGen": "액션",
       "moviePosterUrl": "http://~~~~123.png",
       "movieDescription": "임준영임준영임준영임준영임준영임준영"
     }
   }
   ```
+
+### Movies
+    * createMovie, updateMovie, deleteMovie 실행후 프런트내에서 getMovie 실행?
 
 ### /admin/getMovie
   * 성공
@@ -198,12 +194,12 @@
           "movieDistribute": "21세기폭스",
           "movieRelease": "2021-05-01",
           "Director": ["임준영"],
-          "actors": [임준영0, 임준영1, 임준영2, 임준영3, 임준영3],
+          "actors": ["임준영0", "임준영1", "임준영2", "임준영3", "임준영3"],
           "movieGen": "액션",
           "moviePosterUrl": "http://~~~~123.png",
           "movieDescription": "임준영임준영임준영임준영임준영임준영"
         },
-        ...영화전체
+        // ...영화전체
       ]
     }    
   }
@@ -241,6 +237,7 @@
 ### /admin/deleteMovie/:movieID
 
 ### /admin/updateMovie/:movieId
+* 업데이트내용 전송 -> 업데이트된 내용을 response로 보내줌
 * 성공
   ```json
   {
