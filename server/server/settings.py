@@ -56,8 +56,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_yasg',
     'api.model',
-    'api.model.account_test',
-    'api.model.movie',
     'server',
 ]
 
