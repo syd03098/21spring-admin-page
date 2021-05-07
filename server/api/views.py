@@ -1,5 +1,7 @@
 import hashlib
+import jwt
 
+from django.conf import settings
 from django.db import connection
 from django.http.response import JsonResponse
 from drf_yasg.utils import swagger_auto_schema
@@ -40,15 +42,18 @@ class UsrViewSet(viewsets.ModelViewSet):
                     "INSERT INTO USR (USR_ID, USR_PASSWORD, USR_EMAIL, USR_NAME, USR_TYPE) " \
                             f"VALUES ('{userid}', '{password}', '{email}', '{username}', 1);"
                 )
-                return JsonResponse(
-                    {
-                        'userid': userid,
-                        'username': username,
-                        'email': email,
-                        'point': 0,
-                        'isAdmin': False
-                    },
-                    status=201)
+                res = {
+                    'userid': userid,
+                    'username': username,
+                    'email': email,
+                    'point': 0,
+                    'isAdmin': False
+                }
+                token = jwt.encode(res, settings.SECRET_KEY,
+                                   settings.ALGORITHM).decode('utf-8')
+                response = JsonResponse(res, status=201)
+                response.set_cookie('jwt', token)
+                return response
 
         return Response(status=409, data='이미 존재하는 아이디입니다.')
 
@@ -79,12 +84,15 @@ class LoginViewSet(viewsets.ModelViewSet):
             username = account.usr_name
             point = account.usr_point
             isAdmin = account.usr_type
-            return JsonResponse(
-                {
-                    'userid': userid,
-                    'username': username,
-                    'email': email,
-                    'point': point,
-                    'isAdmin': isAdmin == 0
-                },
-                status=200)
+            res = {
+                'userid': userid,
+                'username': username,
+                'email': email,
+                'point': point,
+                'isAdmin': isAdmin == 0
+            }
+            token = jwt.encode(res, settings.SECRET_KEY,
+                               settings.ALGORITHM).decode('utf-8')
+            response = JsonResponse(res, status=200)
+            response.set_cookie('jwt', token)
+            return response
