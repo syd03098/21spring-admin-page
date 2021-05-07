@@ -10,6 +10,7 @@ from api.model.models import Usr
 
 from .serializers import (
     UsrCreateSerializer,
+    UsrLoginSerializer,
     UsrSerializer,
 )
 
@@ -41,10 +42,49 @@ class UsrViewSet(viewsets.ModelViewSet):
                 )
                 return JsonResponse(
                     {
-                        'email': email,
+                        'userid': userid,
                         'username': username,
+                        'email': email,
+                        'point': 0,
                         'isAdmin': False
                     },
                     status=201)
 
         return Response(status=409, data='이미 존재하는 아이디입니다.')
+
+
+class LoginViewSet(viewsets.ModelViewSet):
+    queryset = Usr.objects.all()
+    serializer_class = UsrLoginSerializer
+    http_method_names = ['post']
+
+    @swagger_auto_schema(responses={201: UsrSerializer})
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        userid = request.data.get('userid')
+        password = hashlib.sha256(
+            request.data.get('password').encode()).hexdigest()
+
+        try:
+            account = Usr.objects.raw(
+                f'SELECT * FROM (SELECT * FROM USR WHERE USR_ID=\'{userid}\') WHERE ROWNUM=1;'
+            )[0]
+        except IndexError:
+            return Response(status=404, data='존재하지 않는 아이디 입니다.')
+        else:
+            if account.usr_password != password:
+                return Response(status=401, data='비밀번호가 틀렸습니다.')
+            email = account.usr_email
+            username = account.usr_name
+            point = account.usr_point
+            isAdmin = account.usr_type
+            return JsonResponse(
+                {
+                    'userid': userid,
+                    'username': username,
+                    'email': email,
+                    'point': point,
+                    'isAdmin': isAdmin == 0
+                },
+                status=200)
