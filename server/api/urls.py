@@ -8,8 +8,6 @@ router = routers.DefaultRouter()
 router.register(r'auth/create', UsrViewSet, basename='usrcreate')
 router.register(r'auth/login', LoginViewSet, basename='login')
 # router.register(r'movies', MovieViewSet, basename='movies')
-# router.register(r'account', AccountViewSet, basename='account')
-# router.register(r'signin', SignInViewSet, basename='signin')
 
 urlpatterns = [
     url(r'^', include(router.urls)),
