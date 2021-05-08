@@ -2,13 +2,27 @@ from django.conf.urls import include, url
 from rest_framework import routers
 
 # from api.views import MovieViewSet, AccountViewSet, SignInViewSet
-from api.views import UsrViewSet, LoginViewSet
+from api.views import (
+    UsrViewSet,
+    LoginViewSet,
+    LogoutViewSet,
+    MovieViewSet,
+)
 
 router = routers.DefaultRouter()
-router.register(r'auth/create', UsrViewSet, basename='usrcreate')
-router.register(r'auth/login', LoginViewSet, basename='login')
+
+auth = routers.DefaultRouter()
+auth.register(r'create', UsrViewSet, basename='usrcreate')
+auth.register(r'login', LoginViewSet, basename='login')
+auth.register(r'logout', LogoutViewSet, basename='logout')
+
+movie = routers.DefaultRouter()
+movie.register(r'', MovieViewSet, basename='movie')
+
 # router.register(r'movies', MovieViewSet, basename='movies')
 
 urlpatterns = [
+    url(r'^auth/', include(auth.urls)),
+    url(r'^movies/', include(movie.urls)),
     url(r'^', include(router.urls)),
 ]

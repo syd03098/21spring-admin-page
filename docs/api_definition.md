@@ -11,83 +11,78 @@
   }
   ```
 
-### /auth/logout
+### /auth/logout POST
 * 성공하면 쿠키 삭제
 * 성공
   ```json
-  {
-    "status": true
+  200 OK
+  ```
+
+### /auth/login POST
+* 성공
+  ```json
+  "request": {
+    "userid": "idid"
+    "password": "pass"
+  }
+
+  200 OK
+  "response": {
+    "userid": "idid"
+    "username": "임준영",
+    "email": "dlawnsdud@gmail.com",
+    "point": 1000,
+    "isAdmin": true
+  }
+  ```
+* 실패
+  ```json
+  400 Bad Request
+  "response": {
+    "아이디는 영문, 숫자, 언더바, 점만 올 수 있습니다."
+  }
+
+  401 Unauthorized
+  "response": {
+    "비밀번호가 틀렸습니다."
+  }
+
+  404 Not Found
+  "response": {
+    "존재하지 않는 아이디입니다."
   }
   ```
 
-
-### /auth/login 
-  
-  * 성공
-    ```json
-    {
-      "request": {
-        "email": "dlawnsdud@gmail.com",
-        "password": "1234567890"
-      }, 
-      "response": {
-        "result": "true",
-        "info": {
-          "email": "dlawnsdud@gmail.com",
-          "username": "임준영",
-          "isAdmin": true
-        } 
-      }
-    }
-    ```
-    * 실패
-    ```json
-    {
-      "request": {
-        "email": "dlawnsdud@gmail.com",
-        "password": "34534563456745"
-      }, 
-      "response": {
-        "result": "false",
-        "info": null
-      }
-    }
-    ```
-
-  
-
-### /auth/create
-* 생성하고자하는 계정의 이메일이 존재하는 이메일이면 거부, 존재하지않는 이메일이면 승인후 로그인처리(쿠키 설정)  
+### /auth/create POST
+* 생성하고자하는 계정의 이메일이 존재하는 이메일이면 거부, 존재하지않는 이메일이면 승인후 로그인처리(쿠키 설정)
   * 성공
   ```json
-  {
-    "request": {
+  "request": {
+    "userid": "idid",
+    "username": "임준영",
+    "email": "dlawnsdud@gmail.com",
+    "password": "1234567890"
+  }
+
+  201 Created
+  "response": {
+      "userid": "idid",
       "username": "임준영",
       "email": "dlawnsdud@gmail.com",
-      "password": "1234567890"
-    }, 
-    "response": {
-      "result": true,
-      "info": {
-          "email": "dlawnsdud@gmail.com",
-          "username": "임준영",
-          "isAdmin": true
-      }
-    }    
+      "point": 0,
+      "isAdmin": false
   }
   ```
   * 실패
   ```json
-  {
-    "request": {
-      "username": "임준영",
-      "email": "dlawnsdud@gmail.com",
-      "password": "1234567890"
-    }, 
-    "response": {
-      "result": "false",
-      "info": null
-    }
+  400 Bad Request
+  "response": {
+    "아이디는 영문, 숫자, 언더바, 점만 올 수 있습니다."
+  }
+
+  409 Conflict
+  "response": {
+    "이미 존재하는 아이디입니다."
   }
   ```
 
@@ -176,7 +171,7 @@
       "movieGrade": "전체이용가",
       "movieDistribute": "21세기폭스",
       "movieRelease": "2021-05-01",
-      "Director": ["임준영"],
+      "director": ["임준영"],
       "actors": [임준영0, 임준영1, 임준영2, 임준영3, 임준영3],
       "movieGen": "액션",
       "moviePosterUrl": "http://~~~~123.png",
@@ -185,60 +180,40 @@
   }
   ```
 
-### /admin/getMovie
-  * 성공
+### /movies POST
+* 성공
   ```json
-  {
-    "response": {
-      "movies": [
-        {
-          "movieId": "0",
-          "movieName": "123",
-          "movieGrade": "전체이용가",
-          "movieDistribute": "21세기폭스",
-          "movieRelease": "2021-05-01",
-          "Director": ["임준영"],
-          "actors": [임준영0, 임준영1, 임준영2, 임준영3, 임준영3],
-          "movieGen": "액션",
-          "moviePosterUrl": "http://~~~~123.png",
-          "movieDescription": "임준영임준영임준영임준영임준영임준영"
-        },
-        ...영화전체
-      ]
-    }    
+  "request": {
+    "movieName": "영화제목",
+    "movieTime": "2:13:45",
+    "movieDescription": "영화설명",
+    "movieDistribute": "배급사",
+    "movieRelease": "2021-05-01",
+    "movieGen": 1,
+    "director": "감독1, 감독2, ...",
+    "actors": "배우1, 배우2, 배우3, 배우4, ...",
+    "moviePosterUrl": "http://~~~~123.png",
+    "movieGrade": "00",
   }
-  ```
 
-### /admin/createMovie
-  * 성공
-  ```json
-  {
-    "request": {
-      "movieName": "123",
-      "movieGrade": "00",
-      "movieDistribute": "21세기폭스",
-      "movieRelease": "2021-05-01",
-      "Director": "임준영",
-      "actors": "임준영0, 임준영1, 임준영2, 임준영3, 임준영3",
-      "movieGen": "액션",
-      "moviePosterUrl": "http://~~~~123.png",
-      "movieDescription": "임준영임준영임준영임준영임준영임준영"
-    }, 
-    "response": {
-      "status": true
-    }    
-  }
+  "response":  
+    201 Created
   ```
   * 실패
   ```json
-  {
-    "response": {
-      "status": false
-    }
-  }
+  400 Bad Request
+    or
+  403 Unauthorized
   ```
 
-### /admin/deleteMovie/:movieID
+### /movies DELETE
+  ```
+  204 No Content
+    or
+  403 Unauthorized
+    or
+  404 Not Found
+  ```
 
 ### /admin/updateMovie/:movieId
 * 성공
