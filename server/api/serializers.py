@@ -32,3 +32,21 @@ class UsrSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=50)
     point = serializers.IntegerField()
     isAdmin = serializers.BooleanField()
+
+
+class MovieSerializer(serializers.Serializer):
+    movieName = serializers.CharField(max_length=60)
+    movieTime = serializers.TimeField(required=False)
+    movieDescription = serializers.CharField(max_length=4000, required=False)
+    movieDistribute = serializers.CharField(max_length=60, required=False)
+    movieRelease = serializers.DateField(required=False)
+    movieGen = serializers.IntegerField(required=False)
+    directors = serializers.CharField(max_length=60, required=False)
+    actors = serializers.CharField(max_length=300, required=False)
+    moviePosterUrl = serializers.CharField(max_length=500, required=False)
+    movieGrade = serializers.CharField(max_length=2, required=False)
+
+    def validate_movieGrade(self, value):
+        if not re.match('^\\d{2}$', value):
+            raise ValidationError('영화등급은 숫자 두자리만 올 수 있습니다.')
+        return value
