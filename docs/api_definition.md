@@ -22,13 +22,13 @@
 * 성공
   ```json
   "request": {
-    "userid": "idid"
+    "userid": "idid",
     "password": "pass"
   }
 
   200 OK
   "response": {
-    "userid": "idid"
+    "userid": "idid",
     "username": "임준영",
     "email": "dlawnsdud@gmail.com",
     "point": 1000,
@@ -203,14 +203,14 @@
   ```json
   400 Bad Request
     or
-  403 Unauthorized
+  401 Unauthorized
   ```
 
 ### /movies DELETE
   ```
   204 No Content
     or
-  403 Unauthorized
+  401 Unauthorized
     or
   404 Not Found
   ```

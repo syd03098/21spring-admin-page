@@ -11,12 +11,12 @@ from api.views import (
 
 router = routers.DefaultRouter()
 
-auth = routers.DefaultRouter()
+auth = routers.DefaultRouter(trailing_slash=False)
 auth.register(r'create', UsrViewSet, basename='usrcreate')
 auth.register(r'login', LoginViewSet, basename='login')
 auth.register(r'logout', LogoutViewSet, basename='logout')
 
-movie = routers.DefaultRouter()
+movie = routers.DefaultRouter(trailing_slash=False)
 movie.register(r'', MovieViewSet, basename='movie')
 
 # router.register(r'movies', MovieViewSet, basename='movies')
