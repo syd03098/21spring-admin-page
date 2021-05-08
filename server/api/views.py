@@ -119,6 +119,8 @@ class MovieViewSet(viewsets.ModelViewSet):
 
     @swagger_auto_schema(responses={201: serializers.Serializer})
     def create(self, request, *args, **kwargs):
+        if not request.COOKIES.get('jwt'):
+            return Response(status=401, data='권한이 없습니다.')
         token = jwt.decode(request.COOKIES.get('jwt'), settings.SECRET_KEY,
                            settings.ALGORITHM)
         admin = token['isAdmin']
