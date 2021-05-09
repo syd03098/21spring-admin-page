@@ -9,7 +9,7 @@ import ErrorBoundary from '@components/molecule/errorBoundary';
 import { ModalStoreProvider } from '@stores/ModalStore';
 import Modal from '@components/organism/modal';
 
-const entrance = lazy(() => import('@pages/EntranceHallPage'));
+const entrance = lazy(() => import('@pages/entrance'));
 const login = lazy(() => import('@pages/login'));
 const profile = lazy(() => import('@pages/Profile'));
 
