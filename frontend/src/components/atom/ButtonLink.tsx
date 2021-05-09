@@ -5,7 +5,7 @@ import lighten from 'polished/lib/color/lighten';
 import classNames from 'classnames';
 
 interface Props {
-    type?: 'primary' | 'smoke' | 'pink' | 'red';
+    type?: 'primary' | 'smoke' | 'pink' | 'red' | 'default';
     size?: 'small' | 'large';
     fullHeight?: boolean;
     stretch?: boolean;
@@ -60,7 +60,7 @@ const StyledButtonLink = styled.a`
     justify-content: center;
     border-radius: 8px;
     text-decoration: none;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 500;
     color: currentColor;
 
@@ -112,6 +112,9 @@ const StyledButtonLink = styled.a`
         &:active {
             background-color: ${({ theme }) => darken(0.1, theme.pink)};
         }
+    }
+    &.default {
+        border: 1px solid ${({ theme }) => theme.black80};
     }
 
     svg {
