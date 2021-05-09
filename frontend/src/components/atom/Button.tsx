@@ -9,7 +9,7 @@ interface Props {
     size?: 'small' | 'large';
     fullHeight?: boolean;
     stretch?: boolean;
-    type?: 'primary' | 'smoke' | 'pink' | 'red';
+    type?: 'primary' | 'smoke' | 'pink' | 'red' | 'default';
     className?: string;
     style?: CSSProperties;
     onClick?: MouseEventHandler<HTMLDivElement>;
@@ -50,7 +50,7 @@ const StyledButton = styled.div`
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 15px;
+    font-size: 14px;
     cursor: pointer;
     font-weight: 500;
     border-radius: 4px;
@@ -104,6 +104,10 @@ const StyledButton = styled.div`
         &:active {
             background-color: ${({ theme }) => darken(0.1, theme.pink)};
         }
+    }
+
+    &.default {
+        border: 1px solid ${({ theme }) => theme.black80};
     }
 
     svg {
