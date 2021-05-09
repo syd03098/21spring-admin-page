@@ -1,110 +1,94 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import Desktop from '@components/atom/Desktop';
-import Mobile from '@components/atom/Mobile';
 import styled from 'styled-components';
 import UosIcon from '@components/atom/icons/Uos';
-import Menu from '@components/atom/icons/Menu';
-import Close from '@components/atom/icons/Close';
-import Flex from '@components/atom/FlexBox';
-import Ticket from '@components/atom/icons/Ticket';
 import Gear from '@components/atom/icons/Gear';
 import ButtonLink from '@components/atom/ButtonLink';
 import Button from '@components/atom/Button';
-import { useModal } from '@stores/ModalStore';
-import UserMenu from '@components/organism/topNavbar/userMenu';
+import TicketStatus from '@components/molecule/ticketStatus';
+import Mobile from '@components/atom/Mobile';
 
 const GlobalNavbar = (): JSX.Element => {
-    const { isOpen, appendModal, modalOverlayRef: overlayRef } = useModal();
-
-    const UserMenuIcon = useCallback(() => {
-        return isOpen ? <Close size={24} /> : <Menu />;
-    }, [isOpen]);
-
-    const appendUserMenuHandler = useCallback(() => {
-        appendModal(
-            <Overlay ref={overlayRef}>
-                <UserMenu />
-            </Overlay>,
-            'mobile',
-        );
-    }, [appendModal, overlayRef]);
-
     return (
-        <Wrap>
+        <Background>
             <Desktop>
-                {/* todo: 로그인상태에 따라 다르게 표시해야함, 사용자의 권한이 어드민이 아니면 개발자모드를 비활성화 */}
-                <TopHeader>
-                    <HeaderList>
-                        <ButtonLink href="/" icon={<UosIcon />} fullHeight />
-                        <Button icon={<Gear size={20} />} fullHeight size="small">
+                {/* todo: 로그인상태, 사용자권한에 따라 다르게 표시 */}
+                <Layout>
+                    <ButtonLink href="/" icon={<UosIcon />} fullHeight />
+                    <List>
+                        {/* todo: 사용자의 권한이 어드민이 아니거나, 로그인중이 아니면 개발자모드를 비활성화 */}
+                        <Button icon={<Gear size={18} />} size="small" fullHeight>
                             개발자모드
                         </Button>
-                        <ButtonLink href="/profile" icon={<Ticket size={20} />} fullHeight size="small">
-                            사용자정보
-                        </ButtonLink>
-                    </HeaderList>
-                    <Flex align="center">
-                        <ButtonLink href="/login" fullHeight>
+                        <ButtonLink href="/login" fullHeight size="small">
                             로그인
                         </ButtonLink>
-                        <ButtonLink href="/create" type="pink">
+                        <ButtonLink href="/create" type="default" size="small" style={{ margin: '0 8px' }}>
                             회원가입
                         </ButtonLink>
-                    </Flex>
-                </TopHeader>
+                        <TicketStatus />
+                    </List>
+                </Layout>
             </Desktop>
             <Mobile>
-                <MobileHeader>
-                    <ButtonLink href="/" icon={<UosIcon />} fullHeight />
-                    <Button icon={<UserMenuIcon />} onClick={appendUserMenuHandler} fullHeight />
-                </MobileHeader>
+                <MobileLayout>
+                    <TicketStatus />
+                    <CenteredLogo>
+                        <ButtonLink href="/" icon={<UosIcon width={42} height={28} />} fullHeight />
+                    </CenteredLogo>
+                    <ButtonLink href="/login" size="small" type="default">
+                        로그인
+                    </ButtonLink>
+                    {/* todo: 로그인중이면 로그아웃버튼 활성화 */}
+                </MobileLayout>
             </Mobile>
-        </Wrap>
+        </Background>
     );
 };
 
-const Overlay = styled.div`
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 11;
-`;
-
-export const Wrap = styled.div`
+const Background = styled.header`
     position: fixed;
     top: 0;
     background-color: ${({ theme }) => theme.white};
     user-select: none;
     width: 100%;
     z-index: 10;
+    box-shadow: ${({ theme }) => theme.smoke50} 0 1px 0 0;
 `;
 
-export const TopHeader = styled.div`
+const Layout = styled.div`
     display: flex;
     justify-content: space-between;
     flex: 1 0 auto;
-    height: 80px;
+    height: 60px;
     padding: 0 20px;
-    box-shadow: inset 0 -1px 0 ${({ theme }) => theme.smoke50};
 `;
 
-export const HeaderList = styled.ul`
+const List = styled.div`
     display: flex;
+    align-items: center;
     height: 100%;
-    margin: 0;
-    padding: 0;
 `;
 
-export const MobileHeader = styled.div`
+const MobileLayout = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex: 1 0 auto;
-    height: 60px;
+    height: 54px;
     padding: 0 12px;
-    box-shadow: inset 0 -1px 0 ${({ theme }) => theme.smoke50};
+`;
+
+const CenteredLogo = styled.div`
+    display: flex;
+    max-width: 80px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 54px;
+    margin: 0 auto;
 `;
 
 export default GlobalNavbar;

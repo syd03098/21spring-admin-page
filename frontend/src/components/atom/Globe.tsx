@@ -10,7 +10,11 @@ interface Props {
 const Globe = forwardRef<HTMLDivElement, PropsWithChildren<Props>>(
     ({ children, style, className, ...rest }: PropsWithChildren<Props>, ref) => {
         // eslint-disable-next-line react/jsx-props-no-spreading
-        return <GlobeContainer ref={ref} className={className} style={style} {...rest} />;
+        return (
+            <GlobeContainer ref={ref} className={className} style={style} {...rest}>
+                {children}
+            </GlobeContainer>
+        );
     },
 );
 
