@@ -24,7 +24,8 @@
     "react-router-dom": "^5.2.0",
     "react-use": "^17.2.4",
     "styled-components": "^5.2.1",
-    "swiper": "^6.4.15"
+    "swiper": "^6.5.9",
+    "throttle-debounce": "^3.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.13",
@@ -38,6 +39,7 @@
     "@types/react-responsive": "^8.0.2",
     "@types/react-router-dom": "^5.1.7",
     "@types/styled-components": "^5.1.7",
+    "@types/throttle-debounce": "^2.1.0",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
     "babel-loader": "^8.2.2",
