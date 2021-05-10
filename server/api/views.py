@@ -4,8 +4,9 @@ import jwt
 from django.conf import settings
 from django.db import connection
 from django.http.response import HttpResponse, JsonResponse
-from drf_yasg.utils import swagger_auto_schema
+from drf_yasg.utils import no_body, swagger_auto_schema
 from rest_framework import serializers, viewsets
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from api.model.models import (
@@ -24,11 +25,67 @@ from .serializers import (
 
 class UsrViewSet(viewsets.ModelViewSet):
     queryset = Usr.objects.all()
-    serializer_class = UsrCreateSerializer
-    http_method_names = ['post']
+    http_method_names = ['post', 'get']
+
+    def get_serializer_class(self):
+        action = self.action
+        if action == 'signup':
+            return UsrCreateSerializer
+        elif action == 'login':
+            return UsrLoginSerializer
+        return serializers.Serializer
+
+    @swagger_auto_schema(auto_schema=None)
+    def list(self, request, *args, **kwargs):
+        return
+
+    @swagger_auto_schema(auto_schema=None)
+    def create(self, request, *args, **kwargs):
+        return
+
+    @swagger_auto_schema(auto_schema=None)
+    def retrieve(self, request, *args, **kwargs):
+        return
+
+    @swagger_auto_schema(responses={200: UsrSerializer})
+    @action(detail=False, methods=['get'])
+    def info(self, request, *args, **kwargs):
+        if not request.COOKIES.get('jwt'):
+            return HttpResponse(status=401)
+        try:
+            token = jwt.decode(request.COOKIES.get('jwt'), settings.SECRET_KEY,
+                               settings.ALGORITHM)
+        except jwt.InvalidSignatureError:
+            return HttpResponse(status=401)
+        userid = token['userid']
+
+        try:
+            account = Usr.objects.raw(
+                f'SELECT * FROM (SELECT * FROM USR WHERE USR_ID=\'{userid}\') WHERE ROWNUM=1;'
+            )[0]
+        except IndexError:
+            return HttpResponse(status=401)
+        else:
+            email = account.usr_email
+            username = account.usr_name
+            point = account.usr_point
+            isAdmin = account.usr_type
+            res = {
+                'userid': userid,
+                'username': username,
+                'email': email,
+                'point': point,
+                'isAdmin': isAdmin == 0
+            }
+            token = jwt.encode(res, settings.SECRET_KEY,
+                               settings.ALGORITHM).decode('utf-8')
+            response = JsonResponse(res, status=200)
+            response.set_cookie('jwt', token, httponly=False)
+            return response
 
     @swagger_auto_schema(responses={201: UsrSerializer})
-    def create(self, request, *args, **kwargs):
+    @action(detail=False, methods=['post'])
+    def signup(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         userid = request.data.get('userid')
@@ -62,14 +119,9 @@ class UsrViewSet(viewsets.ModelViewSet):
 
         return Response(status=409, data='이미 존재하는 아이디입니다.')
 
-
-class LoginViewSet(viewsets.ModelViewSet):
-    queryset = Usr.objects.all()
-    serializer_class = UsrLoginSerializer
-    http_method_names = ['post']
-
     @swagger_auto_schema(responses={200: UsrSerializer})
-    def create(self, request, *args, **kwargs):
+    @action(detail=False, methods=['post'])
+    def login(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         userid = request.data.get('userid')
@@ -102,12 +154,9 @@ class LoginViewSet(viewsets.ModelViewSet):
             response.set_cookie('jwt', token, httponly=False)
             return response
 
-
-class LogoutViewSet(viewsets.ViewSet):
-    http_method_names = ['post']
-
-    @swagger_auto_schema(responses={200: serializers.Serializer})
-    def create(self, request, *args, **kwargs):
+    @swagger_auto_schema(request_body=no_body, responses={200: None})
+    @action(detail=False, methods=['post'])
+    def logout(self, request, *args, **kwargs):
         response = HttpResponse(status=200)
         response.delete_cookie('jwt')
         return response
