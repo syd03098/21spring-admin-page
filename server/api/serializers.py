@@ -3,6 +3,8 @@ import re
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
+from api.model.models import Movie
+
 
 class UsrCreateSerializer(serializers.Serializer):
     userid = serializers.CharField(max_length=16)
@@ -34,7 +36,7 @@ class UsrSerializer(serializers.Serializer):
     isAdmin = serializers.BooleanField()
 
 
-class MovieSerializer(serializers.Serializer):
+class MovieCreateSerializer(serializers.Serializer):
     movieName = serializers.CharField(max_length=60)
     movieTime = serializers.TimeField(required=False)
     movieDescription = serializers.CharField(max_length=4000, required=False)
@@ -50,3 +52,10 @@ class MovieSerializer(serializers.Serializer):
         if not re.match('^\\d{2}$', value):
             raise ValidationError('영화등급은 숫자 두자리만 올 수 있습니다.')
         return value
+
+
+class MovieSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Movie
+        fields = '__all__'

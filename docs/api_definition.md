@@ -211,11 +211,9 @@
   204 No Content
     or
   401 Unauthorized
-    or
-  404 Not Found
   ```
 
-### /admin/updateMovie/:movieId
+### /moview PATCH
 * 성공
   ```json
   {

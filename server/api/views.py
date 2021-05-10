@@ -15,6 +15,7 @@ from api.model.models import (
 
 from .serializers import (
     MovieSerializer,
+    MovieCreateSerializer,
     UsrCreateSerializer,
     UsrLoginSerializer,
     UsrSerializer,
@@ -56,7 +57,7 @@ class UsrViewSet(viewsets.ModelViewSet):
                 token = jwt.encode(res, settings.SECRET_KEY,
                                    settings.ALGORITHM).decode('utf-8')
                 response = JsonResponse(res, status=201)
-                response.set_cookie('jwt', token)
+                response.set_cookie('jwt', token, httponly=False)
                 return response
 
         return Response(status=409, data='이미 존재하는 아이디입니다.')
@@ -98,7 +99,7 @@ class LoginViewSet(viewsets.ModelViewSet):
             token = jwt.encode(res, settings.SECRET_KEY,
                                settings.ALGORITHM).decode('utf-8')
             response = JsonResponse(res, status=200)
-            response.set_cookie('jwt', token)
+            response.set_cookie('jwt', token, httponly=False)
             return response
 
 
@@ -113,9 +114,15 @@ class LogoutViewSet(viewsets.ViewSet):
 
 
 class MovieViewSet(viewsets.ModelViewSet):
-    queryset = Movie
+    queryset = Movie.objects.all()
     serializer_class = MovieSerializer
     http_method_names = ['get', 'post', 'patch', 'delete']
+
+    def get_serializer_class(self):
+        m = self.request.method
+        if m == 'POST':
+            return MovieCreateSerializer
+        return MovieSerializer
 
     @swagger_auto_schema(responses={201: serializers.Serializer})
     def create(self, request, *args, **kwargs):
@@ -157,3 +164,17 @@ class MovieViewSet(viewsets.ModelViewSet):
                                 + (f"'{movie_grade}');" if movie_grade else "NULL);")
                     )
         return HttpResponse(status=201)
+
+    def destroy(self, request, pk, *args, **kwargs):
+        if not request.COOKIES.get('jwt'):
+            return Response(status=401, data='권한이 없습니다.')
+        token = jwt.decode(request.COOKIES.get('jwt'), settings.SECRET_KEY,
+                           settings.ALGORITHM)
+        admin = token['isAdmin']
+
+        if not admin:
+            return Response(status=401, data='권한이 없습니다.')
+        movie_id = pk
+        with connection.cursor() as cursor:
+            cursor.execute(f"DELETE FROM MOVIE WHERE MOVIE_ID={movie_id}")
+        return HttpResponse(status=204)
