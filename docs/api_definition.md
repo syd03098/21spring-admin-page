@@ -1,14 +1,19 @@
 ### /
-* /auth/validate 
 
-
-### accessToken : 로그인 성공시 해당 json 을 해쉬화해서 쿠키설정
+### /auth/info GET
   ```json
-  {
-    "email": "dlawnsdud@gmail.com",
+  200 OK
+  "response": {
+    "userid": "idid",
     "username": "임준영",
+    "email": "dlawnsdud@gmail.com",
+    "point": 1000,
     "isAdmin": true
   }
+
+  or
+
+  401 Unauthorized
   ```
 
 ### /auth/logout POST
@@ -53,7 +58,7 @@
   }
   ```
 
-### /auth/create POST
+### /auth/signup POST
 * 생성하고자하는 계정의 이메일이 존재하는 이메일이면 거부, 존재하지않는 이메일이면 승인후 로그인처리(쿠키 설정)
   * 성공
   ```json
