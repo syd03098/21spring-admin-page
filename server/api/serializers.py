@@ -54,6 +54,20 @@ class MovieCreateSerializer(serializers.Serializer):
         return value
 
 
+class MovieRetrieveSerializer(serializers.Serializer):
+    movieId = serializers.IntegerField()
+    movieName = serializers.CharField(max_length=60)
+    movieTime = serializers.TimeField(required=False)
+    movieDescription = serializers.CharField(max_length=4000, required=False)
+    movieDistribute = serializers.CharField(max_length=60, required=False)
+    movieRelease = serializers.DateField(required=False)
+    movieGen = serializers.IntegerField(required=False)
+    directors = serializers.CharField(max_length=60, required=False)
+    actors = serializers.CharField(max_length=300, required=False)
+    moviePosterUrl = serializers.CharField(max_length=500, required=False)
+    movieGrade = serializers.CharField(max_length=2, required=False)
+
+
 class MovieSerializer(serializers.ModelSerializer):
 
     class Meta:

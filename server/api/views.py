@@ -15,6 +15,7 @@ from api.model.models import (
 )
 
 from .serializers import (
+    MovieRetrieveSerializer,
     MovieSerializer,
     MovieCreateSerializer,
     UsrCreateSerializer,
@@ -23,6 +24,7 @@ from .serializers import (
 )
 
 
+# {{{ UsrViewSet
 class UsrViewSet(viewsets.ModelViewSet):
     queryset = Usr.objects.all()
     http_method_names = ['post', 'get']
@@ -162,6 +164,10 @@ class UsrViewSet(viewsets.ModelViewSet):
         return response
 
 
+# }}}
+
+
+# {{{ MovieViewSet
 class MovieViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
@@ -171,6 +177,8 @@ class MovieViewSet(viewsets.ModelViewSet):
         m = self.request.method
         if m == 'POST':
             return MovieCreateSerializer
+        elif self.action == 'retrieve':
+            return MovieRetrieveSerializer
         return MovieSerializer
 
     @swagger_auto_schema(responses={201: serializers.Serializer})
@@ -214,6 +222,40 @@ class MovieViewSet(viewsets.ModelViewSet):
                     )
         return HttpResponse(status=201)
 
+    def retrieve(self, request, pk, *args, **kwargs):
+        try:
+            movie = Movie.objects.raw(
+                f'SELECT * FROM (SELECT * FROM MOVIE WHERE MOVIE_ID={pk}) WHERE ROWNUM=1;'
+            )[0]
+        except IndexError:
+            return HttpResponse(status=404)
+        else:
+            movieId = pk
+            movieName = movie.movie_name
+            movieTime = movie.movie_time
+            movieDescription = movie.movie_desc
+            movieDistribute = movie.movie_distr
+            movieRelease = movie.movie_release
+            movieGen = movie.movie_gen
+            directors = movie.directors
+            actors = movie.actors
+            moviePosterUrl = movie.poster_url
+            movieGrade = movie.movie_grade
+            res = {
+                'movieId': movieId,
+                'movieName': movieName,
+                'movieTime': movieTime,
+                'movieDescription': movieDescription,
+                'movieDistribute': movieDistribute,
+                'movieRelease': movieRelease,
+                'movieGen': movieGen,
+                'directors': directors,
+                'actors': actors,
+                'moviePosterUrl': moviePosterUrl,
+                'movieGrade': movieGrade
+            }
+            return JsonResponse(res, status=200)
+
     def destroy(self, request, pk, *args, **kwargs):
         if not request.COOKIES.get('jwt'):
             return Response(status=401, data='권한이 없습니다.')
@@ -227,3 +269,6 @@ class MovieViewSet(viewsets.ModelViewSet):
         with connection.cursor() as cursor:
             cursor.execute(f"DELETE FROM MOVIE WHERE MOVIE_ID={movie_id}")
         return HttpResponse(status=204)
+
+
+# }}}
