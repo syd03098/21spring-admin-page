@@ -11,7 +11,7 @@
     "isAdmin": true
   }
 
-  or
+    or
 
   401 Unauthorized
   ```
@@ -165,26 +165,6 @@
   }
   ```
 
-### /info/movie/:movieId
-* 영화 선택시 영화정보 불러오기
-* 성공
-  ```json
-  {
-    "response": {
-      "movieId": "0",
-      "movieName": "123",
-      "movieGrade": "전체이용가",
-      "movieDistribute": "21세기폭스",
-      "movieRelease": "2021-05-01",
-      "director": ["임준영"],
-      "actors": [임준영0, 임준영1, 임준영2, 임준영3, 임준영3],
-      "movieGen": "액션",
-      "moviePosterUrl": "http://~~~~123.png",
-      "movieDescription": "임준영임준영임준영임준영임준영임준영"
-    }
-  }
-  ```
-
 ### /movies POST
 * 성공
   ```json
@@ -211,14 +191,36 @@
   401 Unauthorized
   ```
 
-### /movies DELETE
+### /movies/{movie\_id} GET
+* 영화 선택시 영화정보 불러오기
+  ```json
+  200 OK
+  "response": {
+    "movieId": 42,
+    "movieName": "영화영화",
+    "movieTime": "2:13:45",
+    "movieGrade": "12",
+    "movieDistribute": "21세기폭스",
+    "movieRelease": "2021-05-01",
+    "showTotalCount": 3,
+    "director": ["감독1", "감독2"],
+    "actors": ["배우1", "배우2", "배우3"],
+    "movieGen": 1,
+    "moviePosterUrl": "http://~~~~123.png",
+    "movieDescription": "영화설명"
+  }
+    or
+  404 Not Found
+  ```
+
+### /movies/{movie\_id} DELETE
   ```
   204 No Content
     or
   401 Unauthorized
   ```
 
-### /moview PATCH
+### /moview/{movie\_id} PATCH
 * 성공
   ```json
   {
