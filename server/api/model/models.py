@@ -11,7 +11,7 @@ from django.db import models
 class Movie(models.Model):
     movie_id = models.BigIntegerField(primary_key=True)
     movie_name = models.CharField(max_length=60)
-    movie_time = models.DateField(blank=True, null=True)
+    movie_time = models.TimeField(blank=True, null=True)
     movie_desc = models.CharField(max_length=4000, blank=True, null=True)
     movie_distr = models.CharField(max_length=60, blank=True, null=True)
     movie_release = models.DateField(blank=True, null=True)
