@@ -130,15 +130,16 @@ class UsrViewSet(viewsets.ModelViewSet):
         password = hashlib.sha256(
             request.data.get('password').encode()).hexdigest()
 
+        response = Response(status=401, data='아이디 혹은 비밀번호가 일치하지 않습니다.')
         try:
             account = Usr.objects.raw(
                 f'SELECT * FROM (SELECT * FROM USR WHERE USR_ID=\'{userid}\') WHERE ROWNUM=1;'
             )[0]
         except IndexError:
-            return Response(status=404, data='존재하지 않는 아이디입니다.')
+            return response
         else:
             if account.usr_password != password:
-                return Response(status=401, data='비밀번호가 틀렸습니다.')
+                return response
             email = account.usr_email
             username = account.usr_name
             point = account.usr_point
