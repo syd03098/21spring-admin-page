@@ -1,20 +1,25 @@
-import React, { useCallback, useLayoutEffect } from 'react';
+import React, { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import {
     StyledFieldSet,
+    StyledHalfFieldSet,
     StyledLabel,
     StyledInput,
     StyledError,
     StyledSubmitButton,
     StyledBottomLink,
 } from '@components/molecule/forms/style';
+import useEffectOnce from 'react-use/esm/useEffectOnce';
+import Flex from '@components/atom/FlexBox';
+import { SignUpFormData } from '@components/molecule/forms/types';
 
 interface Props {
-    onRegister: () => void;
+    onRegister: (data: SignUpFormData) => void;
+    isDisabled: boolean;
 }
 
-const SignUpForm = ({ onRegister }: Props): JSX.Element => {
+const SignUpForm = ({ onRegister, isDisabled }: Props): JSX.Element => {
     const {
         handleSubmit,
         register,
@@ -22,24 +27,53 @@ const SignUpForm = ({ onRegister }: Props): JSX.Element => {
         setFocus,
     } = useForm();
 
-    const signUpHandler = useCallback((): void => {
-        onRegister();
-    }, [onRegister]);
+    const signUpHandler = useCallback(
+        (data: SignUpFormData): void => {
+            onRegister(data);
+        },
+        [onRegister],
+    );
 
-    useLayoutEffect(() => {
-        setFocus('username');
-    }, [setFocus]);
+    useEffectOnce(() => {
+        setFocus('userid');
+    });
 
     return (
         <>
-            <form style={{ margin: '12px 0' }} onSubmit={handleSubmit(signUpHandler)}>
+            <form
+                css={`
+                    margin: 12px 0;
+                `}
+                onSubmit={handleSubmit(signUpHandler)}
+            >
+                <Flex justify="space-between">
+                    <StyledHalfFieldSet>
+                        <StyledLabel>사용자계정</StyledLabel>
+                        {errors.userid && <StyledError>{errors.userid.message}</StyledError>}
+                        <StyledInput
+                            type="text"
+                            placeholder="16자 이하"
+                            {...register('userid', {
+                                required: 'require',
+                                maxLength: { value: 16, message: 'too long' },
+                            })}
+                        />
+                    </StyledHalfFieldSet>
+                    <StyledHalfFieldSet>
+                        <StyledLabel>이름</StyledLabel>
+                        {errors.username && <StyledError>{errors.username.message}</StyledError>}
+                        <StyledInput
+                            type="text"
+                            placeholder="30자 이하"
+                            {...register('username', {
+                                required: 'require',
+                                maxLength: { value: 30, message: 'too long' },
+                            })}
+                        />
+                    </StyledHalfFieldSet>
+                </Flex>
                 <StyledFieldSet>
-                    <StyledLabel>사용자 이름</StyledLabel>
-                    {errors.username && <StyledError>{errors.username.message}</StyledError>}
-                    <StyledInput type="text" placeholder="이름" {...register('username', { required: 'require' })} />
-                </StyledFieldSet>
-                <StyledFieldSet>
-                    <StyledLabel>이메일 주소</StyledLabel>
+                    <StyledLabel>이메일주소</StyledLabel>
                     {errors.email && <StyledError>{errors.email.message}</StyledError>}
                     <StyledInput
                         type="text"
@@ -65,7 +99,7 @@ const SignUpForm = ({ onRegister }: Props): JSX.Element => {
                         })}
                     />
                 </StyledFieldSet>
-                <StyledSubmitButton type="submit" value="Create Account" />
+                <StyledSubmitButton type="submit" disabled={isDisabled} value="Create Account" />
             </form>
             <StyledBottomLink>
                 이미 가입하셨나요? <Link to="/login">로그인</Link>

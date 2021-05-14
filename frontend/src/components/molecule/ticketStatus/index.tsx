@@ -15,16 +15,15 @@ const TicketStatus = (): JSX.Element => {
 };
 
 const TicketWrap = styled.a`
-    padding: 0 8px;
+    display: flex;
+    align-items: center;
+    justify-items: center;
     text-decoration: none;
+    margin: 0 8px;
 `;
 
 const TicketContents = styled.div`
-    display: flex;
     position: relative;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
     color: ${({ theme }) => theme.black80};
 `;
 

@@ -25,15 +25,6 @@ const globalStyle = css`
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;
     }
-
-    body {
-        @media (min-width: 720px) {
-            padding-top: 80px;
-        }
-        @media (max-width: 719px) {
-            padding-top: 64px;
-        }
-    }
 `;
 
 export default createGlobalStyle`
