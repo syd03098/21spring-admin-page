@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import {
@@ -9,13 +9,15 @@ import {
     StyledError,
     StyledSubmitButton,
 } from '@components/molecule/forms/style';
-import { useEffectOnce } from 'react-use';
+import { LoginFormData } from '@components/molecule/forms/types';
+import useEffectOnce from 'react-use/esm/useEffectOnce';
 
 interface Props {
-    onSubmit: () => void;
+    onLogin: (data: LoginFormData) => void;
+    isDisabled: boolean;
 }
 
-const LoginForm = ({ onSubmit }: Props): JSX.Element => {
+const LoginForm = ({ onLogin, isDisabled }: Props): JSX.Element => {
     const {
         handleSubmit,
         register,
@@ -23,21 +25,36 @@ const LoginForm = ({ onSubmit }: Props): JSX.Element => {
         setFocus,
     } = useForm();
 
-    const loginHandler = (): void => {
-        onSubmit();
-    };
+    const loginHandler = useCallback(
+        (data: LoginFormData) => {
+            onLogin(data);
+        },
+        [onLogin],
+    );
 
     useEffectOnce(() => {
-        setFocus('email');
+        setFocus('userid');
     });
 
     return (
         <>
-            <form style={{ margin: '12px 0' }} onSubmit={handleSubmit(loginHandler)}>
+            <form
+                css={`
+                    margin: 12px 0;
+                `}
+                onSubmit={handleSubmit(loginHandler)}
+            >
                 <StyledFieldSet>
-                    <StyledLabel>이메일 주소</StyledLabel>
-                    {errors.email && <StyledError>{errors.email.message}</StyledError>}
-                    <StyledInput type="text" placeholder="이메일" {...register('email', { required: 'require' })} />
+                    <StyledLabel>사용자계정</StyledLabel>
+                    {errors.userid && <StyledError>{errors.userid.message}</StyledError>}
+                    <StyledInput
+                        type="text"
+                        placeholder="계정"
+                        {...register('userid', {
+                            required: 'require',
+                            maxLength: { value: 16, message: 'too long' },
+                        })}
+                    />
                 </StyledFieldSet>
                 <StyledFieldSet>
                     <StyledLabel>패스워드</StyledLabel>
@@ -48,7 +65,11 @@ const LoginForm = ({ onSubmit }: Props): JSX.Element => {
                         {...register('password', { required: 'require' })}
                     />
                 </StyledFieldSet>
-                <StyledSubmitButton type="submit" value="Sign In" />
+                <StyledSubmitButton
+                    type="submit"
+                    disabled={isDisabled}
+                    value={isDisabled ? 'Processing...' : 'Sign In'}
+                />
             </form>
             <StyledBottomLink>
                 회원이 아니신가요? <Link to="/create">회원가입</Link>

@@ -13,6 +13,7 @@ export const StyledContainer = styled.div`
 export const StyledTitle = styled.h2`
     margin: 30px 0 0;
     font-size: 22px;
+    letter-spacing: -1.2px;
 `;
 
 export const StyledDivider = styled.div`
@@ -22,6 +23,6 @@ export const StyledDivider = styled.div`
 `;
 
 export const StyledTopHeader = styled.a`
-    display: block;
+    display: inline-block;
     margin: 42px 0 0;
 `;

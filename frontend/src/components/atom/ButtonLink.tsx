@@ -62,6 +62,7 @@ const StyledButtonLink = styled.a`
     text-decoration: none;
     font-size: 14px;
     font-weight: 500;
+    letter-spacing: -0.8px;
     color: currentColor;
 
     &.size-small {
