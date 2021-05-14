@@ -7,7 +7,6 @@ import Modal from '@components/organism/modal';
 import useEffectOnce from 'react-use/esm/useEffectOnce';
 import { fetchCurrentUserInfo } from '@utils/api/userInfo';
 import { useAuth } from '@stores/AuthStore';
-import Loading from '@pages/Loading';
 
 const entrance = lazy(() => import('@pages/entrance'));
 const login = lazy(() => import('@pages/login'));
@@ -30,13 +29,9 @@ const Routes = (): JSX.Element => {
         <Router>
             <ModalProvider>
                 <ToastProvider>
-                    <Loading>
-                        <Switch>
-                            <Route exact path="/" component={entrance} />
-                            <Route exact path="/profile" component={profile} />
-                        </Switch>
-                    </Loading>
                     <Switch>
+                        <Route exact path="/" component={entrance} />
+                        <Route exact path="/profile" component={profile} />
                         <Route exact path="/login" component={login} />
                         <Route exact path="/create" component={login} />
                     </Switch>
