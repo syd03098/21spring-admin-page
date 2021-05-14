@@ -2,13 +2,16 @@ import React from 'react';
 import GlobalNavbar from '@components/organism/globalNavbar';
 import HorizontalSwiper from '@components/organism/horizontalSwiper';
 import styled from 'styled-components';
+import Loading from '@pages/Loading';
 
 const Entrance = (): JSX.Element => {
     return (
-        <Layout>
-            <GlobalNavbar />
-            <HorizontalSwiper />
-        </Layout>
+        <Loading>
+            <Layout>
+                <GlobalNavbar />
+                <HorizontalSwiper />
+            </Layout>
+        </Loading>
     );
 };
 
