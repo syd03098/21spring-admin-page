@@ -12,7 +12,7 @@ import ErrorBlock from '@components/molecule/errorBlock';
 const Login = (): JSX.Element => {
     const isLogin = useLocation().pathname === '/login';
     const history = useHistory();
-    const { setCurrentUser, currentUser } = useAuth();
+    const { setCurrentUser, currentUser, initialized } = useAuth();
     const [error, setError] = useState<string | null>(null);
     const [isDisabled, setDisabled] = useState<boolean>(false);
 
@@ -73,18 +73,20 @@ const Login = (): JSX.Element => {
         );
     }, [isDisabled, isLogin, onRegister, onLogin]);
 
-    if (!currentUser) {
-        return (
-            <>
-                {error && <ErrorBlock errorMessage={error} />}
-                <StyledWrap>
-                    <StyledContainer>{pageContents}</StyledContainer>
-                </StyledWrap>
-            </>
-        );
+    if (initialized) {
+        if (currentUser === null) {
+            return (
+                <>
+                    {error && <ErrorBlock errorMessage={error} />}
+                    <StyledWrap>
+                        <StyledContainer>{pageContents}</StyledContainer>
+                    </StyledWrap>
+                </>
+            );
+        }
+        return <Redirect to="/" />;
     }
-
-    return <Redirect to="/" />;
+    return <></>;
 };
 
 export default Login;
