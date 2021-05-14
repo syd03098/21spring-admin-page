@@ -1,11 +1,11 @@
-엔티티 타입명,영화정보,,,,,,,
+엔티티 타입명,영화,,,,,,,
 테이블명,MOVIE,,,,,,,
 테이블 설명,영화의 정보에 대한 테이블,,,,,,,
 칼럼명,속성명,도메인,데이터타입,길이,NULL여부,기본값 ,KEY,비고
-MOVIE_ID,영화번호,,NUMBER,,NOT NULL,,PK,
+MOVIE_ID,영화ID,,NUMBER,,NOT NULL,,PK,
 MOVIE_NAME,영화명,,VARCHAR2,60,NOT NULL,,,
-MOVIE_TIME,상영시간,,NUMBER,,NOT NULL,,,
-MOVIE_GRADE,영화등급,"00, 07, 12, 15, 18",CHAR,2,-,,,
+MOVIE_TIME,상영시간,,DATE,,NOT NULL,,,
+MOVIE_GRADE,영화등급,,CHAR,2,-,,,"00, 07, 12, 15, 18"
 MOVIE_DISTR,배급사,,VARCHAR2,60,-,,,
 MOVIE_RELEASE,개봉일,,DATE,,-,,,
 MOVIE_GEN,장르,,VARCHAR2,60,-,,,
@@ -30,9 +30,10 @@ MOVIE_ID,영화ID,,NUMBER,,NOT NULL,,FK,
 테이블 설명,"상영관 번호, 상영관 크기에 대한 정보",,,,,,,
 칼럼명,속성명,도메인,데이터타입,길이,NULL여부,기본값 ,KEY,비고
 THEATER_ID,상영관번호,,NUMBER,,NOT NULL,,PK,
-THEATER_TYPE,상영관 타입,,NUMBER,1,NOT NULL,1,,"1: 일반, 2: 아이맥스"
+THEATER_TYPE_ID,상영관타입ID,,NUMBER,1,NOT NULL,1,FK,"1: 일반, 2: 아이맥스"
 THEATER_ROW,행 갯수,,NUMBER,2,NOT NULL,16,,
 THEATER_COL,열 갯수,,NUMBER,2,NOT NULL,24,,
+THEATER_NAME,상영관이름,,CHAR,3,NOT NULL,,,"1관, 2관, 3관…"
 ,,,,,,,,
 엔티티 타입명,좌석,,,,,,,
 테이블명,SEAT,,,,,,,
@@ -44,19 +45,42 @@ SEAT_COL,열,,NUMBER,2,NOT NULL,,,
 SEAT_TYPE,좌석타입,,NUMBER,1,NOT NULL,1,,"0: 불가능한자리, 1: 가능한자리"
 THEATER_ID,상영관번호,,NUMBER,,NOT NULL,,FK,
 ,,,,,,,,
+엔티티 타입명,요금,,,,,,,
+테이블명,FEE,,,,,,,
+테이블 설명,,,,,,,,
+칼럼명,속성명,도메인,데이터타입,길이,NULL여부,기본값 ,KEY,비고
+THEATER_TYPE_ID,상영관타입ID,,NUMBER,,NOT NULL,,PK(FK),"1: 일반, 2: 아이맥스"
+CUSTOMER_TYPE_ID,고객유형ID,,NUMBER,,NOT NULL,,PK(FK),"1: 성인, 2: 청소년, 3: 노약자"
+MOVIE_FEE,영화요금,,NUMBER,,NOT NULL,,,"일반 성인: 8000, 일반 청소년: 6000, 일반 노약자: 5000, 아이맥스 성인: 15000, 아이맥스 청소년: 11000, 아이맥스 노약자: 10000"
+,,,,,,,,
 엔티티 타입명,예매,,,,,,,
 테이블명,TICKET,,,,,,,
 테이블 설명,상영관들의 예매된 내역이 저장됨,,,,,,,
 칼럼명,속성명,도메인,데이터타입,길이,NULL여부,기본값 ,KEY,비고
 TICKET_ID,예매번호,,NUMBER,,NOT NULL,,PK,
-TICKET_STATE,예매상태,"1,2,3",NUMBER,1,NOT NULL,,,"1: 정상, 2: 취소됨 3: 관리자에 의해 취소됨"
+TICKET_STATE,예매상태,,NUMBER,1,NOT NULL,,,"1: 정상, 2: 취소됨 3: 관리자에 의해 취소됨"
 PAY_ID,결제번호,,NUMBER,,NOT NULL,,FK,
 SEAT_ID,좌석번호,,NUMBER,,NOT NULL,,FK,
 USR_ID,회원ID,,NUMBER,,NOT NULL,,FK,
 SHOW_ID,상영ID,,NUMBER,,NOT NULL,,FK,
+CUSTOMER_TYPE_ID,고객유형ID,,NUMBER,,NOT NULL,,FK,"1: 성인, 2: 청소년, 3: 노약자"
+,,,,,,,,
+엔티티 타입명,고객유형,,,,,,,
+테이블명,CUSTOMER_TYPE,,,,,,,
+테이블 설명,,,,,,,,
+칼럼명,속성명,도메인,데이터타입,길이,NULL여부,기본값 ,KEY,비고
+CUSTOMER_TYPE_ID,고객유형ID,,NUMBER,,,,,"1: 성인, 2: 청소년, 3: 노약자"
+CUSTOMER_TYPE_NAME,고객유형명,,VARCHAR2,15,,,,"성인,청소년, 노약자"
+,,,,,,,,
+엔티티 타입명,상영관타입,,,,,,,
+테이블명,THEATER_TYPE,,,,,,,
+테이블 설명,,,,,,,,
+칼럼명,속성명,도메인,데이터타입,길이,NULL여부,기본값 ,KEY,비고
+THEATER_TYPE_ID,상영관타입ID,,NUMBER,,,,,"1: 일반, 2: 아이맥스"
+THEATER_TYPE_NAME,상영관타입명,,VARCHAR2,30,,,,"일반, 아이맥스"
 ,,,,,,,,
 엔티티 타입명,회원,,,,,,,
-테이블명,USER,,,,,,,
+테이블명,USR,,,,,,,
 테이블 설명,"회원정보를 저장한다, 회원, 비회원 같은 테이블에 저장함",,,,,,,
 칼럼명,속성명,도메인,데이터타입,길이,NULL여부,기본값 ,KEY,비고
 USR_ID,회원ID,,NUMBER,,NOT NULL,,PK,
