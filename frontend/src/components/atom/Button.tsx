@@ -54,6 +54,7 @@ const StyledButton = styled.div`
     cursor: pointer;
     font-weight: 500;
     border-radius: 4px;
+    letter-spacing: -0.8px;
     color: currentColor;
 
     &.size-small {
