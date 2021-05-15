@@ -100,44 +100,52 @@
   ```json
   {
     "currentTime": "2020-05-13 21:12",
-    "releasedMovies": [
+    "categories": [
       {
-        "movieId": 0,
-        "movieName": "스파이럴",
-        "movieGrade": "18",
-        "moviePosterUrl": "https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202105/17297_103_1.jpg"
+        "categoryName": "현재 개봉한 영화",
+        "movies": [
+          {
+            "movieId": 0,
+            "movieName": "스파이럴",
+            "movieGrade": "18",
+            "moviePosterUrl": "https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202105/17297_103_1.jpg"
+          },
+          {
+            "movieId": 1,
+            "movieName": "미스",
+            "movieGrade": "15",
+            "moviePosterUrl": "https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202105/17382_103_1.jpg"
+          },
+          {
+            "movieId": 2,
+            "movieName": "아들의 이름으로",
+            "movieGrade": "00",
+            "moviePosterUrl": "https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202105/17328_103_1.jpg"
+          }
+        ]
       },
       {
-        "movieId": 1,
-        "movieName": "미스",
-        "movieGrade": "15",
-        "moviePosterUrl": "https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202105/17382_103_1.jpg"
-      },
-      {
-        "movieId": 2,
-        "movieName": "아들의 이름으로",
-        "movieGrade": "00",
-        "moviePosterUrl": "https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202105/17328_103_1.jpg"
-      }
-    ],
-    "commingsoon": [
-      {
-        "movieId": 10,
-        "movieName": "2021 스웨그 에이지: 외쳐, 조선!",
-        "movieGrade": "12",
-        "moviePosterUrl": "https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202105/17405_103_1.jpg"
-      },
-      {
-        "movieId": 11,
-        "movieName": "스쿨 오브 락(樂)",
-        "movieGrade": "12",
-        "moviePosterUrl": "https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202105/17397_103_1.jpg"
-      },
-      {
-        "movieId": 12,
-        "movieName": "죽여주는 여자",
-        "movieGrade": "18",
-        "moviePosterUrl": "https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/201610/10725_103_1.jpg"
+        "categoryName": "개봉 예정 영화",
+        "movies": [
+          {
+            "movieId": 10,
+            "movieName": "2021 스웨그 에이지: 외쳐, 조선!",
+            "movieGrade": "12",
+            "moviePosterUrl": "https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202105/17405_103_1.jpg"
+          },
+          {
+            "movieId": 11,
+            "movieName": "스쿨 오브 락(樂)",
+            "movieGrade": "12",
+            "moviePosterUrl": "https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202105/17397_103_1.jpg"
+          },
+          {
+            "movieId": 12,
+            "movieName": "죽여주는 여자",
+            "movieGrade": "18",
+            "moviePosterUrl": "https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/201610/10725_103_1.jpg"
+          }
+        ]
       }
     ]
   }
