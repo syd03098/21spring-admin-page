@@ -7,10 +7,10 @@ from api.model.models import Movie
 
 
 class UsrCreateSerializer(serializers.Serializer):
-    userid = serializers.CharField(max_length=16)
-    username = serializers.CharField(max_length=30)
+    userId = serializers.CharField(max_length=16)
+    userName = serializers.CharField(max_length=30)
     email = serializers.CharField(max_length=50)
-    password = serializers.CharField(max_length=20)
+    password = serializers.CharField(min_length=6)
 
     def validate_userid(self, value):
         if re.match('.*[^A-Za-z0-9_.].*', value):
@@ -19,8 +19,8 @@ class UsrCreateSerializer(serializers.Serializer):
 
 
 class UsrLoginSerializer(serializers.Serializer):
-    userid = serializers.CharField(max_length=16)
-    password = serializers.CharField(max_length=20)
+    userId = serializers.CharField(max_length=16)
+    password = serializers.CharField(min_length=6)
 
     def validate_userid(self, value):
         if re.match('.*[^A-Za-z0-9_.].*', value):
@@ -29,10 +29,10 @@ class UsrLoginSerializer(serializers.Serializer):
 
 
 class UsrSerializer(serializers.Serializer):
-    userid = serializers.CharField(max_length=16)
-    username = serializers.CharField(max_length=30)
+    userId = serializers.CharField(max_length=16)
+    userName = serializers.CharField(max_length=30)
     email = serializers.CharField(max_length=50)
-    point = serializers.IntegerField()
+    tickets = serializers.IntegerField()
     isAdmin = serializers.BooleanField()
 
 

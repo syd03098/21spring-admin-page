@@ -8,6 +8,28 @@
 from django.db import models
 
 
+class CustomerType(models.Model):
+    customer_type_id = models.BigIntegerField(primary_key=True)
+    customer_type_name = models.CharField(max_length=15)
+
+    class Meta:
+        managed = False
+        db_table = 'customer_type'
+
+
+class Fee(models.Model):
+    theater_type = models.OneToOneField('TheaterType',
+                                        models.DO_NOTHING,
+                                        primary_key=True)
+    customer_type = models.ForeignKey(CustomerType, models.DO_NOTHING)
+    movie_fee = models.BigIntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'fee'
+        unique_together = (('theater_type', 'customer_type'),)
+
+
 class Movie(models.Model):
     movie_id = models.BigIntegerField(primary_key=True)
     movie_name = models.CharField(max_length=60)
@@ -15,7 +37,7 @@ class Movie(models.Model):
     movie_desc = models.CharField(max_length=4000, blank=True, null=True)
     movie_distr = models.CharField(max_length=60, blank=True, null=True)
     movie_release = models.DateField(blank=True, null=True)
-    movie_gen = models.BigIntegerField(blank=True, null=True)
+    movie_gen = models.CharField(max_length=60, blank=True, null=True)
     show_total_count = models.BigIntegerField()
     directors = models.CharField(max_length=60, blank=True, null=True)
     actors = models.CharField(max_length=300, blank=True, null=True)
@@ -66,13 +88,24 @@ class Show(models.Model):
 
 class Theater(models.Model):
     theater_id = models.BigIntegerField(primary_key=True)
-    theater_type = models.BigIntegerField()
+    theater_type = models.ForeignKey('TheaterType', models.DO_NOTHING)
     theater_row = models.BigIntegerField()
     theater_col = models.BigIntegerField()
+    theater_cap = models.BigIntegerField()
+    theater_name = models.CharField(max_length=30, blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'theater'
+
+
+class TheaterType(models.Model):
+    theater_type_id = models.BigIntegerField(primary_key=True)
+    theater_type_name = models.CharField(max_length=30)
+
+    class Meta:
+        managed = False
+        db_table = 'theater_type'
 
 
 class Ticket(models.Model):
@@ -82,6 +115,7 @@ class Ticket(models.Model):
     seat = models.ForeignKey(Seat, models.DO_NOTHING)
     usr = models.ForeignKey('Usr', models.DO_NOTHING)
     show = models.ForeignKey(Show, models.DO_NOTHING)
+    customer_type = models.ForeignKey(CustomerType, models.DO_NOTHING)
 
     class Meta:
         managed = False
@@ -92,7 +126,7 @@ class Usr(models.Model):
     usr_id = models.CharField(primary_key=True, max_length=16)
     usr_name = models.CharField(max_length=30)
     usr_email = models.CharField(max_length=50)
-    usr_password = models.CharField(max_length=32)
+    usr_password = models.CharField(max_length=64)
     usr_point = models.BigIntegerField(blank=True, null=True)
     usr_type = models.BigIntegerField()
 

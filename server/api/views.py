@@ -2,7 +2,7 @@ import hashlib
 import jwt
 
 from django.conf import settings
-from django.db import connection
+from django.db import connection, transaction
 from django.http.response import HttpResponse, JsonResponse
 from drf_yasg.utils import no_body, swagger_auto_schema
 from rest_framework import serializers, viewsets
@@ -11,6 +11,7 @@ from rest_framework.response import Response
 
 from api.model.models import (
     Movie,
+    Ticket,
     Usr,
 )
 
@@ -59,25 +60,29 @@ class UsrViewSet(viewsets.ModelViewSet):
                                settings.ALGORITHM)
         except jwt.InvalidSignatureError:
             return HttpResponse(status=401)
-        userid = token['userid']
+        userId = token['userId']
 
         try:
-            account = Usr.objects.raw(
-                f'SELECT * FROM (SELECT * FROM USR WHERE USR_ID=\'{userid}\') WHERE ROWNUM=1;'
-            )[0]
+            with transaction.atomic():
+                account = Usr.objects.raw(
+                    f'SELECT * FROM (SELECT * FROM USR WHERE USR_ID=\'{userId}\') WHERE ROWNUM=1;'
+                )[0]
+                tickets = len(
+                    Ticket.objects.raw(
+                        f'SELECT TICKET_ID FROM TICKET WHERE USR_ID=\'{userId}\';'
+                    ))
         except IndexError:
             return HttpResponse(status=401)
         else:
             email = account.usr_email
-            username = account.usr_name
-            point = account.usr_point
-            isAdmin = account.usr_type
+            userName = account.usr_name
+            isAdmin = account.usr_type == 0
             res = {
-                'userid': userid,
-                'username': username,
+                'userid': userId,
+                'username': userName,
                 'email': email,
-                'point': point,
-                'isAdmin': isAdmin == 0
+                'tickets': tickets,
+                'isAdmin': isAdmin
             }
             token = jwt.encode(res, settings.SECRET_KEY,
                                settings.ALGORITHM).decode('utf-8')
@@ -90,27 +95,27 @@ class UsrViewSet(viewsets.ModelViewSet):
     def signup(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        userid = request.data.get('userid')
+        userId = request.data.get('userId')
         password = hashlib.sha256(
             request.data.get('password').encode()).hexdigest()
-        username = request.data.get('username')
+        userName = request.data.get('userName')
         email = request.data.get('email')
 
         try:
             Usr.objects.raw(
-                f'SELECT * FROM (SELECT * FROM USR WHERE USR_ID=\'{userid}\') WHERE ROWNUM=1;'
+                f'SELECT * FROM (SELECT * FROM USR WHERE USR_ID=\'{userId}\') WHERE ROWNUM=1;'
             )[0]
         except IndexError:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "INSERT INTO USR (USR_ID, USR_PASSWORD, USR_EMAIL, USR_NAME, USR_TYPE) " \
-                            f"VALUES ('{userid}', '{password}', '{email}', '{username}', 1);"
+                    "INSERT INTO USR (USR_ID, USR_PASSWORD, USR_EMAIL, USR_NAME) " \
+                            f"VALUES ('{userId}', '{password}', '{email}', '{userName}');"
                 )
                 res = {
-                    'userid': userid,
-                    'username': username,
+                    'userId': userId,
+                    'userName': userName,
                     'email': email,
-                    'point': 0,
+                    'tickets': 0,
                     'isAdmin': False
                 }
                 token = jwt.encode(res, settings.SECRET_KEY,
@@ -126,30 +131,34 @@ class UsrViewSet(viewsets.ModelViewSet):
     def login(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        userid = request.data.get('userid')
+        userId = request.data.get('userId')
         password = hashlib.sha256(
             request.data.get('password').encode()).hexdigest()
 
-        response = Response(status=401, data='아이디 혹은 비밀번호가 일치하지 않습니다.')
+        response = Response(status=401, data='아이디 또는 패스워드를 다시 확인해주세요.')
         try:
-            account = Usr.objects.raw(
-                f'SELECT * FROM (SELECT * FROM USR WHERE USR_ID=\'{userid}\') WHERE ROWNUM=1;'
-            )[0]
+            with transaction.atomic():
+                account = Usr.objects.raw(
+                    f'SELECT * FROM (SELECT * FROM USR WHERE USR_ID=\'{userId}\') WHERE ROWNUM=1;'
+                )[0]
+                tickets = len(
+                    Ticket.objects.raw(
+                        f'SELECT TICKET_ID FROM TICKET WHERE USR_ID=\'{userId}\';'
+                    ))
         except IndexError:
             return response
         else:
             if account.usr_password != password:
                 return response
             email = account.usr_email
-            username = account.usr_name
-            point = account.usr_point
-            isAdmin = account.usr_type
+            userName = account.usr_name
+            isAdmin = account.usr_type == 0
             res = {
-                'userid': userid,
-                'username': username,
+                'userId': userId,
+                'userName': userName,
                 'email': email,
-                'point': point,
-                'isAdmin': isAdmin == 0
+                'tickets': tickets,
+                'isAdmin': isAdmin
             }
             token = jwt.encode(res, settings.SECRET_KEY,
                                settings.ALGORITHM).decode('utf-8')
@@ -182,15 +191,18 @@ class MovieViewSet(viewsets.ModelViewSet):
             return MovieRetrieveSerializer
         return MovieSerializer
 
+    # {{{ create
     @swagger_auto_schema(responses={201: serializers.Serializer})
     def create(self, request, *args, **kwargs):
         if not request.COOKIES.get('jwt'):
-            return Response(status=401, data='권한이 없습니다.')
-        token = jwt.decode(request.COOKIES.get('jwt'), settings.SECRET_KEY,
-                           settings.ALGORITHM)
-        admin = token['isAdmin']
-        if not admin:
-            return Response(status=401, data='권한이 없습니다.')
+            return HttpResponse(status=401)
+        try:
+            token = jwt.decode(request.COOKIES.get('jwt'), settings.SECRET_KEY,
+                               settings.ALGORITHM)
+        except jwt.InvalidSignatureError:
+            return HttpResponse(status=401)
+        if not token['isAdmin']:
+            return Response(status=401)
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -223,6 +235,9 @@ class MovieViewSet(viewsets.ModelViewSet):
                     )
         return HttpResponse(status=201)
 
+    # }}}
+
+    # {{{ retrieve
     def retrieve(self, request, pk, *args, **kwargs):
         try:
             movie = Movie.objects.raw(
@@ -257,19 +272,25 @@ class MovieViewSet(viewsets.ModelViewSet):
             }
             return JsonResponse(res, status=200)
 
+    # }}}
+
+    # {{{ destroy
     def destroy(self, request, pk, *args, **kwargs):
         if not request.COOKIES.get('jwt'):
-            return Response(status=401, data='권한이 없습니다.')
-        token = jwt.decode(request.COOKIES.get('jwt'), settings.SECRET_KEY,
-                           settings.ALGORITHM)
-        admin = token['isAdmin']
+            return HttpResponse(status=401)
+        try:
+            token = jwt.decode(request.COOKIES.get('jwt'), settings.SECRET_KEY,
+                               settings.ALGORITHM)
+        except jwt.InvalidSignatureError:
+            return HttpResponse(status=401)
+        if not token['isAdmin']:
+            return Response(status=401)
 
-        if not admin:
-            return Response(status=401, data='권한이 없습니다.')
         movie_id = pk
         with connection.cursor() as cursor:
             cursor.execute(f"DELETE FROM MOVIE WHERE MOVIE_ID={movie_id}")
         return HttpResponse(status=204)
+    # }}}
 
 
 # }}}
