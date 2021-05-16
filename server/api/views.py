@@ -12,14 +12,16 @@ from rest_framework.response import Response
 
 from api.model.models import (
     Movie,
+    Theater,
+    TheaterType,
     Ticket,
     Usr,
 )
 
 from .serializers import (
     MovieRetrieveSerializer,
-    MovieSerializer,
     MovieCreateSerializer,
+    TheaterCreateSerializer,
     UsrCreateSerializer,
     UsrLoginSerializer,
     UsrSerializer,
@@ -162,26 +164,31 @@ class UsrViewSet(viewsets.ViewSet):
 
 
 # {{{ MovieViewSet
-class MovieViewSet(viewsets.ModelViewSet):
-    queryset = Movie.objects.all()
-    serializer_class = MovieSerializer
-    http_method_names = ['get', 'post', 'patch', 'delete']
+class MovieViewSet(viewsets.ViewSet):
+    # queryset = Movie.objects.all()
+    # serializer_class = MovieSerializer
+    # http_method_names = ['get', 'post', 'patch', 'delete']
 
-    def get_serializer_class(self):
-        m = self.request.method
-        if m == 'POST':
-            return MovieCreateSerializer
-        elif self.action == 'retrieve':
-            return MovieRetrieveSerializer
-        return MovieSerializer
+    # def get_serializer_class(self):
+    #     m = self.request.method
+    #     if m == 'POST':
+    #         return MovieCreateSerializer
+    #     elif self.action == 'retrieve':
+    #         return MovieRetrieveSerializer
+    #     return MovieSerializer
+
+    @swagger_auto_schema(auto_schema=None)
+    def list(self, request, *args, **kwargs):
+        return HttpResponse(status=501)
 
     # {{{ create
-    @swagger_auto_schema(responses={201: serializers.Serializer})
+    @swagger_auto_schema(request_body=MovieCreateSerializer,
+                         responses={201: None})
     def create(self, request, *args, **kwargs):
         if not is_admin(request):
             return HttpResponse(status=401)
 
-        serializer = self.get_serializer(data=request.data)
+        serializer = MovieCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         movie_name = request.data.get('movieName')
@@ -215,6 +222,7 @@ class MovieViewSet(viewsets.ModelViewSet):
     # }}}
 
     # {{{ retrieve
+    @swagger_auto_schema(responses={200: MovieRetrieveSerializer})
     def retrieve(self, request, pk, *args, **kwargs):
         try:
             movie = Movie.objects.raw(
@@ -251,6 +259,10 @@ class MovieViewSet(viewsets.ModelViewSet):
 
     # }}}
 
+    @swagger_auto_schema(auto_schema=None)
+    def partial_update(self, request, pk, *args, **kwargs):
+        return HttpResponse(status=501)
+
     # {{{ destroy
     def destroy(self, request, pk, *args, **kwargs):
         if not is_admin(request):
@@ -262,6 +274,64 @@ class MovieViewSet(viewsets.ModelViewSet):
         return HttpResponse(status=204)
 
     # }}}
+
+
+# }}}
+
+
+# {{{ TheaterViewSet
+class TheaterViewSet(viewsets.ViewSet):
+
+    @swagger_auto_schema(request_body=TheaterCreateSerializer)
+    @transaction.atomic
+    def create(self, request, *args, **kwargs):
+        if not is_admin(request):
+            return HttpResponse(status=401)
+
+        serializer = TheaterCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        theater_type_id = request.data.get('theaterType')
+
+        try:
+            TheaterType.objects.raw(
+                f'SELECT * FROM THEATER_TYPE WHERE THEATER_TYPE_ID={theater_type_id};'
+            )[0]
+        except IndexError:
+            return HttpResponse(status=400, content='theaterType이 올바르지 않습니다.')
+
+        theater_row = request.data.get('theaterRow', 16)  # Nullable
+        theater_col = request.data.get('theaterCol', 24)  # Nullable
+        theater_name = request.data.get('theaterName')  # Nullable
+        imp_seats = request.data.get('impSeats', [])  # Nullable
+
+        seats = [(r, c)
+                 for r in range(1, theater_row + 1)
+                 for c in range(1, theater_col + 1)]
+        for i in imp_seats:
+            if (i[0], i[1]) in seats:
+                seats.remove((i[0], i[1]))
+
+        with connection.cursor() as cursor:
+            cursor.execute(
+                        "INSERT INTO THEATER " \
+                                f"VALUES (THEATER_SEQ.NEXTVAL, {theater_type_id}, " \
+                                + (f"{theater_row}, {theater_col}, ") \
+                                + (f"{len(seats)}, ") \
+                                + (f"'{theater_name}');" if theater_name else "CONCAT(THEATER_SEQ.NEXTVAL, '관'));")
+                    )
+            for r in range(1, theater_row + 1):
+                for c in range(1, theater_col + 1):
+                    if (r, c) in seats:
+                        seat_type = 1
+                    else:
+                        seat_type = 0
+                    cursor.execute(
+                                "INSERT INTO SEAT " \
+                                        f"VALUES (SEAT_SEQ.NEXTVAL, {r}, {c}, THEATER_SEQ.CURRVAL, " \
+                                        f"{seat_type});"
+                            )
+        return HttpResponse(status=201)
 
 
 # }}}

@@ -3,7 +3,7 @@ import re
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
-from api.model.models import Movie
+from api.model.models import Movie, TheaterType
 
 
 class UsrCreateSerializer(serializers.Serializer):
@@ -68,8 +68,11 @@ class MovieRetrieveSerializer(serializers.Serializer):
     movieGrade = serializers.CharField(max_length=2, required=False)
 
 
-class MovieSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Movie
-        fields = '__all__'
+class TheaterCreateSerializer(serializers.Serializer):
+    theaterType = serializers.IntegerField()
+    theaterRow = serializers.IntegerField(required=False)
+    theaterCol = serializers.IntegerField(required=False)
+    theaterName = serializers.CharField(max_length=30, required=False)
+    impSeats = serializers.ListField(child=serializers.ListField(
+        child=serializers.IntegerField(), min_length=2, max_length=2),
+                                     required=False)
