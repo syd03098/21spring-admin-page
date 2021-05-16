@@ -4,6 +4,7 @@ from rest_framework import routers
 from api.views import (
     UsrViewSet,
     MovieViewSet,
+    TheaterViewSet,
 )
 
 router = routers.DefaultRouter(trailing_slash=False)
@@ -11,13 +12,10 @@ router = routers.DefaultRouter(trailing_slash=False)
 auth = routers.DefaultRouter(trailing_slash=False)
 auth.register(r'', UsrViewSet, basename='auth')
 
-movie = routers.DefaultRouter(trailing_slash=False)
-movie.register(r'movies', MovieViewSet, basename='movie')
-
-router.registry.extend(movie.registry)
+router.register(r'movies', MovieViewSet, basename='movie')
+router.register(r'theaters', TheaterViewSet, basename='theater')
 
 urlpatterns = [
     url(r'^auth/', include(auth.urls)),
-    # url(r'^movies/', include(movie.urls)),
     url(r'^', include(router.urls)),
 ]
