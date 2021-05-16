@@ -1,6 +1,7 @@
 import hashlib
 import jwt
 
+from core.user import (get_user, is_admin)
 from django.conf import settings
 from django.db import connection, transaction
 from django.http.response import HttpResponse, JsonResponse
@@ -26,41 +27,22 @@ from .serializers import (
 
 
 # {{{ UsrViewSet
-class UsrViewSet(viewsets.ModelViewSet):
-    queryset = Usr.objects.all()
-    http_method_names = ['post', 'get']
+class UsrViewSet(viewsets.ViewSet):
 
-    def get_serializer_class(self):
-        action = self.action
-        if action == 'signup':
-            return UsrCreateSerializer
-        elif action == 'login':
-            return UsrLoginSerializer
-        return serializers.Serializer
-
-    @swagger_auto_schema(auto_schema=None)
-    def list(self, request, *args, **kwargs):
-        return
-
-    @swagger_auto_schema(auto_schema=None)
-    def create(self, request, *args, **kwargs):
-        return
-
-    @swagger_auto_schema(auto_schema=None)
-    def retrieve(self, request, *args, **kwargs):
-        return
+    # def get_serializer_class(self):
+    #     action = self.action
+    #     if action == 'signup':
+    #         return UsrCreateSerializer
+    #     elif action == 'login':
+    #         return UsrLoginSerializer
+    #     return serializers.Serializer
 
     @swagger_auto_schema(responses={200: UsrSerializer})
     @action(detail=False, methods=['get'])
     def info(self, request, *args, **kwargs):
-        if not request.COOKIES.get('jwt'):
+        userId = get_user(request)
+        if not userId:
             return HttpResponse(status=401)
-        try:
-            token = jwt.decode(request.COOKIES.get('jwt'), settings.SECRET_KEY,
-                               settings.ALGORITHM)
-        except jwt.InvalidSignatureError:
-            return HttpResponse(status=401)
-        userId = token['userId']
 
         try:
             with transaction.atomic():
@@ -78,7 +60,7 @@ class UsrViewSet(viewsets.ModelViewSet):
             userName = account.usr_name
             isAdmin = account.usr_type == 0
             res = {
-                'userid': userId,
+                'userId': userId,
                 'username': userName,
                 'email': email,
                 'tickets': tickets,
@@ -90,10 +72,11 @@ class UsrViewSet(viewsets.ModelViewSet):
             response.set_cookie('jwt', token, httponly=False)
             return response
 
-    @swagger_auto_schema(responses={201: UsrSerializer})
+    @swagger_auto_schema(request_body=UsrCreateSerializer,
+                         responses={201: UsrSerializer})
     @action(detail=False, methods=['post'])
     def signup(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = UsrCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         userId = request.data.get('userId')
         password = hashlib.sha256(
@@ -126,10 +109,11 @@ class UsrViewSet(viewsets.ModelViewSet):
 
         return Response(status=409, data='이미 존재하는 아이디입니다.')
 
-    @swagger_auto_schema(responses={200: UsrSerializer})
+    @swagger_auto_schema(request_body=UsrLoginSerializer,
+                         responses={200: UsrSerializer})
     @action(detail=False, methods=['post'])
     def login(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = UsrLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         userId = request.data.get('userId')
         password = hashlib.sha256(
@@ -194,15 +178,8 @@ class MovieViewSet(viewsets.ModelViewSet):
     # {{{ create
     @swagger_auto_schema(responses={201: serializers.Serializer})
     def create(self, request, *args, **kwargs):
-        if not request.COOKIES.get('jwt'):
+        if not is_admin(request):
             return HttpResponse(status=401)
-        try:
-            token = jwt.decode(request.COOKIES.get('jwt'), settings.SECRET_KEY,
-                               settings.ALGORITHM)
-        except jwt.InvalidSignatureError:
-            return HttpResponse(status=401)
-        if not token['isAdmin']:
-            return Response(status=401)
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -276,20 +253,14 @@ class MovieViewSet(viewsets.ModelViewSet):
 
     # {{{ destroy
     def destroy(self, request, pk, *args, **kwargs):
-        if not request.COOKIES.get('jwt'):
+        if not is_admin(request):
             return HttpResponse(status=401)
-        try:
-            token = jwt.decode(request.COOKIES.get('jwt'), settings.SECRET_KEY,
-                               settings.ALGORITHM)
-        except jwt.InvalidSignatureError:
-            return HttpResponse(status=401)
-        if not token['isAdmin']:
-            return Response(status=401)
 
         movie_id = pk
         with connection.cursor() as cursor:
             cursor.execute(f"DELETE FROM MOVIE WHERE MOVIE_ID={movie_id}")
         return HttpResponse(status=204)
+
     # }}}
 
 
