@@ -33,7 +33,7 @@ const LoginForm = ({ onLogin, isDisabled }: Props): JSX.Element => {
     );
 
     useEffectOnce(() => {
-        setFocus('userid');
+        setFocus('userId');
     });
 
     return (
@@ -46,11 +46,11 @@ const LoginForm = ({ onLogin, isDisabled }: Props): JSX.Element => {
             >
                 <StyledFieldSet>
                     <StyledLabel>사용자계정</StyledLabel>
-                    {errors.userid && <StyledError>{errors.userid.message}</StyledError>}
+                    {errors.userId && <StyledError>{errors.userId.message}</StyledError>}
                     <StyledInput
                         type="text"
                         placeholder="계정"
-                        {...register('userid', {
+                        {...register('userId', {
                             required: 'require',
                             maxLength: { value: 16, message: 'too long' },
                         })}
