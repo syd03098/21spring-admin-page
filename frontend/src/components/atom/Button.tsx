@@ -9,7 +9,7 @@ interface Props {
     size?: 'small' | 'large';
     fullHeight?: boolean;
     stretch?: boolean;
-    type?: 'primary' | 'smoke' | 'pink' | 'red' | 'default';
+    type?: 'primary' | 'smoke' | 'pink' | 'red' | 'white' | 'default';
     className?: string;
     style?: CSSProperties;
     onClick?: MouseEventHandler<HTMLDivElement>;
@@ -105,6 +105,12 @@ const StyledButton = styled.div`
         &:active {
             background-color: ${({ theme }) => darken(0.1, theme.pink)};
         }
+    }
+
+    &.white {
+        background-color: transparent;
+        color: ${({ theme }) => theme.white};
+        border: 1px solid ${({ theme }) => theme.white};
     }
 
     &.default {

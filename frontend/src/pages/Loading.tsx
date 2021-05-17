@@ -24,7 +24,7 @@ const Loading = ({ children }: { children: ReactNode }): JSX.Element => {
                 `}
             >
                 <Spinner />
-                <span>Loading...</span>
+                <span>Fetching data...</span>
             </Flex>
         );
     }

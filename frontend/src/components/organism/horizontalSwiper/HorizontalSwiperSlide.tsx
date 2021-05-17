@@ -1,48 +1,44 @@
 import React from 'react';
 import styled from 'styled-components';
+import HorizontalSwiperThumbnail from '@components/organism/horizontalSwiper/HorizontalSwiperThumbnail';
 
 interface Props {
     label: string;
-    imgUrl?: string;
+    imgUrl: string;
     grade?: JSX.Element;
 }
 
 const HorizontalSwiperSlide = ({ label, imgUrl, grade }: Props): JSX.Element => {
     return (
-        <SlideElement>
+        <Element>
             <>{grade}</>
-            <SlideThumbnail src={imgUrl} alt={label} loading="lazy" />
-            <SlideTextBox>
+            <HorizontalSwiperThumbnail imgUrl={imgUrl} alt={label} />
+            <TextArea>
                 <p>{label}</p>
-            </SlideTextBox>
-        </SlideElement>
+            </TextArea>
+        </Element>
     );
 };
 
-const SlideElement = styled.div`
+const Element = styled.div`
     display: flex;
     position: relative;
     flex-direction: column;
     flex: 1 0 auto;
     padding: 0 4px;
-    cursor: pointer;
 `;
 
-const SlideThumbnail = styled.img`
-    width: 100%;
-    border-radius: 8px;
-`;
-
-const SlideTextBox = styled.div`
+const TextArea = styled.div`
     margin: 8px 5px 0 0;
     p {
         width: calc(100% - 10px);
         overflow: hidden;
         text-overflow: ellipsis;
         font-size: 15px;
-        font-weight: 400;
+        font-weight: 500;
         white-space: normal;
         color: ${({ theme }) => theme.black80};
+        letter-spacing: -0.8px;
         margin: 0;
     }
 `;

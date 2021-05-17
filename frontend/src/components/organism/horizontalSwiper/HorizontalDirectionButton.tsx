@@ -40,13 +40,14 @@ const ArrowArea = styled.div`
     ${flexCenter};
     position: absolute;
     height: 100%;
+    padding: 0 4px;
     &.left {
         top: 0;
-        left: 4px;
+        left: 0;
     }
     &.right {
         top: 0;
-        right: 4px;
+        right: 0;
     }
 `;
 

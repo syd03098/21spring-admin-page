@@ -11,16 +11,16 @@ interface Props {
 const ViewGrade = ({ viewGrade, style }: Props): JSX.Element => {
     const grade = useMemo(() => {
         switch (viewGrade) {
-            case '전체이용가':
+            case '00':
                 return 'All';
-            case '12세이용가':
+            case '12':
                 return '12';
-            case '15세이용가':
+            case '15':
                 return '15';
-            case '18세이용가':
+            case '18':
                 return '18';
             default:
-                return '?';
+                return '';
         }
     }, [viewGrade]);
 
@@ -60,6 +60,7 @@ const StyledViewGrade = styled.div`
     color: ${({ theme }) => theme.white};
     font-size: 12px;
     font-weight: 600;
+    letter-spacing: -0.4px;
 `;
 
 export default ViewGrade;
