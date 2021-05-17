@@ -2,8 +2,6 @@ import React, { useCallback, useRef, useState, MouseEvent } from 'react';
 import styled from 'styled-components';
 import { flexCenter, fullDisplay } from '@utils/styleFunctions';
 import Button from '@components/atom/Button';
-import { useModal } from '@stores/ModalStore';
-import Information from '@components/organism/modal/information';
 
 interface Props {
     imgUrl: string;
@@ -14,7 +12,6 @@ const HorizontalSwiperThumbnail = ({ imgUrl, alt }: Props): JSX.Element => {
     const [isHovered, setHovered] = useState(false);
     const infoRef = useRef(null);
     const ticketRef = useRef(null);
-    const { appendModal } = useModal();
 
     const openOverlay = useCallback(() => {
         setHovered(true);
@@ -44,7 +41,8 @@ const HorizontalSwiperThumbnail = ({ imgUrl, alt }: Props): JSX.Element => {
         <Container onMouseEnter={openOverlay} onMouseLeave={closeOverlay} onMouseOver={openOverlay}>
             <ThumbnailArea
                 onClick={(): void => {
-                    appendModal(<Information />, 'both');
+                    // todo: information 모달띄우기
+                    console.log('상세정보');
                 }}
             >
                 <Thumbnail src={imgUrl} alt={alt} loading="lazy" />
