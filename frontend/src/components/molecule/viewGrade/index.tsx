@@ -37,6 +37,7 @@ const StyledGlobe = styled(Globe)<{ type: string }>`
     justify-content: center;
     width: 20px;
     height: 20px;
+    z-index: 1;
     ${({ type }) =>
         (type === 'All' &&
             css`
