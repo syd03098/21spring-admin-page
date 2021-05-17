@@ -1,9 +1,9 @@
 export interface LoginFormData {
-    userid: string;
+    userId: string;
     password: string;
 }
 
 export interface SignUpFormData extends LoginFormData {
-    username: string;
+    userName: string;
     email: string;
 }

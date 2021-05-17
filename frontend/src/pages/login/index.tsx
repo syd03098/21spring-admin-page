@@ -22,7 +22,7 @@ const Login = (): JSX.Element => {
             setError(null);
             try {
                 const response = await sendLoginRequest({
-                    userid: data.userid,
+                    userId: data.userId,
                     password: data.password,
                 });
                 setCurrentUser(response);
@@ -41,8 +41,8 @@ const Login = (): JSX.Element => {
             setError(null);
             try {
                 const response = await sendSignUpRequest({
-                    userid: data.userid,
-                    username: data.username,
+                    userId: data.userId,
+                    userName: data.userName,
                     email: data.email,
                     password: data.password,
                 });
