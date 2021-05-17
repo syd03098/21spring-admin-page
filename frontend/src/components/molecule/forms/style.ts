@@ -38,7 +38,7 @@ export const StyledInput = styled.input`
     border-radius: 8px;
     border: 1px solid transparent;
     transition: background-color ease 0.3s, border ease 0.3s;
-    letter-spacing: -0.8px;
+    letter-spacing: -0.2px;
 
     &:hover,
     &:focus {

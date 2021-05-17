@@ -35,7 +35,7 @@ const SignUpForm = ({ onRegister, isDisabled }: Props): JSX.Element => {
     );
 
     useEffectOnce(() => {
-        setFocus('userid');
+        setFocus('userId');
     });
 
     return (
@@ -49,11 +49,11 @@ const SignUpForm = ({ onRegister, isDisabled }: Props): JSX.Element => {
                 <Flex justify="space-between">
                     <StyledHalfFieldSet>
                         <StyledLabel>사용자계정</StyledLabel>
-                        {errors.userid && <StyledError>{errors.userid.message}</StyledError>}
+                        {errors.userId && <StyledError>{errors.userId.message}</StyledError>}
                         <StyledInput
                             type="text"
                             placeholder="16자 이하"
-                            {...register('userid', {
+                            {...register('userId', {
                                 required: 'require',
                                 maxLength: { value: 16, message: 'too long' },
                             })}
@@ -61,11 +61,11 @@ const SignUpForm = ({ onRegister, isDisabled }: Props): JSX.Element => {
                     </StyledHalfFieldSet>
                     <StyledHalfFieldSet>
                         <StyledLabel>이름</StyledLabel>
-                        {errors.username && <StyledError>{errors.username.message}</StyledError>}
+                        {errors.userName && <StyledError>{errors.userName.message}</StyledError>}
                         <StyledInput
                             type="text"
                             placeholder="30자 이하"
-                            {...register('username', {
+                            {...register('userName', {
                                 required: 'require',
                                 maxLength: { value: 30, message: 'too long' },
                             })}
