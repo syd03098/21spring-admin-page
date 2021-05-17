@@ -76,3 +76,12 @@ class TheaterCreateSerializer(serializers.Serializer):
     impSeats = serializers.ListField(child=serializers.ListField(
         child=serializers.IntegerField(), min_length=2, max_length=2),
                                      required=False)
+
+
+class UserPointSerializer(serializers.Serializer):
+    point = serializers.IntegerField()
+
+
+class UserPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(min_length=6)
+    newPassword = serializers.CharField(min_length=6)

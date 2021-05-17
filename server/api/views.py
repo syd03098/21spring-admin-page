@@ -25,11 +25,13 @@ from .serializers import (
     UsrCreateSerializer,
     UsrLoginSerializer,
     UsrSerializer,
+    UserPointSerializer,
+    UserPasswordSerializer,
 )
 
 
-# {{{ UsrViewSet
-class UsrViewSet(viewsets.ViewSet):
+# {{{ AuthViewSet
+class AuthViewSet(viewsets.ViewSet):
 
     # def get_serializer_class(self):
     #     action = self.action
@@ -332,6 +334,68 @@ class TheaterViewSet(viewsets.ViewSet):
                                         f"{seat_type});"
                             )
         return HttpResponse(status=201)
+
+
+# }}}
+
+
+# {{{ UserViewSet
+class UserViewSet(viewsets.ViewSet):
+
+    # {{{ point
+    @swagger_auto_schema(responses={200: UserPointSerializer})
+    @action(detail=False, methods=['get'])
+    def point(self, request, *args, **kwargs):
+        userId = get_user(request)
+        if not userId:
+            return HttpResponse(status=401)
+
+        try:
+            account = Usr.objects.raw(
+                f'SELECT * FROM (SELECT * FROM USR WHERE USR_ID=\'{userId}\') WHERE ROWNUM=1;'
+            )[0]
+        except IndexError:
+            return HttpResponse(status=401)
+        else:
+            point = account.usr_point
+            res = {'point': point}
+            return JsonResponse(res, status=200)
+
+    # }}}
+
+    # {{{ password
+    @swagger_auto_schema(request_body=UserPasswordSerializer,
+                         responses={200: None})
+    @action(detail=False, methods=['post'])
+    @transaction.atomic
+    def password(self, request, *args, **kwargs):
+        serializer = UserPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        userId = get_user(request)
+        password = hashlib.sha256(
+            request.data.get('password').encode()).hexdigest()
+        newPassword = hashlib.sha256(
+            request.data.get('newPassword').encode()).hexdigest()
+
+        response = Response(status=401, data='아이디 또는 패스워드를 다시 확인해주세요.')
+        try:
+            account = Usr.objects.raw(
+                f'SELECT * FROM (SELECT * FROM USR WHERE USR_ID=\'{userId}\') WHERE ROWNUM=1;'
+            )[0]
+        except IndexError:
+            return response
+
+        if account.usr_password != password:
+            return response
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f"UPDATE USR SET USR_PASSWORD = '{newPassword}' " \
+                        f"WHERE USR_ID = '{userId}';"
+            )
+            return HttpResponse(status=200)
+
+    # }}} password
 
 
 # }}}
