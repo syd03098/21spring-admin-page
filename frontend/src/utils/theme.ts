@@ -12,12 +12,12 @@ const colors = {
     smoke1: `#fafafa`,
     white: `#ffffff`,
 
-    primary100: `#4276C9`,
+    primary100: `#4276c9`,
     primary50: `#4285f4`,
-    skyblue: `#00aae6`,
-    green: `#22cc88`,
+    skyblue: `#009ee3`,
+    green: `#19aa6a`,
     yellow: `#ffc134`,
-    red: `#ff5555`,
+    red: `#cd392d`,
     pink: `#ed4c6b`,
 };
 

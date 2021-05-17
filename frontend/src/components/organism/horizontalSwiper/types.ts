@@ -4,11 +4,10 @@ export type BreakPoint = '240' | '320' | '480' | '720' | '960';
 
 export type SwiperMovies = {
     currentTime: number;
-    movieSet: SwiperCategory[];
+    categories: SwiperCategory[];
 };
 
 export type SwiperCategory = {
-    categoryId: number;
     categoryName: string;
     movies: SwiperMovieInfo[];
 };
