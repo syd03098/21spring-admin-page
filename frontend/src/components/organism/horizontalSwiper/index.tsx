@@ -3,23 +3,34 @@ import movieMock from '@utils/jsons/movies.json';
 import styled from 'styled-components';
 import { SwiperMovies } from '@components/organism/horizontalSwiper/types';
 import HorizontalSwiperRow from '@components/organism/horizontalSwiper/HorizontalSwiperRow';
+import Chat from '@components/atom/icons/Chat';
+import { flexCenter } from '@utils/styleFunctions';
 
 const HorizontalSwiper = (): JSX.Element => {
     // todo: store 를 하나 마련하자 entranceInfoStore?
     const swiperMovies: SwiperMovies = movieMock as SwiperMovies;
     return (
         <Article>
-            {swiperMovies.movieSet.map((movieCategory) => (
-                <Section key={`section-${movieCategory.categoryId}`}>
-                    <Contents>
-                        <SectionTopArea>
-                            <h2>{movieCategory.categoryName}</h2>
-                            <p>{new Date(swiperMovies.currentTime).toLocaleTimeString()} 기준</p>
-                        </SectionTopArea>
-                        <HorizontalSwiperRow movieCategory={movieCategory} />
-                    </Contents>
-                </Section>
-            ))}
+            {swiperMovies.categories.map(
+                (category) =>
+                    category.movies.length !== 0 && (
+                        <Section key={`section-${category.categoryName}`}>
+                            <Contents>
+                                <TopArea>
+                                    <h2>{category.categoryName}</h2>
+                                    <p>{new Date(swiperMovies.currentTime).toLocaleTimeString()} 기준</p>
+                                </TopArea>
+                                <HorizontalSwiperRow movieCategory={category} />
+                            </Contents>
+                        </Section>
+                    ),
+            )}
+            {swiperMovies.categories.length === 0 && (
+                <NoMovies>
+                    <Chat />
+                    <p>등록된 영화가없습니다.</p>
+                </NoMovies>
+            )}
         </Article>
     );
 };
@@ -44,16 +55,25 @@ const Contents = styled.div`
     position: relative;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 16px;
+    padding: 0 8px;
+
+    @media (min-width: 480px) {
+        padding: 0 10px;
+    }
+
+    @media (min-width: 720px) {
+        padding: 0 12px;
+    }
 `;
 
-const SectionTopArea = styled.div`
+const TopArea = styled.div`
     padding: 0 5px;
 
     h2 {
         padding: 16px 0 4px 0;
         margin: 0;
         color: ${({ theme }) => theme.black80};
+        letter-spacing: -0.8px;
     }
 
     p {
@@ -62,6 +82,18 @@ const SectionTopArea = styled.div`
         color: ${({ theme }) => theme.black60};
         margin: 0;
         padding: 0.5rem 0 0.75rem 0;
+    }
+`;
+
+const NoMovies = styled.div`
+    ${flexCenter};
+    flex-direction: column;
+    height: calc(100vh - 120px);
+
+    p {
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: -0.8px;
     }
 `;
 

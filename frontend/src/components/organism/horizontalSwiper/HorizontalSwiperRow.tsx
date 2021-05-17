@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { BreakPoint, SwiperCategory } from '@components/organism/horizontalSwiper/types';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -7,7 +7,6 @@ import { useCss } from 'react-use';
 import HorizontalDirectionButton from '@components/organism/horizontalSwiper/HorizontalDirectionButton';
 import HorizontalSwiperSlide from '@components/organism/horizontalSwiper/HorizontalSwiperSlide';
 import { debounce } from 'throttle-debounce';
-import Warning from '@components/atom/icons/Warning';
 import ViewGrade from '@components/molecule/viewGrade';
 
 interface Props {
@@ -29,7 +28,6 @@ const HorizontalSwiperRow = ({ movieCategory }: Props): JSX.Element => {
         position: 'relative',
     });
     // todo: useModal 과 연결하여 영화정보, 영화상영정보 띄우기
-    // const { appendModal, modalOverlayRef, Modal } = useModal();
 
     const updateSwiperState = useCallback((swiper: SwiperType) => {
         setSwiperComponent(swiper);
@@ -72,9 +70,26 @@ const HorizontalSwiperRow = ({ movieCategory }: Props): JSX.Element => {
         }
     }, [swiperComponent, swiperInfo, stepWidth]);
 
+    const swiperDirectionButtons = useMemo(
+        () => (
+            <>
+                {swiperInfo && (
+                    <>
+                        {!swiperInfo.isBeginning && (
+                            <HorizontalDirectionButton direction="left" onClickHandler={prevSlideHandler} />
+                        )}
+                        {!swiperInfo.isEnd && (
+                            <HorizontalDirectionButton direction="right" onClickHandler={nextSlideHandler} />
+                        )}
+                    </>
+                )}
+            </>
+        ),
+        [nextSlideHandler, prevSlideHandler, swiperInfo],
+    );
+
     return (
-        /* eslint-disable react/jsx-fragments */
-        <React.Fragment>
+        <>
             <HorizontalContainer
                 slidesPerView="auto"
                 speed={250}
@@ -109,36 +124,13 @@ const HorizontalSwiperRow = ({ movieCategory }: Props): JSX.Element => {
                         <HorizontalSwiperSlide
                             label={movie.movieName}
                             imgUrl={movie.moviePosterUrl}
-                            grade={
-                                <React.Fragment>
-                                    {swiperComponent && (
-                                        <ViewGrade viewGrade={movie.movieGrade} style={{ top: '5px', right: '8px' }} />
-                                    )}
-                                </React.Fragment>
-                            }
+                            grade={<ViewGrade viewGrade={movie.movieGrade} style={{ top: '5px', right: '8px' }} />}
                         />
                     </SwiperSlide>
                 ))}
-                {!movieCategory.movies ||
-                    (movieCategory.movies.length === 0 && (
-                        <NotFound>
-                            <Warning size={24} />
-                            <p>에러가 발생했습니다.</p>
-                            <p>증상이 계속되면 고객센터로 문의해주세요.</p>
-                        </NotFound>
-                    ))}
             </HorizontalContainer>
-            {swiperComponent && swiperInfo && (
-                <>
-                    {!swiperInfo.isBeginning && (
-                        <HorizontalDirectionButton direction="left" onClickHandler={prevSlideHandler} />
-                    )}
-                    {!swiperInfo.isEnd && (
-                        <HorizontalDirectionButton direction="right" onClickHandler={nextSlideHandler} />
-                    )}
-                </>
-            )}
-        </React.Fragment>
+            {swiperDirectionButtons}
+        </>
     );
 };
 
@@ -146,27 +138,6 @@ const HorizontalContainer = styled(Swiper)`
     position: relative;
     overflow: hidden;
     white-space: nowrap;
-`;
-
-const NotFound = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: left;
-    flex: 1 0 auto;
-    padding: 1rem 0;
-    background-color: ${({ theme }) => theme.smoke1};
-    border-radius: 8px;
-
-    p {
-        font-size: 14px;
-        margin: 4px 0;
-        color: ${({ theme }) => theme.black80};
-    }
-
-    svg {
-        color: ${({ theme }) => theme.black80};
-    }
 `;
 
 export default HorizontalSwiperRow;
