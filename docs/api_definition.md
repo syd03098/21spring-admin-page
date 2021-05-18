@@ -353,13 +353,6 @@
     "email": "dlawnsdud@gmail.com",
   }
   ```
-### /user/profile?email={email} GET
-   * 비회원인 경우
-  ```json
-  {
-    "email": "dlawnsdud@gmail.com"
-  }
-  ```  
 
 ### /user/tickets GET
   * 회원인경우
@@ -374,6 +367,7 @@
   * 비회원인경우
   ```json  
   {
+     "email": "dlawnsdud@gmail.com",
      "tickets": [],
      "canceled": []
   }
@@ -389,11 +383,7 @@
   ```
 
 ### /user/tickets/{ticket\_id} DELETE
-  ```json
-  "request": {
-    "ticketId": "2002"
-  }
-  ```
+  
 * 리퀘스트 성공시 예매 취소
 * 리퀘스트 실패시 거절
   * 없는 ticketId 거나
