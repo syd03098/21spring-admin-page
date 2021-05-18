@@ -1,16 +1,8 @@
 ## * 유저 /auth
 
-### /auth/info GET
+### /auth/validation GET
+* 토큰을 보내서 토큰이 유효하면 200, 유효하지않거나 없으면 401을 보내줌
 * 200 OK
-  ```json
-  "response": {
-    "userId": "dlawnsdud",
-    "userName": "임준영",
-    "email": "dlawnsdud@gmail.com",
-    "tickets": 1,
-    "isAdmin": true
-  }
-  ```
 * 401 Unauthorized
 
 ### /auth/logout POST
@@ -23,8 +15,10 @@
     "userId": "dlawnsdud",
     "password": "dlawnsdud1234"
   }
-  
+  ```
+
   * 200 OK
+  ```json
   "response": {
     "userId": "dlawnsdud",
     "userName": "임준영",
@@ -34,14 +28,14 @@
   }
   ```
 
-* 400 Bad Request
+  * 400 Bad Request
   ```json
   "response": {
     "아이디는 영문, 숫자, 언더바, 점만 올 수 있습니다."
   }
   ```
 
-* 404 Not Found
+  * 404 Not Found
   ```json
   "response": {
     "아이디 또는 패스워드를 다시 확인해주세요." 
@@ -84,7 +78,6 @@
     "이미 존재하는 아이디입니다."
   }
   ```
-
 
 ## * 영화 /movies
 
@@ -152,7 +145,7 @@
   ```
 
 ### /movies POST
-* 성공
+  * 200 OK
   ```json
   "request": {
     "movieName": "영화제목",
@@ -188,9 +181,6 @@
   ```
 
   * 404 Not Found
-
-  * showTotalCount 는 여기서는 필요없음
-
 
 ## * 상영 /show
 
@@ -345,12 +335,47 @@
 
 
 ## * 유저 정보 /user
-
 ### /user/point GET
+  * 쿠키를 보내서 쿠키가 valid 하면 사용자의 포인트를 읽어옴
   * 200 OK
   ```json
   "response": {
     "point": 4000
+  }
+  ```
+
+### /user/profile GET
+   * 회원인경우
+  ```json
+  {
+    "userId": "dlawnsdud",
+    "userName": "임준영",
+    "email": "dlawnsdud@gmail.com",
+  }
+  ```
+### /user/profile?email={email} GET
+   * 비회원인 경우
+  ```json
+  {
+    "email": "dlawnsdud@gmail.com"
+  }
+  ```  
+
+### /user/tickets GET
+  * 회원인경우
+  ```json
+  {
+    "tickets": [],
+    "canceled": []
+  }
+  ```
+
+### /user/tickets?email={email} GET
+  * 비회원인경우
+  ```json  
+  {
+     "tickets": [],
+     "canceled": []
   }
   ```
 
@@ -362,31 +387,6 @@
     "newPassword": "password"
   }
   ```
-
-### /user/tickets GET
-  * 200 OK
-  ```json
-  "response": {
-    "tickets": [
-      {
-        "유저가 예매한 티켓에 관한 정보"
-      }
-    ]
-  }
-  ```
-  * 401 Unauthorized
-### /user/tickets?type=canceled GET
-  * 200 OK
-  ```json
-  "response": {
-    "tickets": [
-      {
-        "유저가 취소한 티켓에 관한 정보"
-      }
-    ]
-  }
-  ```
-  * 401 Unauthorized
 
 ### /user/tickets/{ticket\_id} DELETE
   ```json
