@@ -32,7 +32,6 @@ class UsrSerializer(serializers.Serializer):
     userId = serializers.CharField(max_length=16)
     userName = serializers.CharField(max_length=30)
     email = serializers.CharField(max_length=50)
-    tickets = serializers.IntegerField()
     isAdmin = serializers.BooleanField()
 
 
@@ -42,7 +41,7 @@ class MovieCreateSerializer(serializers.Serializer):
     movieDescription = serializers.CharField(max_length=4000, required=False)
     movieDistribute = serializers.CharField(max_length=60, required=False)
     movieRelease = serializers.DateField(required=False)
-    movieGen = serializers.IntegerField(required=False)
+    movieGen = serializers.CharField(max_length=60, required=False)
     directors = serializers.CharField(max_length=60, required=False)
     actors = serializers.CharField(max_length=300, required=False)
     moviePosterUrl = serializers.CharField(max_length=500, required=False)
@@ -61,7 +60,7 @@ class MovieRetrieveSerializer(serializers.Serializer):
     movieDescription = serializers.CharField(max_length=4000, required=False)
     movieDistribute = serializers.CharField(max_length=60, required=False)
     movieRelease = serializers.DateField(required=False)
-    movieGen = serializers.IntegerField(required=False)
+    movieGen = serializers.CharField(max_length=60, required=False)
     directors = serializers.CharField(max_length=60, required=False)
     actors = serializers.CharField(max_length=300, required=False)
     moviePosterUrl = serializers.CharField(max_length=500, required=False)
@@ -80,6 +79,12 @@ class TheaterCreateSerializer(serializers.Serializer):
 
 class UserPointSerializer(serializers.Serializer):
     point = serializers.IntegerField()
+
+
+class UserProfileSerializer(serializers.Serializer):
+    userId = serializers.CharField(max_length=16)
+    userName = serializers.CharField(max_length=30)
+    email = serializers.CharField(max_length=50)
 
 
 class UserPasswordSerializer(serializers.Serializer):
