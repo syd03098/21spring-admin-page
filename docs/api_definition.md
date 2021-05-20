@@ -358,52 +358,52 @@
   * 회원인경우
   ```json
   {
-     "tickets":[
+     "tickets": [
         {
-           "ticketId":353948,
-           "ticketState":"취소가능",
-           "theaterName":"8관",
-           "movieName":"센과 치히로의 행방불명",
-           "showStartTime":"2021-05-21 14:20:00",
-           "showCount":3,
-           "seatsList":[
+           "payId": 353948,
+           "payState": "1: 진행중, 2: 성공, 3: 실패 (INTEGER)",
+           "theaterName": "8관",
+           "movieName": "센과 치히로의 행방불명",
+           "showStartTime": "2021-05-21 14:20:00",
+           "showCount": 3,
+           "seatsList": [
               {
-                 "seatRow":8,
-                 "seatCol":8,
-                 "customerType":"성인"
+                 "seatRow": 8,
+                 "seatCol": 8,
+                 "customerType": 1
               },
               {
-                 "seatRow":8,
-                 "seatCol":9,
-                 "customerType":"청소년"
+                 "seatRow": 8,
+                 "seatCol": 9,
+                 "customerType": 2
               }
            ],
-           "payDate":"2021-05-18 12:51:48",
-           "payPrice":14000
+           "payDate": "2021-05-18 12:51:48",
+           "payPrice": 14000
         }
      ],
-     "canceled":[
+     "canceled": [
         {
-           "ticketId":353940,
-           "ticketState":"취소됨",
-           "theaterName":"5관",
-           "movieName":"이웃집 토토로",
-           "showStartTime":"2021-05-21 11:50:00",
-           "showCount":2,
-           "seatsList":[
+           "payId": 353940,
+           "payState": "4: 취소, 5: 관리자가 취소 (INTEGER)",
+           "theaterName": "5관",
+           "movieName": "이웃집 토토로",
+           "showStartTime": "2021-05-21 11:50:00",
+           "showCount": 2,
+           "seatsList": [
               {
-                 "seatRow":8,
-                 "seatCol":8,
-                 "customerType":"성인"
+                 "seatRow": 8,
+                 "seatCol": 8,
+                 "customerType": 1
               },
               {
-                 "seatRow":8,
-                 "seatCol":9,
-                 "customerType":"청소년"
+                 "seatRow": 8,
+                 "seatCol": 9,
+                 "customerType": 2
               }
            ],
-           "payDate":"2021-05-18 11:48:21",
-           "payPrice":14000
+           "payDate": "2021-05-18 11:48:21",
+           "payPrice": 14000
         }
      ]
   }
@@ -416,72 +416,50 @@
     "email":"dlawnsdud@gmail.com",
     "tickets":[
       {
-        "ticketId":353948,
-        "ticketState":"취소가능",
-        "theaterName":"8관",
-        "movieName":"센과 치히로의 행방불명",
-        "showStartTime":"2021-05-21 14:20:00",
-        "showCount":3,
-        "seatsList":[
-          {
-            "seatRow":8,
-            "seatCol":8,
-            "customerType":"성인"
-          },
-          {
-            "seatRow":8,
-            "seatCol":9,
-            "customerType":"청소년"
-          }
-        ],
-        "payDate":"2021-05-18 12:51:48",
-        "payPrice":14000
-      },
-      {
-        "ticketId":353945,
-        "ticketState":"취소가능",
-        "theaterName":"8관",
-        "movieName":"센과 치히로의 행방불명",
-        "showStartTime":"2021-05-21 14:20:00",
-        "showCount":3,
-        "seatsList":[
-          {
-            "seatRow":8,
-            "seatCol":8,
-            "customerType":"성인"
-          },
-          {
-            "seatRow":8,
-            "seatCol":9,
-            "customerType":"청소년"
-          }
-        ],
-        "payDate":"2021-05-18 12:51:48",
-        "payPrice":14000
+         "payId": 353948,
+         "payState": "1: 진행중, 2: 성공, 3: 실패 (INTEGER)",
+         "theaterName": "8관",
+         "movieName": "센과 치히로의 행방불명",
+         "showStartTime": "2021-05-21 14:20:00",
+         "showCount": 3,
+         "seatsList": [
+            {
+               "seatRow": 8,
+               "seatCol": 8,
+               "customerType": 1
+            },
+            {
+               "seatRow": 8,
+               "seatCol": 9,
+               "customerType": 2
+            }
+         ],
+         "payDate": "2021-05-18 12:51:48",
+         "payPrice": 14000
       }
     ],
     "canceled":[
       {
-        "ticketId":353940,
-        "ticketState":"취소됨",
-        "theaterName":"5관",
-        "movieName":"이웃집 토토로",
-        "showStartTime":"2021-05-21 11:50:00",
-        "showCount":2,
-        "seatsList":[
-          {
-            "seatRow":8,
-            "seatCol":8,
-            "customerType":"성인"
-          },
-          {
-            "seatRow":8,
-            "seatCol":9,
-            "customerType":"청소년"
-          }
-        ],
-        "payDate":"2021-05-18 11:48:21",
-        "payPrice":14000
+         "payId": 353940,
+         "payState": "4: 취소, 5: 관리자가 취소 (INTEGER)",
+         "theaterName": "5관",
+         "movieName": "이웃집 토토로",
+         "showStartTime": "2021-05-21 11:50:00",
+         "showCount": 2,
+         "seatsList": [
+            {
+               "seatRow": 8,
+               "seatCol": 8,
+               "customerType": 1
+            },
+            {
+               "seatRow": 8,
+               "seatCol": 9,
+               "customerType": 2
+            }
+         ],
+         "payDate": "2021-05-18 11:48:21",
+         "payPrice": 14000
       }
     ]
   }
