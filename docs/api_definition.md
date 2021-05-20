@@ -23,7 +23,6 @@
     "userId": "dlawnsdud",
     "userName": "임준영",
     "email": "dlawnsdud@gmail.com",
-    "tickets": 1,
     "isAdmin": true
   }
   ```
@@ -60,7 +59,6 @@
       "userId": "idid",
       "userName": "임준영",
       "email": "dlawnsdud@gmail.com",
-      "tickets": 0,
       "isAdmin": false
   }
   ```

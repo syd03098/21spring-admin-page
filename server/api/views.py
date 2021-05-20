@@ -14,7 +14,6 @@ from api.model.models import (
     Movie,
     Theater,
     TheaterType,
-    Ticket,
     Usr,
 )
 
@@ -26,6 +25,7 @@ from .serializers import (
     UsrLoginSerializer,
     UsrSerializer,
     UserPointSerializer,
+    UserProfileSerializer,
     UserPasswordSerializer,
 )
 
@@ -41,40 +41,20 @@ class AuthViewSet(viewsets.ViewSet):
     #         return UsrLoginSerializer
     #     return serializers.Serializer
 
-    @swagger_auto_schema(responses={200: UsrSerializer})
     @action(detail=False, methods=['get'])
-    def info(self, request, *args, **kwargs):
+    def validation(self, request, *args, **kwargs):
         userId = get_user(request)
         if not userId:
             return HttpResponse(status=401)
 
         try:
-            with transaction.atomic():
-                account = Usr.objects.raw(
-                    f'SELECT * FROM (SELECT * FROM USR WHERE USR_ID=\'{userId}\') WHERE ROWNUM=1;'
-                )[0]
-                tickets = len(
-                    Ticket.objects.raw(
-                        f'SELECT TICKET_ID FROM TICKET WHERE USR_ID=\'{userId}\';'
-                    ))
+            Usr.objects.raw(
+                f'SELECT * FROM (SELECT * FROM USR WHERE USR_ID=\'{userId}\') WHERE ROWNUM=1;'
+            )[0]
         except IndexError:
             return HttpResponse(status=401)
         else:
-            email = account.usr_email
-            userName = account.usr_name
-            isAdmin = account.usr_type == 0
-            res = {
-                'userId': userId,
-                'username': userName,
-                'email': email,
-                'tickets': tickets,
-                'isAdmin': isAdmin
-            }
-            token = jwt.encode(res, settings.SECRET_KEY,
-                               settings.ALGORITHM).decode('utf-8')
-            response = JsonResponse(res, status=200)
-            response.set_cookie('jwt', token, httponly=False)
-            return response
+            return HttpResponse(status=200)
 
     @swagger_auto_schema(request_body=UsrCreateSerializer,
                          responses={201: UsrSerializer})
@@ -102,7 +82,6 @@ class AuthViewSet(viewsets.ViewSet):
                     'userId': userId,
                     'userName': userName,
                     'email': email,
-                    'tickets': 0,
                     'isAdmin': False
                 }
                 token = jwt.encode(res, settings.SECRET_KEY,
@@ -125,14 +104,9 @@ class AuthViewSet(viewsets.ViewSet):
 
         response = Response(status=401, data='아이디 또는 패스워드를 다시 확인해주세요.')
         try:
-            with transaction.atomic():
-                account = Usr.objects.raw(
-                    f'SELECT * FROM (SELECT * FROM USR WHERE USR_ID=\'{userId}\') WHERE ROWNUM=1;'
-                )[0]
-                tickets = len(
-                    Ticket.objects.raw(
-                        f'SELECT TICKET_ID FROM TICKET WHERE USR_ID=\'{userId}\';'
-                    ))
+            account = Usr.objects.raw(
+                f'SELECT * FROM (SELECT * FROM USR WHERE USR_ID=\'{userId}\') WHERE ROWNUM=1;'
+            )[0]
         except IndexError:
             return response
         else:
@@ -145,7 +119,6 @@ class AuthViewSet(viewsets.ViewSet):
                 'userId': userId,
                 'userName': userName,
                 'email': email,
-                'tickets': tickets,
                 'isAdmin': isAdmin
             }
             token = jwt.encode(res, settings.SECRET_KEY,
@@ -196,6 +169,8 @@ class MovieViewSet(viewsets.ViewSet):
         movie_name = request.data.get('movieName')
         movie_time = request.data.get('movieTime')  # Nullable
         movie_desc = request.data.get('movieDescription')  # Nullable
+        if movie_desc:
+            movie_desc = movie_desc.replace("'", "''")
         movie_distr = request.data.get('movieDistribute')  # Nullable
         movie_release = request.data.get('movieRelease')  # Nullable
         movie_gen = request.data.get('movieGen')  # Nullable
@@ -212,7 +187,7 @@ class MovieViewSet(viewsets.ViewSet):
                                 + (f"'{movie_desc}', " if movie_desc else "NULL, ") \
                                 + (f"'{movie_distr}', " if movie_distr else "NULL, ") \
                                 + (f"'{movie_release}', " if movie_release else "NULL, ") \
-                                + (f"{movie_gen}, " if movie_gen else "NULL, ") \
+                                + (f"'{movie_gen}', " if movie_gen else "NULL, ") \
                                 + (f"0, ") \
                                 + (f"'{directors}', " if directors else "NULL, ") \
                                 + (f"'{actors}', " if actors else "NULL, ") \
@@ -359,6 +334,28 @@ class UserViewSet(viewsets.ViewSet):
         else:
             point = account.usr_point
             res = {'point': point}
+            return JsonResponse(res, status=200)
+
+    # }}}
+
+    # {{{ profile
+    @swagger_auto_schema(responses={200: UserProfileSerializer})
+    @action(detail=False, methods=['get'])
+    def profile(self, request, *args, **kwargs):
+        userId = get_user(request)
+        if not userId:
+            return HttpResponse(status=401)
+
+        try:
+            account = Usr.objects.raw(
+                f'SELECT * FROM (SELECT * FROM USR WHERE USR_ID=\'{userId}\') WHERE ROWNUM=1;'
+            )[0]
+        except IndexError:
+            return HttpResponse(status=401)
+        else:
+            userName = account.usr_name
+            email = account.usr_email
+            res = {'userId': userId, 'username': userName, 'email': email}
             return JsonResponse(res, status=200)
 
     # }}}
