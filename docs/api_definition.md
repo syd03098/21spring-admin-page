@@ -182,7 +182,7 @@
 
   * 404 Not Found
 
-## * 상영 /show
+## * 상영 /shows
 
 ### /shows?movie\_id={movie\_id} GET
 * 메인화면에서 <영화 예매> 선택시 예매 가능한 상영 일정 불러오기
