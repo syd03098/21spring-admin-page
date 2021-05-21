@@ -2,23 +2,21 @@ import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { flexCenter, fullDisplay } from '@utils/styleFunctions';
 import Button from '@components/atom/Button';
-import { useModal } from '@stores/ModalStore';
-import Information from '@components/organism/modal/information';
-import { requestMovieInfo } from '@utils/api/movieInfo';
-import { useToast } from '@stores/ToastStore';
-import movieInfo from '@utils/jsons/movie_1.json';
 
 interface Props {
-    id: number;
     imgUrl: string;
     alt: string;
+    popUpModalInfoHandler: () => void;
+    popUpModalTicketsHandler: () => void;
 }
 
-const HorizontalSwiperThumbnail = ({ id, imgUrl, alt }: Props): JSX.Element => {
+const HorizontalSwiperThumbnail = ({
+    imgUrl,
+    alt,
+    popUpModalInfoHandler,
+    popUpModalTicketsHandler,
+}: Props): JSX.Element => {
     const [isHovered, setHovered] = useState(false);
-    const { appendModal } = useModal();
-    const { appendToast } = useToast();
-
     const openOverlay = useCallback(() => {
         setHovered(true);
     }, []);
@@ -27,16 +25,6 @@ const HorizontalSwiperThumbnail = ({ id, imgUrl, alt }: Props): JSX.Element => {
         setHovered(false);
     }, []);
 
-    const popUpModalInfoHandler = useCallback(async () => {
-        return requestMovieInfo(id)
-            .then((res) => {
-                appendModal(<Information data={res} />, 'both');
-            })
-            .catch((_) => {
-                appendModal(<Information data={movieInfo} />, 'both');
-            });
-    }, [appendModal, id]);
-
     return (
         <Container onMouseEnter={openOverlay} onMouseLeave={closeOverlay} onMouseOver={openOverlay}>
             <ThumbnailArea onClick={popUpModalInfoHandler}>
@@ -44,12 +32,7 @@ const HorizontalSwiperThumbnail = ({ id, imgUrl, alt }: Props): JSX.Element => {
             </ThumbnailArea>
             {isHovered && (
                 <Overlay>
-                    <Button
-                        type="white"
-                        onClick={() => {
-                            console.log('예매하기');
-                        }}
-                    >
+                    <Button type="white" onClick={popUpModalTicketsHandler}>
                         예매하기
                     </Button>
                     <Button
