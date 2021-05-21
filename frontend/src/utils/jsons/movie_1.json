@@ -1,12 +1,13 @@
 {
-  "movieId": "1",
+  "movieId": 1,
   "movieName": "크루즈 패밀리: 뉴 에이지",
-  "movieGrade": "전체이용가",
+  "movieGrade": "00",
   "movieDistribute": "21세기폭스",
   "movieRelease": "2021-05-01",
-  "Director": ["조엘 크로포드"],
-  "actors": ["엠마 스톤", "라이언 레이놀즈", "니콜라스 케이지", "캐서린 키너", "캣 데닝스","레슬리 만", "클로리스 리치먼", "클락 듀크"],
+  "director": "조엘 크로포드",
+  "actors": "엠마 스톤, 라이언 레이놀즈, 니콜라스 케이지, 캐서린 키너, 캣 데닝스, 레슬리 만, 클로리스 리치먼, 클락 듀크",
   "movieGen": "가족",
-  "moviePosterUrl": "https://an2-img.amz.wtchn.net/image/v2/9d7f660d5882954658cdf5332d42455d.jpg?jwt=ZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKaVlXTnJaM0p2ZFc1a0lqcDdJbklpT2pJMU5Td2laeUk2TWpVMUxDSmlJam95TlRWOUxDSmpjbTl3SWpwMGNuVmxMQ0pvWldsbmFIUWlPamN3TUN3aWNHRjBhQ0k2SWk5Mk1pOXpkRzl5WlM5cGJXRm5aUzh4TmpFMk5EZzJNRFE0TmpZMk5UTTNNalF3SWl3aWNYVmhiR2wwZVNJNk9EQXNJbmRwWkhSb0lqbzBPVEI5LjlPRkxnVWNuUkRXWnU2M2JKU1VxN1VndnozQ3V5TWVON0VGN00tekZ1YmM",
+  "movieTime": 95,
+  "moviePosterUrl": "https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202105/17201_103_1.jpg",
   "movieDescription": "인류 최초 가족들의 새로운 세상을 향한\n스펙터클한 모험이 시작된다!\n\n동굴을 떠나 새로운 거주지를 찾아 나선 크루즈 패밀리. 우여곡절 끝에 찾은 완벽한 트리 하우스에서 진화된 인류, 베터맨 패밀리와 마주한다. 도구를 사용하고 ‘집’에서 안전하게 살아가는 지능형 베터맨 패밀리와 맨손으로 사냥하고 자연과 함께 살아가는 본능형 크루즈 패밀리는 너무나도 다른 삶의 방식으로 사사건건 부딪힌다.\n\n반면 처음으로 여자 사람친구를 만난 ‘이프’와 ‘던’은 가족들과 달리 우정을 쌓아가지만 점점 두 가족에게 예상치 못한 위협이 닥쳐오는데…"
 }
