@@ -1,5 +1,7 @@
+import datetime
 import hashlib
 import jwt
+import time
 
 from core.user import (get_user, is_admin)
 from django.conf import settings
@@ -12,6 +14,7 @@ from rest_framework.response import Response
 
 from api.model.models import (
     Movie,
+    Show,
     Theater,
     TheaterType,
     Usr,
@@ -20,6 +23,7 @@ from api.model.models import (
 from .serializers import (
     MovieRetrieveSerializer,
     MovieCreateSerializer,
+    ShowCreateSerializer,
     TheaterCreateSerializer,
     UsrCreateSerializer,
     UsrLoginSerializer,
@@ -249,6 +253,82 @@ class MovieViewSet(viewsets.ViewSet):
         with connection.cursor() as cursor:
             cursor.execute(f"DELETE FROM MOVIE WHERE MOVIE_ID={movie_id}")
         return HttpResponse(status=204)
+
+    # }}}
+
+
+# }}}
+
+
+# {{{ ShowViewSet
+class ShowViewSet(viewsets.ViewSet):
+
+    # {{{ create
+    @swagger_auto_schema(request_body=ShowCreateSerializer,
+                         responses={201: None})
+    @transaction.atomic
+    def create(self, request, *args, **kwargs):
+        if not is_admin(request):
+            return HttpResponse(status=401)
+
+        serializer = ShowCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        movie_id = request.data.get('movieId')
+        theater_id = request.data.get('theaterId')
+        show_start_time = request.data.get('showStartTime')
+
+        try:
+            movie = Movie.objects.raw(
+                f"SELECT * FROM (SELECT * FROM MOVIE WHERE MOVIE_ID={movie_id} AND " \
+                        f"MOVIE_RELEASE <= TO_DATE('{show_start_time}', " \
+                        "'YYYY-MM-DD HH24:MI:SS')) WHERE ROWNUM=1;"
+            )[0]
+            Theater.objects.raw(
+                f"SELECT * FROM (SELECT * FROM THEATER WHERE THEATER_ID={theater_id}) WHERE ROWNUM=1;"
+            )[0]
+        except IndexError:
+            return HttpResponse(status=400)
+
+        def delta(movie_time: datetime.time) -> datetime.timedelta:
+            return datetime.datetime.combine(datetime.date.min,
+                                             movie_time) - datetime.datetime.min
+
+        start_time_dt = datetime.datetime.strptime(show_start_time,
+                                                   '%Y-%m-%d %H:%M:%S')
+        movie_time_delta = delta(movie.movie_time)
+        show_end_time = start_time_dt + movie_time_delta
+
+        yesterday = start_time_dt - datetime.timedelta(1)
+        tomorrow = start_time_dt + datetime.timedelta(1)
+
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f"SELECT S.SHOW_START_TIME, M.MOVIE_TIME FROM SHOW S, MOVIE M " \
+                        f"WHERE S.THEATER_ID={theater_id} AND "
+                        f"TO_DATE('{yesterday}', 'YYYY-MM-DD HH24:MI:SS') < S.SHOW_START_TIME AND " \
+                        f"TO_DATE('{tomorrow}', 'YYYY-MM-DD HH24:MI:SS') > S.SHOW_START_TIME AND "
+                        f"S.MOVIE_ID=M.MOVIE_ID;")
+            for show in cursor.fetchall():
+                s_start_dt = show[0]
+                s_end_dt = show[0] + delta(show[1].time())
+                if (s_start_dt < start_time_dt and start_time_dt < s_end_dt
+                   ) or (start_time_dt <= s_start_dt and
+                         s_start_dt < show_end_time):
+                    return HttpResponse(status=400, content="상영시간이 겹칩니다.")
+
+        show_count = movie.show_total_count + 1
+        with connection.cursor() as cursor:
+            cursor.execute(
+                    "INSERT INTO SHOW " \
+                            f"VALUES (SHOW_SEQ.NEXTVAL, {theater_id}, " \
+                            f"'{show_start_time}', {show_count}, {movie_id});"
+                    )
+            cursor.execute(
+                        "UPDATE MOVIE SET " \
+                                f"SHOW_TOTAL_COUNT={show_count} WHERE MOVIE_ID={movie_id};"
+                    )
+        return HttpResponse(status=201)
 
     # }}}
 
