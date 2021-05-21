@@ -67,6 +67,13 @@ class MovieRetrieveSerializer(serializers.Serializer):
     movieGrade = serializers.CharField(max_length=2, required=False)
 
 
+class ShowCreateSerializer(serializers.Serializer):
+    movieId = serializers.IntegerField()
+    theaterId = serializers.IntegerField()
+    showStartTime = serializers.DateTimeField(
+        input_formats=["%Y-%m-%d %H:%M:%S"])
+
+
 class TheaterCreateSerializer(serializers.Serializer):
     theaterType = serializers.IntegerField()
     theaterRow = serializers.IntegerField(required=False)

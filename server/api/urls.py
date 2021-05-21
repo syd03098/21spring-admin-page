@@ -4,6 +4,7 @@ from rest_framework import routers
 from api.views import (
     AuthViewSet,
     MovieViewSet,
+    ShowViewSet,
     TheaterViewSet,
     UserViewSet,
 )
@@ -14,6 +15,7 @@ auth = routers.DefaultRouter(trailing_slash=False)
 auth.register(r'', AuthViewSet, basename='auth')
 
 router.register(r'movies', MovieViewSet, basename='movie')
+router.register(r'shows', ShowViewSet, basename='show')
 router.register(r'theaters', TheaterViewSet, basename='theater')
 router.register(r'user', UserViewSet, basename='user')
 
