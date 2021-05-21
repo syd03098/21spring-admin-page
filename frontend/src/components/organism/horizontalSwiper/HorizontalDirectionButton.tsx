@@ -43,11 +43,11 @@ const ArrowArea = styled.div`
     padding: 0 4px;
     &.left {
         top: 0;
-        left: 0;
+        left: -8px;
     }
     &.right {
         top: 0;
-        right: 0;
+        right: -8px;
     }
 `;
 
