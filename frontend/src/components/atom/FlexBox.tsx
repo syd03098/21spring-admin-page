@@ -2,7 +2,7 @@ import React, { CSSProperties, forwardRef, MouseEventHandler, PropsWithChildren 
 import styled from 'styled-components';
 
 type direction = 'column' | 'row';
-type Justify = 'center' | 'space-around' | 'space-between';
+type Justify = 'center' | 'space-around' | 'space-between' | 'left' | 'right';
 type Align = 'stretch' | 'center' | 'flex-start' | 'flex-end';
 
 interface Props {

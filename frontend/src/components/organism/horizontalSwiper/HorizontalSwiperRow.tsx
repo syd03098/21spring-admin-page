@@ -122,6 +122,7 @@ const HorizontalSwiperRow = ({ movieCategory }: Props): JSX.Element => {
                 {movieCategory.movies.map((movie) => (
                     <SwiperSlide key={`slide-${movie.movieId}`} className={slideCss}>
                         <HorizontalSwiperSlide
+                            id={movie.movieId}
                             label={movie.movieName}
                             imgUrl={movie.moviePosterUrl}
                             grade={<ViewGrade viewGrade={movie.movieGrade} style={{ top: '5px', right: '8px' }} />}

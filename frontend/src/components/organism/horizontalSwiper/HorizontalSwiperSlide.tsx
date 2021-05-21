@@ -3,16 +3,17 @@ import styled from 'styled-components';
 import HorizontalSwiperThumbnail from '@components/organism/horizontalSwiper/HorizontalSwiperThumbnail';
 
 interface Props {
+    id: number;
     label: string;
     imgUrl: string;
     grade?: JSX.Element;
 }
 
-const HorizontalSwiperSlide = ({ label, imgUrl, grade }: Props): JSX.Element => {
+const HorizontalSwiperSlide = ({ id, label, imgUrl, grade }: Props): JSX.Element => {
     return (
         <Element>
             <>{grade}</>
-            <HorizontalSwiperThumbnail imgUrl={imgUrl} alt={label} />
+            <HorizontalSwiperThumbnail id={id} imgUrl={imgUrl} alt={label} />
             <TextArea>
                 <p>{label}</p>
             </TextArea>

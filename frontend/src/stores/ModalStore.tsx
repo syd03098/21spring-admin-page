@@ -7,10 +7,10 @@ type responsive = 'desktop' | 'mobile' | 'both';
 
 interface ModalContext {
     isOpen: boolean;
-    modalOverlayRef: MutableRefObject<null>;
+    overlayRef: MutableRefObject<null>;
     appendModal: (contents: JSX.Element, mode: responsive) => void;
     closeModal: () => void;
-    Modal: ({ children }: { children: ReactNode }) => JSX.Element;
+    Portal: ({ children }: { children: ReactNode }) => React.ReactPortal | null;
     contents: JSX.Element | null;
 }
 
@@ -43,22 +43,12 @@ function CreateModalContext(): ModalContext {
         closePortal();
     }, [closePortal]);
 
-    const Modal = useCallback(
-        ({ children }: { children: ReactNode }) => {
-            if (isPortalOpen) {
-                return <Portal>{children}</Portal>;
-            }
-            return <></>;
-        },
-        [Portal, isPortalOpen],
-    );
-
     return {
         isOpen: isPortalOpen,
-        modalOverlayRef: overlayRef,
+        overlayRef,
         appendModal,
         closeModal,
-        Modal,
+        Portal,
         contents,
     };
 }
