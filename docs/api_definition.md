@@ -34,7 +34,7 @@
   }
   ```
 
-  * 404 Not Found
+  * 401 Not Found
   ```json
   "response": {
     "아이디 또는 패스워드를 다시 확인해주세요." 
@@ -349,6 +349,14 @@
     "userId": "dlawnsdud",
     "userName": "임준영",
     "email": "dlawnsdud@gmail.com",
+  }
+  ```
+
+### /user/tickets?count GET
+  * 회원인경우
+  ```json
+  "response": {
+    "count": 3
   }
   ```
 

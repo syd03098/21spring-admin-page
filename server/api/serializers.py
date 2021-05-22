@@ -67,6 +67,23 @@ class MovieRetrieveSerializer(serializers.Serializer):
     movieGrade = serializers.CharField(max_length=2, required=False)
 
 
+class MovieSerializer(serializers.Serializer):
+    movieId = serializers.IntegerField()
+    movieName = serializers.CharField(max_length=60)
+    movieGrade = serializers.CharField(max_length=2)
+    moviePosterUrl = serializers.CharField(max_length=500)
+
+
+class MovieCategorySerializer(serializers.Serializer):
+    categoryName = serializers.CharField()
+    movies = MovieSerializer(many=True)
+
+
+class MovieListSerializer(serializers.Serializer):
+    currentTime = serializers.DateTimeField()
+    categories = MovieCategorySerializer(many=True)
+
+
 class ShowCreateSerializer(serializers.Serializer):
     movieId = serializers.IntegerField()
     theaterId = serializers.IntegerField()
