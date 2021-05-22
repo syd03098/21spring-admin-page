@@ -21,6 +21,7 @@ from api.model.models import (
 )
 
 from .serializers import (
+    MovieListSerializer,
     MovieRetrieveSerializer,
     MovieCreateSerializer,
     ShowCreateSerializer,
@@ -48,20 +49,22 @@ class AuthViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['get'])
     def validation(self, request, *args, **kwargs):
         userId = get_user(request)
+        response = HttpResponse(status=401)
+        response.delete_cookie('jwt')
         if not userId:
-            return HttpResponse(status=401)
+            return response
 
         try:
             Usr.objects.raw(
                 f'SELECT * FROM (SELECT * FROM USR WHERE USR_ID=\'{userId}\') WHERE ROWNUM=1;'
             )[0]
         except IndexError:
-            return HttpResponse(status=401)
+            return response
         else:
             return HttpResponse(status=200)
 
     @swagger_auto_schema(request_body=UsrCreateSerializer,
-                         responses={201: UsrSerializer})
+                         responses={201: None})
     @action(detail=False, methods=['post'])
     def signup(self, request, *args, **kwargs):
         serializer = UsrCreateSerializer(data=request.data)
@@ -90,14 +93,14 @@ class AuthViewSet(viewsets.ViewSet):
                 }
                 token = jwt.encode(res, settings.SECRET_KEY,
                                    settings.ALGORITHM).decode('utf-8')
-                response = JsonResponse(res, status=201)
+                # response = JsonResponse(res, status=201)
+                response = HttpResponse(status=201)
                 response.set_cookie('jwt', token, httponly=False)
                 return response
 
         return Response(status=409, data='이미 존재하는 아이디입니다.')
 
-    @swagger_auto_schema(request_body=UsrLoginSerializer,
-                         responses={200: UsrSerializer})
+    @swagger_auto_schema(request_body=UsrLoginSerializer, responses={200: None})
     @action(detail=False, methods=['post'])
     def login(self, request, *args, **kwargs):
         serializer = UsrLoginSerializer(data=request.data)
@@ -127,7 +130,8 @@ class AuthViewSet(viewsets.ViewSet):
             }
             token = jwt.encode(res, settings.SECRET_KEY,
                                settings.ALGORITHM).decode('utf-8')
-            response = JsonResponse(res, status=200)
+            # response = JsonResponse(res, status=200)
+            response = HttpResponse(status=200)
             response.set_cookie('jwt', token, httponly=False)
             return response
 
@@ -156,9 +160,53 @@ class MovieViewSet(viewsets.ViewSet):
     #         return MovieRetrieveSerializer
     #     return MovieSerializer
 
-    @swagger_auto_schema(auto_schema=None)
+    # {{{ list
+    @swagger_auto_schema(responses={200: MovieListSerializer})
+    # @transaction.atomic
     def list(self, request, *args, **kwargs):
-        return HttpResponse(status=501)
+        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        res = {
+            "currentTime":
+                now,
+            "categories": [{
+                "categoryName": "현재 개봉한 영화",
+                "movies": None
+            }, {
+                "categoryName": "개봉 예정 영화",
+                "movies": None
+            }]
+        }
+        with connection.cursor() as cursor:
+            cursor.execute(
+                    "SELECT DISTINCT M.MOVIE_ID, M.MOVIE_NAME, M.MOVIE_GRADE, M.POSTER_URL " \
+                            "FROM MOVIE M, SHOW S WHERE " \
+                            f"TO_DATE('{now}', 'YYYY-MM-DD HH24:MI:SS') >= M.MOVIE_RELEASE AND " \
+                            f"TO_DATE('{now}', 'YYYY-MM-DD HH24:MI:SS') < S.SHOW_START_TIME AND " \
+                            "M.MOVIE_ID = S.MOVIE_ID;")
+            res["categories"][0]["movies"] = list(
+                map(
+                    lambda m: {
+                        "movieId": m[0],
+                        "movieName": m[1],
+                        "movieGrade": m[2],
+                        "moviePosterUrl": m[3]
+                    }, cursor.fetchall()))
+            cursor.execute(
+                    "SELECT DISTINCT M.MOVIE_ID, M.MOVIE_NAME, M.MOVIE_GRADE, M.POSTER_URL " \
+                            "FROM MOVIE M, SHOW S WHERE " \
+                            f"TO_DATE('{now}', 'YYYY-MM-DD HH24:MI:SS') < M.MOVIE_RELEASE AND " \
+                            "M.MOVIE_ID = S.MOVIE_ID;")
+            res["categories"][1]["movies"] = list(
+                map(
+                    lambda m: {
+                        "movieId": m[0],
+                        "movieName": m[1],
+                        "movieGrade": m[2],
+                        "moviePosterUrl": m[3]
+                    }, cursor.fetchall()))
+        return JsonResponse(res, status=200)
+
+    # }}}
 
     # {{{ create
     @swagger_auto_schema(request_body=MovieCreateSerializer,
