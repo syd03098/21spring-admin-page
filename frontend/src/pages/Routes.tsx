@@ -1,44 +1,44 @@
-import React, { lazy } from 'react';
-import { ModalStoreProvider as ModalProvider } from '@stores/ModalStore';
-import { ToastStoreProvider as ToastProvider } from '@stores/ToastStore';
+import React, { lazy, useState } from 'react';
 import { Route, Switch, BrowserRouter as Router } from 'react-router-dom';
 import ToastList from '@components/molecule/toastList';
-import Modal from '@components/organism/modal';
-import useEffectOnce from 'react-use/esm/useEffectOnce';
+import SharedModal from '@components/organism/modal';
 import { fetchCurrentUserInfo } from '@utils/api/userInfo';
-import { useAuth } from '@stores/AuthStore';
+import Layout from '@components/layouts/DefaultLayout';
+import { useAuth } from '@pages/context';
+import useEffectOnce from 'react-use/esm/useEffectOnce';
+import Loading from '@pages/Loading';
 
-const entrance = lazy(() => import('@pages/entrance'));
 const login = lazy(() => import('@pages/login'));
-const profile = lazy(() => import('@pages/Profile'));
+const entrance = lazy(() => import('@pages/entrance'));
+const profile = lazy(() => import('@pages/profile'));
 
 const Routes = (): JSX.Element => {
-    const { setCurrentUser } = useAuth();
+    const [initialized, setInitialized] = useState<boolean>(false);
+    const { setLogined } = useAuth();
 
     useEffectOnce(() => {
         fetchCurrentUserInfo()
-            .then((res) => {
-                setCurrentUser(res);
+            .then((status) => {
+                if (status === 200) {
+                    setLogined(true);
+                }
             })
-            .catch((_) => {
-                setCurrentUser(null);
-            });
+            .catch((_) => {})
+            .finally(() => setInitialized(true));
     });
-
+    if (!initialized) return <Loading message="Fetching User data..." />;
     return (
         <Router>
-            <ModalProvider>
-                <ToastProvider>
-                    <Switch>
-                        <Route exact path="/" component={entrance} />
-                        <Route exact path="/profile" component={profile} />
-                        <Route exact path="/login" component={login} />
-                        <Route exact path="/create" component={login} />
-                    </Switch>
-                    <ToastList />
-                    <Modal />
-                </ToastProvider>
-            </ModalProvider>
+            <Switch>
+                <Route exact path="/login" component={login} />
+                <Route exact path="/create" component={login} />
+                <Layout>
+                    <Route exact path="/" component={entrance} />
+                    <Route exact path="/profile" component={profile} />
+                </Layout>
+            </Switch>
+            <ToastList />
+            <SharedModal />
         </Router>
     );
 };

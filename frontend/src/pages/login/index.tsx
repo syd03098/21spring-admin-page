@@ -6,15 +6,15 @@ import { StyledWrap, StyledContainer, StyledTitle, StyledDivider, StyledTopHeade
 import UOSIcon from '@components/atom/icons/Uos';
 import { LoginFormData, SignUpFormData } from '@components/molecule/forms/types';
 import { sendLoginRequest, sendSignUpRequest } from '@utils/api/auth';
-import { useAuth } from '@stores/AuthStore';
 import ErrorBlock from '@components/molecule/errorBlock';
+import { useAuth } from '@pages/context';
 
 const Login = (): JSX.Element => {
-    const isLogin = useLocation().pathname === '/login';
-    const history = useHistory();
-    const { setCurrentUser, currentUser, initialized } = useAuth();
     const [error, setError] = useState<string | null>(null);
     const [isDisabled, setDisabled] = useState<boolean>(false);
+    const isLogin = useLocation().pathname === '/login';
+    const { logined, setLogined } = useAuth();
+    const history = useHistory();
 
     const onLogin = useCallback(
         async (data: LoginFormData) => {
@@ -25,14 +25,16 @@ const Login = (): JSX.Element => {
                     userId: data.userId,
                     password: data.password,
                 });
-                setCurrentUser(response);
-                history.push('/');
+                if (response === 200) {
+                    setLogined(true);
+                    history.goBack();
+                }
             } catch (e) {
                 setError(e.response.data);
                 setDisabled(false);
             }
         },
-        [history, setCurrentUser],
+        [history, setLogined],
     );
 
     const onRegister = useCallback(
@@ -46,14 +48,16 @@ const Login = (): JSX.Element => {
                     email: data.email,
                     password: data.password,
                 });
-                setCurrentUser(response);
-                history.push('/');
+                if (response === 201) {
+                    setLogined(false);
+                    history.goBack();
+                }
             } catch (e) {
                 setError(e.response.data);
                 setDisabled(false);
             }
         },
-        [history, setCurrentUser],
+        [history, setLogined],
     );
 
     const pageContents = useMemo(() => {
@@ -73,21 +77,17 @@ const Login = (): JSX.Element => {
         );
     }, [isDisabled, isLogin, onRegister, onLogin]);
 
-    if (initialized) {
-        if (!currentUser) {
-            return (
-                <>
-                    {error && <ErrorBlock errorMessage={error} />}
-                    <StyledWrap>
-                        <StyledContainer>{pageContents}</StyledContainer>
-                    </StyledWrap>
-                </>
-            );
-        }
-        return <Redirect to="/" />;
+    if (!logined) {
+        return (
+            <>
+                {error && <ErrorBlock errorMessage={error} />}
+                <StyledWrap>
+                    <StyledContainer>{pageContents}</StyledContainer>
+                </StyledWrap>
+            </>
+        );
     }
-
-    return <></>;
+    return <Redirect to="/" />;
 };
 
 export default Login;
