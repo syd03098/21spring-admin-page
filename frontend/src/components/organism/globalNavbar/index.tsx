@@ -1,12 +1,10 @@
 import React, { useCallback, useMemo } from 'react';
 import Desktop from '@components/atom/Desktop';
 import UosIcon from '@components/atom/icons/Uos';
-import Gear from '@components/atom/icons/Gear';
 import ButtonLink from '@components/atom/ButtonLink';
 import Button from '@components/atom/Button';
 import TicketStatus from '@components/molecule/ticketStatus';
 import Mobile from '@components/atom/Mobile';
-import { useAuth } from '@stores/AuthStore';
 import { sendLogoutRequest } from '@utils/api/auth';
 import {
     StyledBackground,
@@ -14,24 +12,26 @@ import {
     StyledList,
     StyledCenteredLogo,
 } from '@components/organism/globalNavbar/style';
+import { useToast } from '@stores/ToastStore';
+import { useAuth } from '@pages/context';
 
 const GlobalNavbar = (): JSX.Element => {
-    const { currentUser, setCurrentUser } = useAuth();
+    const { logined } = useAuth();
+    const { appendToast } = useToast();
 
     const onLogout = useCallback(async () => {
         try {
             const status = await sendLogoutRequest();
-            if (status === 200) {
-                setCurrentUser(null);
-                window.location.reload();
-            }
-        } catch (_) {}
-    }, [setCurrentUser]);
+            if (status === 200) window.location.reload();
+        } catch (_) {
+            appendToast('로그아웃에 실패했습니다. 잠시후 다시 시도해주세요.', { type: 'error', timeout: 8000 });
+        }
+    }, [appendToast]);
 
     const desktopNavbarContents = useMemo(
         () => (
-            <>
-                {!currentUser && (
+            <StyledList>
+                {!logined && (
                     <>
                         <ButtonLink href="/login" fullHeight size="small">
                             로그인
@@ -48,39 +48,34 @@ const GlobalNavbar = (): JSX.Element => {
                         </ButtonLink>
                     </>
                 )}
-                {currentUser && (
-                    <>
-                        {currentUser.isAdmin && (
-                            <Button icon={<Gear size={18} />} size="small" fullHeight>
-                                개발자모드
-                            </Button>
-                        )}
-                        <Button onClick={onLogout} fullHeight>
-                            로그아웃
-                        </Button>
-                    </>
-                )}
-            </>
-        ),
-        [currentUser, onLogout],
-    );
-
-    const mobileNavbarContents = useMemo(
-        () => (
-            <>
-                {!currentUser && (
-                    <ButtonLink href="/login" size="small" type="default">
-                        로그인
-                    </ButtonLink>
-                )}
-                {currentUser && (
+                {logined && (
                     <Button onClick={onLogout} fullHeight>
                         로그아웃
                     </Button>
                 )}
-            </>
+                <TicketStatus />
+            </StyledList>
         ),
-        [currentUser, onLogout],
+        [logined, onLogout],
+    );
+
+    const mobileNavbarContents = useMemo(
+        () => (
+            <StyledLayout>
+                <TicketStatus />
+                {!logined && (
+                    <ButtonLink href="/login" size="small" type="default">
+                        로그인
+                    </ButtonLink>
+                )}
+                {logined && (
+                    <Button onClick={onLogout} fullHeight>
+                        로그아웃
+                    </Button>
+                )}
+            </StyledLayout>
+        ),
+        [logined, onLogout],
     );
 
     return (
@@ -88,20 +83,14 @@ const GlobalNavbar = (): JSX.Element => {
             <Desktop>
                 <StyledLayout>
                     <ButtonLink href="/" icon={<UosIcon />} fullHeight />
-                    <StyledList>
-                        {desktopNavbarContents}
-                        <TicketStatus />
-                    </StyledList>
+                    {desktopNavbarContents}
                 </StyledLayout>
             </Desktop>
             <Mobile>
                 <StyledCenteredLogo>
                     <ButtonLink href="/" icon={<UosIcon width={42} height={28} />} fullHeight />
                 </StyledCenteredLogo>
-                <StyledLayout>
-                    <TicketStatus />
-                    {mobileNavbarContents}
-                </StyledLayout>
+                {mobileNavbarContents}
             </Mobile>
         </StyledBackground>
     );
