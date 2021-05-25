@@ -1,5 +1,6 @@
 import datetime
 import hashlib
+import itertools
 import jwt
 import time
 
@@ -7,6 +8,7 @@ from core.user import (get_user, is_admin)
 from django.conf import settings
 from django.db import connection, transaction
 from django.http.response import HttpResponse, JsonResponse
+from drf_yasg import openapi
 from drf_yasg.utils import no_body, swagger_auto_schema
 from rest_framework import serializers, viewsets
 from rest_framework.decorators import action
@@ -25,6 +27,7 @@ from .serializers import (
     MovieRetrieveSerializer,
     MovieCreateSerializer,
     ShowCreateSerializer,
+    ShowSerializer,
     TheaterCreateSerializer,
     UsrCreateSerializer,
     UsrLoginSerializer,
@@ -320,13 +323,67 @@ class MovieViewSet(viewsets.ViewSet):
 # {{{ ShowViewSet
 class ShowViewSet(viewsets.ViewSet):
 
+    # {{{ list
+    @swagger_auto_schema(manual_parameters=[
+        openapi.Parameter('movie_id',
+                          openapi.IN_QUERY,
+                          description='영화ID',
+                          type=openapi.TYPE_INTEGER)
+    ],
+                         responses={200: ShowSerializer})
+    def list(self, request, *args, **kwargs):
+        movie_id = request.GET.get('movie_id')
+        if not movie_id:
+            return HttpResponse(status=400, content="movie_id값은 필수입니다.")
+
+        try:
+            movie = Movie.objects.raw(
+                f"SELECT * FROM MOVIE WHERE MOVIE_ID={movie_id}")[0]
+        except IndexError:
+            return HttpResponse(status=404)
+
+        res = {
+            "movieName": movie.movie_name,
+            "movieGrade": movie.movie_grade,
+            "showSchedule": []
+        }
+
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT S.SHOW_ID, T.THEATER_NAME, S.SHOW_START_TIME, T.THEATER_CAP " \
+                    "FROM SHOW S, THEATER T WHERE S.THEATER_ID=T.THEATER_ID AND " \
+                    f"S.MOVIE_ID={movie_id}")
+            for _, show_group in itertools.groupby(cursor.fetchall(),
+                                                   lambda x: x[2].date()):
+                showList = [
+                    {
+                        "showId": show[0],
+                        "theaterName": show[1],
+                        "showStartTime": show[2].strftime("%Y-%m-%d %H:%M:%S"),
+                        "seatsInfo":
+                            show[3]  # THEATER_CAP
+                    } for show in show_group
+                ]
+                showList.sort(key=lambda x: x["showStartTime"])
+                res["showSchedule"].append({
+                    "showDate":
+                        datetime.datetime.strptime(showList[0]["showStartTime"],
+                                                   "%Y-%m-%d %H:%M:%S").date(),
+                    "showList":
+                        showList
+                })
+
+        res["showSchedule"].sort(key=lambda x: x["showDate"])
+        return JsonResponse(res, status=200)
+
+    # }}}
+
     # {{{ create
     @swagger_auto_schema(request_body=ShowCreateSerializer,
                          responses={201: None})
     @transaction.atomic
     def create(self, request, *args, **kwargs):
         if not is_admin(request):
-            return HttpResponse(status=401)
+            return HttpResponse(status=403)
 
         serializer = ShowCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
