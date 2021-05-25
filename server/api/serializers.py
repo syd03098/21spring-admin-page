@@ -91,6 +91,24 @@ class ShowCreateSerializer(serializers.Serializer):
         input_formats=["%Y-%m-%d %H:%M:%S"])
 
 
+class ShowListSerializer(serializers.Serializer):
+    showId = serializers.IntegerField()
+    theaterName = serializers.CharField()
+    showStartTime = serializers.DateTimeField()
+    seatsInfo = serializers.CharField()
+
+
+class ShowScheduleSerializer(serializers.Serializer):
+    showDate = serializers.DateField()
+    showList = ShowListSerializer(many=True)
+
+
+class ShowSerializer(serializers.Serializer):
+    movieName = serializers.CharField()
+    movieGrade = serializers.CharField()
+    showSchedule = ShowScheduleSerializer(many=True)
+
+
 class TheaterCreateSerializer(serializers.Serializer):
     theaterType = serializers.IntegerField()
     theaterRow = serializers.IntegerField(required=False)
