@@ -189,6 +189,7 @@
   ```json
   "response": {
     "movieName": "센과 치히로의 행방불명",
+    "movieGrade": "12",
     "showSchedule": [
       {
         "showDate": "2020-05-14",
@@ -196,19 +197,19 @@
           {
             "showId": 1001,
             "theaterName": "1관",
-            "showStartTime": "14:10",
+            "showStartTime": "2021-05-14 14:10",
             "seatsInfo": "168/240"
           },
           {
             "showId": 1002,
             "theaterName": "2관",
-            "showStartTime": "15:10",
+            "showStartTime": "2021-05-14 15:10",
             "seatsInfo": "209/212"
           },
           {
             "showId": 1003,
             "theaterName": "1관",
-            "showStartTime": "16:40",
+            "showStartTime": "2021-05-14 16:40",
             "seatsInfo": "189/240"
           }
         ]
@@ -219,19 +220,19 @@
           {
             "showId": 1004,
             "theaterName": "1관",
-            "showStartTime": "10:20",
+            "showStartTime": "2021-05-15 10:20",
             "seatsInfo": "230/240"
           },
           {
             "showId": 1005,
             "theaterName": "2관",
-            "showStartTime": "11:10",
+            "showStartTime": "2021-05-15 11:10",
             "seatsInfo": "208/212"
           },
           {
             "showId": 1006,
             "theaterName": "1관",
-            "showStartTime": "13:40",
+            "showStartTime": "2021-05-15 13:40",
             "seatsInfo": "239/240"
           }
         ]
@@ -240,6 +241,18 @@
   }
   ```
   * 404 Not Found
+
+### /shows POST
+* ```json
+  {
+    "movieId": 4,
+    "theaterId": 1,
+    "showStartTime": "2021-05-03 12:34:00"
+  }
+  ```
+* 권한이 없을시 403
+* 존재하지 않는 영화, 상영관이거나 상영시간이 겹칠시 400
+* 상영일정 추가 성공시 201 Created
 
 ### /shows/{show\_id}/seats GET
 * seatType: 0: 불가능한 자리, 1: 예매 가능한 자리, 2: 이미 예매된 자리
