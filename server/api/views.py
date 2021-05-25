@@ -298,6 +298,15 @@ class MovieViewSet(viewsets.ViewSet):
             return HttpResponse(status=401)
 
         movie_id = pk
+        try:
+            Show.objects.raw(
+                f'SELECT * FROM (SELECT * FROM SHOW WHERE MOVIE_ID={pk}) WHERE ROWNUM=1;'
+            )[0]
+        except IndexError:
+            pass
+        else:
+            return HttpResponse(status=409, content="선택한 영화에 대한 상영정보가 존재합니다.")
+
         with connection.cursor() as cursor:
             cursor.execute(f"DELETE FROM MOVIE WHERE MOVIE_ID={movie_id}")
         return HttpResponse(status=204)
