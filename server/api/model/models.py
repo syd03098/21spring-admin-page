@@ -77,7 +77,7 @@ class Seat(models.Model):
 class Show(models.Model):
     show_id = models.BigIntegerField(primary_key=True)
     theater = models.ForeignKey('Theater', models.DO_NOTHING)
-    show_start_time = models.DateField()
+    show_start_time = models.DateTimeField()
     show_count = models.BigIntegerField()
     movie = models.ForeignKey(Movie, models.DO_NOTHING)
 

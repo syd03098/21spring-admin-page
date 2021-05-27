@@ -27,6 +27,7 @@ from .serializers import (
     MovieRetrieveSerializer,
     MovieCreateSerializer,
     ShowCreateSerializer,
+    ShowSeatSerializer,
     ShowSerializer,
     TheaterCreateSerializer,
     UsrCreateSerializer,
@@ -443,6 +444,82 @@ class ShowViewSet(viewsets.ViewSet):
                                 f"SHOW_TOTAL_COUNT={show_count} WHERE MOVIE_ID={movie_id};"
                     )
         return HttpResponse(status=201)
+
+    # }}}
+
+
+# }}}
+
+
+# {{{ ShowSeatViewSet
+class ShowSeatViewSet(viewsets.ViewSet):
+
+    # {{{ list
+    @swagger_auto_schema(responses={200: ShowSeatSerializer})
+    @transaction.atomic
+    def list(self, request, *args, **kwargs):
+        show_id = int(self.kwargs.get('show_id'))
+        try:
+            show = Show.objects.raw(
+                f"SELECT * FROM SHOW WHERE SHOW_ID={show_id};")[0]
+            movie = Movie.objects.raw(
+                    f"SELECT M.* FROM SHOW S, MOVIE M " \
+                    f"WHERE S.SHOW_ID={show_id} AND S.MOVIE_ID=M.MOVIE_ID;")[0]
+            theater = Theater.objects.raw(
+                    f"SELECT T.* FROM SHOW S, THEATER T " \
+                    f"WHERE S.SHOW_ID={show_id} AND S.THEATER_ID=T.THEATER_ID;")[0]
+        except IndexError:
+            return HttpResponse(status=404)
+
+        movie_time_delta = datetime.datetime.combine(
+            datetime.date.min, movie.movie_time) - datetime.datetime.min
+        theater_id = theater.theater_id
+
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT CUSTOMER_TYPE_ID, MOVIE_FEE FROM FEE " \
+                    f"WHERE THEATER_TYPE_ID={theater.theater_type.theater_type_id} " \
+                    "ORDER BY CUSTOMER_TYPE_ID;")
+            seatFee = [{
+                "customerTypeId": fee[0],
+                "movieFee": fee[1]
+            } for fee in cursor.fetchall()]
+
+            cursor.execute("SELECT S.SEAT_ID, S.SEAT_ROW, S.SEAT_COL, S.SEAT_TYPE, T.TICKET_STATE " \
+                    "FROM TICKET T, SEAT S WHERE T.SEAT_ID(+)=S.SEAT_ID AND " \
+                    f"S.THEATER_ID={theater_id} AND (T.SHOW_ID={show_id} OR T.SHOW_ID IS NULL);")
+            seats = [{
+                "seatNo": seat[0],
+                "seatRow": seat[1],
+                "seatColumn": seat[2],
+                "seatType": seat[3]
+            } for seat in cursor.fetchall()]
+            print(cursor.fetchall())
+
+        res = {
+            "showInfo": {
+                "movieName":
+                    movie.movie_name,
+                "movieGrade":
+                    movie.movie_grade,
+                "showId":
+                    show_id,
+                "showStartTime":
+                    show.show_start_time.strftime("%Y-%m-%d %H:%M:%S"),
+                "showEndTime": (show.show_start_time +
+                                movie_time_delta).strftime("%Y-%m-%d %H:%M:%S"),
+                "theaterId":
+                    theater_id,
+                "theaterName":
+                    theater.theater_name,
+                "theaterCapacity":
+                    theater.theater_cap,
+                "bookingCount":
+                    -1
+            },
+            "seatFee": seatFee,
+            "seats": seats
+        }
+        return JsonResponse(res, status=200)
 
     # }}}
 

@@ -258,6 +258,7 @@
 * seatType: 0: 불가능한 자리, 1: 예매 가능한 자리, 2: 이미 예매된 자리
 * theaterType: 1: 일반, 2: 아이맥스
 * customerType: 1: 성인, 2: 청소년, 3: 노약자
+* seats: row별로 2차원 배열로 반환
 
 
 * 200 OK
@@ -266,53 +267,57 @@
       "showInfo": {
         "movieName": "센과 치히로의 행방불명",
         "movieGrade": "12",
-        "showId": "1001",
-        "showStartTime": "11:20",
-        "showEndTime": "13:40",
+        "showId": 1001,
+        "showStartTime": "2021-05-01 11:20:00",
+        "showEndTime": "2021-05-01 13:40:00",
         "theaterId": 1,
         "theaterName": "1관",
         "theaterCapacity": 184,
-        "bookingCount": 95,
+        "bookingCount": 95
       },
       "seatFee": [
         {
           "customerTypeId": 1,
-          "movieFee": 8000,
+          "movieFee": 8000
         },
         {
           "customerTypeId": 2,
-          "movieFee": 6000,
+          "movieFee": 6000
         },
         {
           "customerTypeId": 3,
-          "movieFee": 5000,
+          "movieFee": 5000
         }
       ],
       "seats": [
-        {
-          "seatNo": 0,
-          "seatRow": 0,
-          "seatColumn": 0,
-          "seatType": 0,
-        },
-        {
-          "seatNo": 1,
-          "seatRow": 0,
-          "seatColumn": 1,
-          "seatType": 2,
-        },
-        {
-          "seatNo": 2,
-          "seatRow": 0,
-          "seatColumn": 2,
-          "seatType": 1,
-        },
-        {
-          "seatNo": 3,
-          "seatRow": 0,
-          "seatColumn": 3,
-          "seatType": 1,
-        }
+        [
+          {
+            "seatNo": 0,
+            "seatRow": 0,
+            "seatColumn": 0,
+            "seatType": 0
+          },
+          {
+            "seatNo": 1,
+            "seatRow": 0,
+            "seatColumn": 1,
+            "seatType": 2
+          },
+        ],
+        [
+          {
+            "seatNo": 2,
+            "seatRow": 1,
+            "seatColumn": 0,
+            "seatType": 1
+          },
+          {
+            "seatNo": 3,
+            "seatRow": 1,
+            "seatColumn": 1,
+            "seatType": 1
+          }
+        ]
       ]
     }
   ```
