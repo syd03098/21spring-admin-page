@@ -109,6 +109,36 @@ class ShowSerializer(serializers.Serializer):
     showSchedule = ShowScheduleSerializer(many=True)
 
 
+class ShowInfoSerializer(serializers.Serializer):
+    movieName = serializers.CharField()
+    movieGrade = serializers.CharField()
+    showId = serializers.IntegerField()
+    showStartTime = serializers.DateTimeField()
+    showEndTime = serializers.DateTimeField()
+    theaterId = serializers.IntegerField()
+    theaterName = serializers.CharField()
+    theaterCapacity = serializers.IntegerField()
+    bookingCount = serializers.IntegerField()
+
+
+class SeatFeeSerializer(serializers.Serializer):
+    customerTypeId = serializers.IntegerField()
+    movieFee = serializers.IntegerField()
+
+
+class SeatSerializer(serializers.Serializer):
+    seatNo = serializers.IntegerField()
+    seatRow = serializers.IntegerField()
+    seatColumn = serializers.IntegerField()
+    seatType = serializers.IntegerField()
+
+
+class ShowSeatSerializer(serializers.Serializer):
+    showInfo = ShowInfoSerializer()
+    seatFee = SeatFeeSerializer(many=True)
+    seats = serializers.ListField(child=SeatSerializer(many=True))
+
+
 class TheaterCreateSerializer(serializers.Serializer):
     theaterType = serializers.IntegerField()
     theaterRow = serializers.IntegerField(required=False)
