@@ -568,7 +568,7 @@ class ShowSeatViewSet(viewsets.ViewSet):
 
         sid = transaction.savepoint()
         try:
-            pay_id = pay(request, pay_type, money, userId)
+            pay_id = pay(pay_type, money, userId)
         except Exception as e:
             return HttpResponse(status=400, content=e)
 
