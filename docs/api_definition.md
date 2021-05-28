@@ -326,8 +326,8 @@
 
 * ```json
   {
-    "showId": 1001,
-    "email": "1string@gmail.com",
+    "email": "user@mail.com (비회원 전용, 회원은 생략 가능)",
+    "password": "passwd (비회원 전용, 회원은 생략 가능)",
     "payType": 1,
     "requestedSeat": [
       {

@@ -2,6 +2,7 @@ import re
 
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
+from django.db import connection
 
 from api.model.models import Movie, TheaterType
 
@@ -12,7 +13,7 @@ class UsrCreateSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=50)
     password = serializers.CharField(min_length=6)
 
-    def validate_userid(self, value):
+    def validate_userId(self, value):
         if re.match('.*[^A-Za-z0-9_.].*', value):
             raise ValidationError('아이디는 영문, 숫자, 언더바, 점만 올 수 있습니다.')
         return value
@@ -22,7 +23,7 @@ class UsrLoginSerializer(serializers.Serializer):
     userId = serializers.CharField(max_length=16)
     password = serializers.CharField(min_length=6)
 
-    def validate_userid(self, value):
+    def validate_userId(self, value):
         if re.match('.*[^A-Za-z0-9_.].*', value):
             raise ValidationError('아이디는 영문, 숫자, 언더바, 점만 올 수 있습니다.')
         return value
@@ -137,6 +138,25 @@ class ShowSeatSerializer(serializers.Serializer):
     showInfo = ShowInfoSerializer()
     seatFee = SeatFeeSerializer(many=True)
     seats = serializers.ListField(child=SeatSerializer(many=True))
+
+
+class RequestedSeatSerializer(serializers.Serializer):
+    seatNo = serializers.IntegerField()
+    customerType = serializers.IntegerField()
+
+
+class TicketingSerializer(serializers.Serializer):
+    email = serializers.CharField(max_length=50, required=False)
+    password = serializers.CharField(min_length=6, required=False)
+    payType = serializers.IntegerField()
+    requestedSeat = RequestedSeatSerializer(many=True)
+
+    def validate_requestedSeat(self, value):
+        if len(value) == 0:
+            raise ValidationError('requestedSeat의 길이가 0일 수 없습니다.')
+        if len(value) != len(set([seat['seatNo'] for seat in value])):
+            raise ValidationError('requestedSeat에 중복된 seatNo가 있습니다.')
+        return value
 
 
 class TheaterCreateSerializer(serializers.Serializer):
