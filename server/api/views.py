@@ -2,20 +2,21 @@ import datetime
 import hashlib
 import itertools
 import jwt
-import time
 
 from core.user import (get_user, is_admin)
+from core.pay import pay
 from django.conf import settings
 from django.db import connection, transaction
 from django.http.response import HttpResponse, JsonResponse
 from drf_yasg import openapi
 from drf_yasg.utils import no_body, swagger_auto_schema
-from rest_framework import serializers, viewsets
+from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from api.model.models import (
     Movie,
+    Seat,
     Show,
     Theater,
     TheaterType,
@@ -30,6 +31,7 @@ from .serializers import (
     ShowSeatSerializer,
     ShowSerializer,
     TheaterCreateSerializer,
+    TicketingSerializer,
     UsrCreateSerializer,
     UsrLoginSerializer,
     UsrSerializer,
@@ -520,6 +522,86 @@ class ShowSeatViewSet(viewsets.ViewSet):
             "seats": seats
         }
         return JsonResponse(res, status=200)
+
+    # }}}
+
+    # {{{ create
+    @swagger_auto_schema(request_body=TicketingSerializer,
+                         responses={201: None})
+    @transaction.atomic
+    def create(self, request, *args, **kwargs):
+        serializer = TicketingSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        userId = get_user(request)
+        if not userId:
+            # TODO: 비회원용 예매
+            return HttpResponse(status=404, content="로그인이 필요합니다.")
+
+        show_id = int(self.kwargs.get('show_id'))
+        # email = request.data.get('email')
+        # password = request.data.get('password')
+        pay_type = request.data.get('payType')
+        seats = request.data.get('requestedSeat')
+
+        try:
+            show = Show.objects.raw(
+                f"SELECT * FROM SHOW WHERE SHOW_ID={show_id};")[0]
+        except IndexError:
+            return HttpResponse(status=404)
+
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT CUSTOMER_TYPE_ID, MOVIE_FEE FROM FEE " \
+                    f"WHERE THEATER_TYPE_ID={show.theater.theater_type.theater_type_id} " \
+                    "ORDER BY CUSTOMER_TYPE_ID;")
+            fee = {f[0]: f[1] for f in cursor.fetchall()}
+
+        money = 0
+        for seat in seats:
+            if seat['customerType'] not in fee:
+                return HttpResponse(
+                    status=400,
+                    content=
+                    f"customerType: {seat['customerType']} 은(는) 올바르지 않은 값입니다.")
+            else:
+                money += fee[seat['customerType']]
+
+        sid = transaction.savepoint()
+        try:
+            pay_id = pay(request, pay_type, money, userId)
+        except Exception as e:
+            return HttpResponse(status=400, content=e)
+
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT S.SEAT_ID, S.SEAT_TYPE, T.TICKET_STATE " \
+                    "FROM TICKET T, SEAT S WHERE T.SEAT_ID(+)=S.SEAT_ID AND " \
+                    f"S.THEATER_ID={show.theater.theater_id} AND " \
+                    f"(T.SHOW_ID={show_id} OR T.SHOW_ID IS NULL);")
+            e_seats = {
+                seat[0]: (seat[1], seat[2]) for seat in cursor.fetchall()
+            }
+        with connection.cursor() as cursor:
+            money = 0
+            for s in seats:
+                seat_id = s["seatNo"]
+                customer_type_id = s["customerType"]
+                try:
+                    # e_seats = { SEAT_ID: (SEAT_TYPE, TICKET_STATE) }
+                    seat = e_seats[seat_id]
+                except KeyError:
+                    transaction.savepoint_rollback(sid)
+                    return HttpResponse(
+                        status=404, content=f"'seatNo: {seat_id}'는 존재하지 않습니다.")
+                if not seat[0] or (seat[1] and seat[1] == 1):
+                    transaction.savepoint_rollback(sid)
+                    return HttpResponse(
+                        status=400,
+                        content=f"'seatNo: {seat_id}'는 예매할 수 없는 자리입니다.")
+                cursor.execute(
+                    f"INSERT INTO TICKET VALUES (TICKET_SEQ.NEXTVAL, 1, {pay_id}, " \
+                            f"{seat_id}, '{userId}', {show_id}, {customer_type_id});")
+
+        return HttpResponse(status=201)
 
     # }}}
 
