@@ -6,14 +6,15 @@ export interface MovieInfoResponseBody {
     movieGrade: string;
     movieDistribute: string;
     movieRelease: string;
-    director: string;
+    directors: string;
     actors: string;
     movieGen: string;
-    movieTime: number;
+    movieTime: string;
     moviePosterUrl: string;
     movieDescription: string;
 }
 
 export const requestMovieInfo = async (movieId: number): Promise<MovieInfoResponseBody> => {
-    return axios.get(`/movies/${movieId}`);
+    const response = await axios.get(`/api/movies/${movieId}`);
+    return response.data;
 };
