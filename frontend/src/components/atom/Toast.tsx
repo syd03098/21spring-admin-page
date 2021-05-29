@@ -56,7 +56,8 @@ const Container = styled.div`
     box-shadow: ${({ theme }) => theme.smoke50} 0 0 4px 2px;
     max-height: 68px;
     min-height: 40px;
-    width: 304px;
+    max-width: 304px;
+    width: 100%;
     margin-bottom: 8px;
     background-color: ${({ theme }) => theme.white};
     &.success {
