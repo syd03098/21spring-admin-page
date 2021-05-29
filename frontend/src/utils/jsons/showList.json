@@ -1,0 +1,223 @@
+{
+  "movieName":"센과 치히로의 행방불명",
+  "movieGrade": "12",
+  "showSchedule":[
+    {
+      "showDate":"2020-05-14 00:00",
+      "showList":[
+        {
+          "showId":1001,
+          "theaterName":"1관",
+          "showStartTime":"2021-05-14 14:10",
+          "showEndTime": "2021-05-14 16:10",
+          "seatsAvailable": 0,
+          "seatsCapacity": 240
+        },
+        {
+          "showId":1002,
+          "theaterName":"2관",
+          "showStartTime":"2021-05-14 15:10",
+          "showEndTime": "2021-05-14 17:10",
+          "seatsAvailable": 30,
+          "seatsCapacity": 212
+        },
+        {
+          "showId":1003,
+          "theaterName":"1관",
+          "showStartTime":"2021-05-14 16:40",
+          "showEndTime": "2021-05-14 18:40",
+          "seatsAvailable": 189,
+          "seatsCapacity": 240
+        },
+        {
+          "showId":1004,
+          "theaterName":"1관",
+          "showStartTime":"2021-05-14 14:10",
+          "showEndTime": "2021-05-14 16:10",
+          "seatsAvailable": 168,
+          "seatsCapacity": 240
+        },
+        {
+          "showId":1005,
+          "theaterName":"2관",
+          "showStartTime":"2021-05-14 15:10",
+          "showEndTime": "2021-05-14 17:10",
+          "seatsAvailable": 209,
+          "seatsCapacity": 212
+        },
+        {
+          "showId":1006,
+          "theaterName":"1관",
+          "showStartTime":"2021-05-14 16:40",
+          "showEndTime": "2021-05-14 18:40",
+          "seatsAvailable": 189,
+          "seatsCapacity": 240
+        },
+        {
+          "showId":1007,
+          "theaterName":"1관",
+          "showStartTime":"2021-05-14 14:10",
+          "showEndTime": "2021-05-14 16:10",
+          "seatsAvailable": 168,
+          "seatsCapacity": 240
+        },
+        {
+          "showId":1008,
+          "theaterName":"2관",
+          "showStartTime":"2021-05-14 15:10",
+          "showEndTime": "2021-05-14 17:10",
+          "seatsAvailable": 209,
+          "seatsCapacity": 212
+        },
+        {
+          "showId":1009,
+          "theaterName":"1관",
+          "showStartTime":"2021-05-14 16:40",
+          "showEndTime": "2021-05-14 18:40",
+          "seatsAvailable": 189,
+          "seatsCapacity": 240
+        }
+      ]
+    },
+    {
+      "showDate":"2020-05-15 00:00",
+      "showList":[
+        {
+          "showId":1004,
+          "theaterName":"1관",
+          "showStartTime":"2021-05-15 10:20",
+          "showEndTime": "2021-05-15 12:40",
+          "seatsAvailable": 230,
+          "seatsCapacity": 240
+        },
+        {
+          "showId":1005,
+          "theaterName":"2관",
+          "showStartTime":"2021-05-15 11:10",
+          "showEndTime": "2021-05-15 13:10",
+          "seatsAvailable": 208,
+          "seatsCapacity": 212
+        },
+        {
+          "showId":1006,
+          "theaterName":"1관",
+          "showStartTime":"2021-05-15 13:40",
+          "showEndTime": "2021-05-15 15:40",
+          "seatsAvailable": 239,
+          "seatsCapacity": 240
+        }
+      ]
+    },
+    {
+      "showDate":"2020-05-16 00:00",
+      "showList":[
+        {
+          "showId":1007,
+          "theaterName":"1관",
+          "showStartTime":"2021-05-16 10:20",
+          "showEndTime": "2021-05-16 12:20",
+          "seatsAvailable": 230,
+          "seatsCapacity": 240
+        },
+        {
+          "showId":1008,
+          "theaterName":"2관",
+          "showStartTime":"2021-05-16 11:10",
+          "showEndTime": "2021-05-16 13:10",
+          "seatsAvailable": 208,
+          "seatsCapacity": 212
+        },
+        {
+          "showId":1009,
+          "theaterName":"1관",
+          "showStartTime":"2021-05-16 13:40",
+          "showEndTime": "2021-05-16 15:40",
+          "seatsAvailable": 239,
+          "seatsCapacity": 240
+        },
+        {
+          "showId":1010,
+          "theaterName":"1관",
+          "showStartTime":"2021-05-16 13:40",
+          "showEndTime": "2021-05-16 15:40",
+          "seatsAvailable": 239,
+          "seatsCapacity": 240
+        }
+      ]
+    },
+    {
+      "showDate":"2020-05-17 00:00",
+      "showList":[
+        {
+          "showId":1011,
+          "theaterName":"4관",
+          "showStartTime":"2021-05-17 10:20",
+          "showEndTime": "2021-05-17 12:20",
+          "seatsAvailable": 230,
+          "seatsCapacity": 240
+        },
+        {
+          "showId":1012,
+          "theaterName":"5관",
+          "showStartTime":"2021-05-17 11:10",
+          "showEndTime": "2021-05-17 13:10",
+          "seatsAvailable": 208,
+          "seatsCapacity": 212
+        },
+        {
+          "showId":1013,
+          "theaterName":"6관",
+          "showStartTime":"2021-05-17 13:40",
+          "showEndTime": "2021-05-17 15:40",
+          "seatsAvailable": 239,
+          "seatsCapacity": 240
+        },
+        {
+          "showId":1014,
+          "theaterName":"7관",
+          "showStartTime":"2021-05-17 13:40",
+          "showEndTime": "2021-05-17 15:40",
+          "seatsAvailable": 239,
+          "seatsCapacity": 240
+        }
+      ]
+    },
+    {
+      "showDate":"2020-05-18 00:00",
+      "showList":[
+        {
+          "showId":1015,
+          "theaterName":"1관",
+          "showStartTime":"2021-05-18 10:20",
+          "showEndTime": "2021-05-18 12:20",
+          "seatsAvailable": 230,
+          "seatsCapacity": 240
+        },
+        {
+          "showId":1016,
+          "theaterName":"2관",
+          "showStartTime":"2021-05-18 11:10",
+          "showEndTime": "2021-05-18 13:10",
+          "seatsAvailable": 208,
+          "seatsCapacity": 212
+        },
+        {
+          "showId":1017,
+          "theaterName":"1관",
+          "showStartTime":"2021-05-18 13:40",
+          "showEndTime": "2021-05-18 15:40",
+          "seatsAvailable": 182,
+          "seatsCapacity": 240
+        },
+        {
+          "showId":1018,
+          "theaterName":"2관",
+          "showStartTime":"2021-05-18 13:40",
+          "showEndTime": "2021-05-18 15:40",
+          "seatsAvailable": 123,
+          "seatsCapacity": 240
+        }
+      ]
+    }
+  ]
+}
