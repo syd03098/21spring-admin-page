@@ -5,6 +5,9 @@ import { requestMovieInfo } from '@utils/api/movieInfo';
 import Information from '@components/organism/modal/information';
 import movieInfo from '@utils/jsons/movie_1.json';
 import { useModal } from '@stores/ModalStore';
+import Select from '@components/organism/modal/select';
+import { getScheduleListBody } from '@utils/api/show';
+import { useToast } from '@stores/ToastStore';
 
 interface Props {
     id: number;
@@ -15,6 +18,7 @@ interface Props {
 
 const HorizontalSwiperSlide = ({ id, label, imgUrl, grade }: Props): JSX.Element => {
     const { appendModal } = useModal();
+    const { appendToast } = useToast();
 
     const popUpModalInfoHandler = useCallback(async () => {
         return requestMovieInfo(id)
@@ -27,9 +31,14 @@ const HorizontalSwiperSlide = ({ id, label, imgUrl, grade }: Props): JSX.Element
     }, [appendModal, id]);
 
     const popUpModalTicketsHandler = useCallback(async () => {
-        // todo: tickets 모달 띄우기
-        console.log('예매하기');
-    }, []);
+        return getScheduleListBody(id)
+            .then((res) => {
+                appendModal(<Select movieId={id} resources={res} />, 'both');
+            })
+            .catch((_) => {
+                appendToast('현재 예매할수없습니다. 나중에 다시 시도해주세요.', { type: 'error', timeout: 8000 });
+            });
+    }, [appendModal, appendToast, id]);
 
     return (
         <Element>
