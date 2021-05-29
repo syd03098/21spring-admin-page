@@ -548,7 +548,8 @@ class ShowSeatViewSet(viewsets.ViewSet):
         # email = request.data.get('email')
         # password = request.data.get('password')
         pay_type = request.data.get('payType')
-        seats = request.data.get('requestedSeat')
+        ticket_amount = request.data.get('ticketAmount')
+        seat_ids = request.data.get('seatIds')
 
         try:
             show = Show.objects.raw(
@@ -563,14 +564,14 @@ class ShowSeatViewSet(viewsets.ViewSet):
             fee = {f[0]: f[1] for f in cursor.fetchall()}
 
         money = 0
-        for seat in seats:
-            if seat['customerType'] not in fee:
+        for cus in ticket_amount:
+            if cus['customerTypeId'] not in fee:
                 return HttpResponse(
                     status=400,
                     content=
-                    f"customerType: {seat['customerType']} 은(는) 올바르지 않은 값입니다.")
+                    f"customerType: {cus['customerTypeId']} 은(는) 올바르지 않은 값입니다.")
             else:
-                money += fee[seat['customerType']]
+                money += fee[cus['customerTypeId']] * cus['amount']
 
         sid = transaction.savepoint()
         try:
@@ -588,11 +589,14 @@ class ShowSeatViewSet(viewsets.ViewSet):
             e_seats = {
                 seat[0]: (seat[1], seat[2]) for seat in cursor.fetchall()
             }
+
+        typeslist = [[c["customerTypeId"]] * c["amount"] for c in ticket_amount]
+        types = list(itertools.chain(*typeslist))
         with connection.cursor() as cursor:
             money = 0
-            for s in seats:
-                seat_id = s["seatNo"]
-                customer_type_id = s["customerType"]
+            for i in range(len(seat_ids)):
+                seat_id = seat_ids[i]
+                customer_type_id = types[i]
                 try:
                     # e_seats = { SEAT_ID: (SEAT_TYPE, TICKET_STATE) }
                     seat = e_seats[seat_id]
