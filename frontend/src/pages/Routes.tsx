@@ -2,7 +2,7 @@ import React, { lazy, useState } from 'react';
 import { Route, Switch, BrowserRouter as Router } from 'react-router-dom';
 import ToastList from '@components/molecule/toastList';
 import SharedModal from '@components/organism/modal';
-import { fetchCurrentUserInfo } from '@utils/api/userInfo';
+import { fetchCurrentUserInfo } from '@utils/api/auth';
 import Layout from '@components/layouts/DefaultLayout';
 import { useAuth } from '@pages/context';
 import useEffectOnce from 'react-use/esm/useEffectOnce';
