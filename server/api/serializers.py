@@ -141,23 +141,30 @@ class ShowSeatSerializer(serializers.Serializer):
     seats = serializers.ListField(child=SeatSerializer(many=True))
 
 
-class RequestedSeatSerializer(serializers.Serializer):
-    seatNo = serializers.IntegerField()
-    customerType = serializers.IntegerField()
+class TicketAmountSerializer(serializers.Serializer):
+    customerTypeId = serializers.IntegerField()
+    amount = serializers.IntegerField()
 
 
 class TicketingSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=50, required=False)
     password = serializers.CharField(min_length=6, required=False)
     payType = serializers.IntegerField()
-    requestedSeat = RequestedSeatSerializer(many=True)
+    ticketAmount = TicketAmountSerializer(many=True)
+    seatIds = serializers.ListField(child=serializers.IntegerField())
 
-    def validate_requestedSeat(self, value):
+    def validate_seatIds(self, value):
         if len(value) == 0:
-            raise ValidationError('requestedSeat의 길이가 0일 수 없습니다.')
-        if len(value) != len(set([seat['seatNo'] for seat in value])):
-            raise ValidationError('requestedSeat에 중복된 seatNo가 있습니다.')
+            raise ValidationError('seatIds의 길이가 0일 수 없습니다.')
+        if len(value) != len(set(value)):
+            raise ValidationError('seatIds에 중복된 seatNo가 있습니다.')
         return value
+
+    def validate(self, data):
+        if sum([ctype["amount"] for ctype in data["ticketAmount"]]) != len(
+                data["seatIds"]):
+            raise ValidationError('seatIds의 길이와 ticketAmount의 합이 다릅니다.')
+        return data
 
 
 class TheaterCreateSerializer(serializers.Serializer):
