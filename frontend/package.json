@@ -6,8 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack-dev-server --progress --config webpack.config.dev.js",
-    "build": "webpack --config webpack.config.production.js",
-    "deploy": "aws s3 sync ./dist s3://test.database.kr"
+    "build": "webpack --config webpack.config.production.js"
   },
   "keywords": [],
   "author": "",
@@ -56,6 +55,7 @@
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "html-webpack-plugin": "^4.5.0",
+    "moment-locales-webpack-plugin": "^1.2.0",
     "prettier": "^2.2.1",
     "terser-webpack-plugin": "^4.1.0",
     "typescript": "^4.2.3",
