@@ -16,7 +16,6 @@ from rest_framework.response import Response
 
 from api.model.models import (
     Movie,
-    Seat,
     Show,
     Theater,
     TheaterType,
@@ -34,7 +33,6 @@ from .serializers import (
     TicketingSerializer,
     UsrCreateSerializer,
     UsrLoginSerializer,
-    UsrSerializer,
     UserPointSerializer,
     UserProfileSerializer,
     UserPasswordSerializer,
@@ -355,17 +353,19 @@ class ShowViewSet(viewsets.ViewSet):
             cursor.execute("SELECT S.SHOW_ID, T.THEATER_NAME, S.SHOW_START_TIME, T.THEATER_CAP " \
                     "FROM SHOW S, THEATER T WHERE S.THEATER_ID=T.THEATER_ID AND " \
                     f"S.MOVIE_ID={movie_id}")
-            for _, show_group in itertools.groupby(cursor.fetchall(),
+            shows = cursor.fetchall()
+            cursor.execute(
+                "SELECT COUNT(SHOW_ID), SHOW_ID FROM TICKET GROUP BY SHOW_ID;")
+            cnt = {c[1]: c[0] for c in cursor.fetchall()}
+            for _, show_group in itertools.groupby(shows,
                                                    lambda x: x[2].date()):
-                showList = [
-                    {
-                        "showId": show[0],
-                        "theaterName": show[1],
-                        "showStartTime": show[2].strftime("%Y-%m-%d %H:%M:%S"),
-                        "seatsInfo":
-                            show[3]  # THEATER_CAP
-                    } for show in show_group
-                ]
+                showList = [{
+                    "showId": show[0],
+                    "theaterName": show[1],
+                    "showStartTime": show[2].strftime("%Y-%m-%d %H:%M:%S"),
+                    "seatsCapacity": show[3],
+                    "seatsAvailable": show[3] - cnt.get(show[0], 0)
+                } for show in show_group]
                 showList.sort(key=lambda x: x["showStartTime"])
                 res["showSchedule"].append({
                     "showDate":
@@ -486,17 +486,19 @@ class ShowSeatViewSet(viewsets.ViewSet):
                 "movieFee": fee[1]
             } for fee in cursor.fetchall()]
 
-            cursor.execute("SELECT S.SEAT_ID, S.SEAT_ROW, S.SEAT_COL, S.SEAT_TYPE, T.TICKET_STATE " \
-                    "FROM TICKET T, SEAT S WHERE T.SEAT_ID(+)=S.SEAT_ID AND " \
-                    f"S.THEATER_ID={theater_id} AND (T.SHOW_ID={show_id} OR T.SHOW_ID IS NULL);")
+            cursor.execute(
+                f"""SELECT S.SEAT_ID, S.SEAT_ROW, S.SEAT_COL, S.SEAT_TYPE, T.TICKET_STATE 
+                    FROM (SELECT * FROM TICKET 
+                                   WHERE SHOW_ID={show_id} AND 
+                                         (TICKET_STATE=1 OR TICKET_STATE IS NULL) ) T, SEAT S 
+                    WHERE T.SEAT_ID(+)=S.SEAT_ID AND S.THEATER_ID={theater_id} 
+                    ORDER BY S.SEAT_ID;""")
             seats = [{
                 "seatNo": seat[0],
                 "seatRow": seat[1],
                 "seatColumn": seat[2],
-                "seatType": seat[3]
+                "seatType": 2 if seat[4] else seat[3]
             } for seat in cursor.fetchall()]
-            print(cursor.fetchall())
-
         res = {
             "showInfo": {
                 "movieName":
@@ -516,10 +518,14 @@ class ShowSeatViewSet(viewsets.ViewSet):
                 "theaterCapacity":
                     theater.theater_cap,
                 "bookingCount":
-                    -1
+                    len(list(filter(lambda x: x["seatType"] == 2, seats)))
             },
-            "seatFee": seatFee,
-            "seats": seats
+            "seatFee":
+                seatFee,
+            "seats": [
+                list(row)
+                for _, row in itertools.groupby(seats, lambda x: x["seatRow"])
+            ]
         }
         return JsonResponse(res, status=200)
 
@@ -573,10 +579,12 @@ class ShowSeatViewSet(viewsets.ViewSet):
             return HttpResponse(status=400, content=e)
 
         with connection.cursor() as cursor:
-            cursor.execute("SELECT S.SEAT_ID, S.SEAT_TYPE, T.TICKET_STATE " \
-                    "FROM TICKET T, SEAT S WHERE T.SEAT_ID(+)=S.SEAT_ID AND " \
-                    f"S.THEATER_ID={show.theater.theater_id} AND " \
-                    f"(T.SHOW_ID={show_id} OR T.SHOW_ID IS NULL);")
+            cursor.execute(f"""SELECT S.SEAT_ID, S.SEAT_TYPE, T.TICKET_STATE 
+                               FROM (SELECT * FROM TICKET
+                                              WHERE SHOW_ID={show_id} AND 
+                                                    (TICKET_STATE=1 OR TICKET_STATE IS NULL) ) T, SEAT S 
+                               WHERE T.SEAT_ID(+)=S.SEAT_ID AND 
+                                     S.THEATER_ID={show.theater.theater_id};""")
             e_seats = {
                 seat[0]: (seat[1], seat[2]) for seat in cursor.fetchall()
             }
