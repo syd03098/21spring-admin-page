@@ -15,3 +15,8 @@ export const sendLogoutRequest = async (): Promise<number> => {
     const response: AxiosResponse = await axios.post('/api/auth/logout');
     return response.status;
 };
+
+export const fetchCurrentUserInfo = async (): Promise<number> => {
+    const response = await axios.get('api/auth/validation');
+    return response.status;
+};
