@@ -11,11 +11,12 @@ interface Props {
     stretch?: boolean;
     type?: 'primary' | 'smoke' | 'pink' | 'red' | 'white' | 'default';
     className?: string;
+    disabled?: boolean;
     style?: CSSProperties;
-    onClick?: MouseEventHandler<HTMLDivElement>;
+    onClick?: MouseEventHandler<HTMLButtonElement>;
 }
 
-const Button = forwardRef<HTMLDivElement, PropsWithChildren<Props>>(
+const Button = forwardRef<HTMLButtonElement, PropsWithChildren<Props>>(
     (
         {
             children,
@@ -26,6 +27,7 @@ const Button = forwardRef<HTMLDivElement, PropsWithChildren<Props>>(
             fullHeight = false,
             onClick,
             className,
+            disabled = false,
             style,
             ...rest
         }: PropsWithChildren<Props>,
@@ -34,6 +36,7 @@ const Button = forwardRef<HTMLDivElement, PropsWithChildren<Props>>(
         return (
             <StyledButton
                 ref={ref}
+                disabled={disabled}
                 className={classNames([className, type, fullHeight && 'full', size && `size-${size}`])}
                 onClick={onClick}
                 style={style}
@@ -46,7 +49,7 @@ const Button = forwardRef<HTMLDivElement, PropsWithChildren<Props>>(
     },
 );
 
-const StyledButton = styled.div`
+const StyledButton = styled.button`
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -56,26 +59,25 @@ const StyledButton = styled.div`
     border-radius: 4px;
     letter-spacing: -0.8px;
     color: currentColor;
-
     &.size-small {
         padding: 6px 8px;
         height: 28px;
     }
-
     &.size-large {
         padding: 8px 12px;
         height: 40px;
     }
-
     &.stretch {
         display: flex;
         width: 100%;
     }
-
     &.full {
         height: 100%;
     }
-
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
     &.primary {
         background-color: ${({ theme }) => theme.primary100};
         color: ${({ theme }) => theme.white};
@@ -106,19 +108,16 @@ const StyledButton = styled.div`
             background-color: ${({ theme }) => darken(0.1, theme.pink)};
         }
     }
-
     &.white {
         background-color: transparent;
         color: ${({ theme }) => theme.white};
         border: 1px solid ${({ theme }) => theme.white};
     }
-
     &.default {
         border: 1px solid ${({ theme }) => theme.black80};
     }
-
-    svg {
-        margin-right: 4px;
+    & > svg + span {
+        margin-left: 4px;
     }
 `;
 
