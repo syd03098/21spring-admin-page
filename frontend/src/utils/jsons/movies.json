@@ -1,106 +1,111 @@
 {
-  "currentTime": 1620064729041,
-  "movieSet": [
+  "currentTime":1620064729041,
+  "categories":[
     {
-      "categoryId": 0,
-      "categoryName": "현재 개봉한 영화",
-      "movies": [
+      "categoryName":"현재 개봉한 영화",
+      "movies":[
         {
-          "movieId": 0,
-          "movieName": "해리포터와 아즈카반의 죄수",
-          "movieGrade": "15세이용가",
-          "moviePosterUrl": "https://an2-img.amz.wtchn.net/image/v2/6c6c0a70630fc270a0b934bb20fb08d9.jpg?jwt=ZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKaVlXTnJaM0p2ZFc1a0lqcDdJbklpT2pJMU5Td2laeUk2TWpVMUxDSmlJam95TlRWOUxDSmpjbTl3SWpwMGNuVmxMQ0pvWldsbmFIUWlPamN3TUN3aWNHRjBhQ0k2SWk5Mk1pOXpkRzl5WlM5cGJXRm5aUzh4TmpFNU5URXpOekk1TURBME56UXlOakEzSWl3aWNYVmhiR2wwZVNJNk9EQXNJbmRwWkhSb0lqbzBPVEI5LlpWNjRvZjJzTHJ2X3gtTEcycGp2OVFQYTNzQ2t6YXR3aWE3WmtJUXZLZDg"
+          "movieId":14,
+          "movieName":"분노의 질주: 더 얼티메이트",
+          "movieGrade":"12",
+          "moviePosterUrl":"https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202005/15586_103_1.jpg"
         },
         {
-          "movieId": 1,
-          "movieName": "크루즈 패밀리:뉴 에이지",
-          "movieGrade": "전체이용가",
-          "moviePosterUrl": "https://an2-img.amz.wtchn.net/image/v2/9d7f660d5882954658cdf5332d42455d.jpg?jwt=ZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKaVlXTnJaM0p2ZFc1a0lqcDdJbklpT2pJMU5Td2laeUk2TWpVMUxDSmlJam95TlRWOUxDSmpjbTl3SWpwMGNuVmxMQ0pvWldsbmFIUWlPamN3TUN3aWNHRjBhQ0k2SWk5Mk1pOXpkRzl5WlM5cGJXRm5aUzh4TmpFMk5EZzJNRFE0TmpZMk5UTTNNalF3SWl3aWNYVmhiR2wwZVNJNk9EQXNJbmRwWkhSb0lqbzBPVEI5LjlPRkxnVWNuUkRXWnU2M2JKU1VxN1VndnozQ3V5TWVON0VGN00tekZ1YmM"
+          "movieId":32,
+          "movieName":"크루엘라",
+          "movieGrade":"12",
+          "moviePosterUrl":"https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202105/17387_103_1.jpg"
         },
         {
-          "movieId": 2,
-          "movieName": "아이들은 즐겁다",
-          "movieGrade": "전체이용가",
-          "moviePosterUrl": "https://an2-img.amz.wtchn.net/image/v2/19400991c2715a7ddd1414c54e704334.jpg?jwt=ZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKaVlXTnJaM0p2ZFc1a0lqcDdJbklpT2pJMU5Td2laeUk2TWpVMUxDSmlJam95TlRWOUxDSmpjbTl3SWpwMGNuVmxMQ0pvWldsbmFIUWlPamN3TUN3aWNHRjBhQ0k2SWk5Mk1pOXpkRzl5WlM5cGJXRm5aUzh4TmpFNU5URTBORFV5TmpNME5UZzRNREF6SWl3aWNYVmhiR2wwZVNJNk9EQXNJbmRwWkhSb0lqbzBPVEI5LmxiOXlrT2RFbWxYSVFlb0djSC1ySWNLd2xhSlNWLWU3b2dpUXQ0LTNOaDQ"
+          "movieId":8,
+          "movieName":"파이프라인",
+          "movieGrade":"15",
+          "moviePosterUrl":"https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202105/17374_103_1.jpg"
         },
         {
-          "movieId": 3,
-          "movieName": "극장판 콩순이: 장난감나라 대모험",
-          "movieGrade": "전체이용가",
-          "moviePosterUrl": "https://an2-img.amz.wtchn.net/image/v2/0c7cfe883f565da73c7fc14041a7dc69.jpg?jwt=ZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKaVlXTnJaM0p2ZFc1a0lqcDdJbklpT2pJMU5Td2laeUk2TWpVMUxDSmlJam95TlRWOUxDSmpjbTl3SWpwMGNuVmxMQ0pvWldsbmFIUWlPamN3TUN3aWNHRjBhQ0k2SWk5Mk1pOXpkRzl5WlM5cGJXRm5aUzh4TmpFNE1Ua3lNRGM1TlRVNU5qQTNNVEU0SWl3aWNYVmhiR2wwZVNJNk9EQXNJbmRwWkhSb0lqbzBPVEI5LmFwZDhkUS1VcHFxQjZzU09NWVV1Y05OMy1BQ1ZKZ3Y5V3dpNEdsRWpjTUU"
+          "movieId":34,
+          "movieName":"보이저스",
+          "movieGrade":"15",
+          "moviePosterUrl":"https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202105/17322_103_1.jpg"
         },
         {
-          "movieId": 4,
-          "movieName": "비와 당신의 이야기",
-          "movieGrade": "12세이용가",
-          "moviePosterUrl": "https://an2-img.amz.wtchn.net/image/v2/a2c4b3095ad685ec768b5acaae73bfd4.jpg?jwt=ZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKaVlXTnJaM0p2ZFc1a0lqcDdJbklpT2pJMU5Td2laeUk2TWpVMUxDSmlJam95TlRWOUxDSmpjbTl3SWpwMGNuVmxMQ0pvWldsbmFIUWlPamN3TUN3aWNHRjBhQ0k2SWk5Mk1pOXpkRzl5WlM5cGJXRm5aUzh4TmpFM05qRXhNRGczTlRNNE56RXdOekUxSWl3aWNYVmhiR2wwZVNJNk9EQXNJbmRwWkhSb0lqbzBPVEI5LkhXSzZwTDBNQXg3b3EyeFZ6T0RPclNvM1FxMEZKZjZ5eUwybW0tRGpWSzg"
+          "movieId":3,
+          "movieName":"비와 당신의 이야기",
+          "movieGrade":"12",
+          "moviePosterUrl":"https://an2-img.amz.wtchn.net/image/v2/a2c4b3095ad685ec768b5acaae73bfd4.jpg?jwt=ZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKaVlXTnJaM0p2ZFc1a0lqcDdJbklpT2pJMU5Td2laeUk2TWpVMUxDSmlJam95TlRWOUxDSmpjbTl3SWpwMGNuVmxMQ0pvWldsbmFIUWlPamN3TUN3aWNHRjBhQ0k2SWk5Mk1pOXpkRzl5WlM5cGJXRm5aUzh4TmpFM05qRXhNRGczTlRNNE56RXdOekUxSWl3aWNYVmhiR2wwZVNJNk9EQXNJbmRwWkhSb0lqbzBPVEI5LkhXSzZwTDBNQXg3b3EyeFZ6T0RPclNvM1FxMEZKZjZ5eUwybW0tRGpWSzg"
         },
         {
-          "movieId": 5,
-          "movieName": "더 스파이",
-          "movieGrade": "15세이용가",
-          "moviePosterUrl": "https://an2-img.amz.wtchn.net/image/v2/50d1b97baf1d50feb362b09f1e4653ab.jpg?jwt=ZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKaVlXTnJaM0p2ZFc1a0lqcDdJbklpT2pJMU5Td2laeUk2TWpVMUxDSmlJam95TlRWOUxDSmpjbTl3SWpwMGNuVmxMQ0pvWldsbmFIUWlPamN3TUN3aWNHRjBhQ0k2SWk5Mk1pOXpkRzl5WlM5cGJXRm5aUzh4TmpFMU9UUXlOVGsyTXpVNU1ERXpOalF6SWl3aWNYVmhiR2wwZVNJNk9EQXNJbmRwWkhSb0lqbzBPVEI5LmcyYjl0NG9oUzRSWG1qRlNJS19VaGZPdWZnWnNqaG1RWnRiaS0waWwxeW8"
+          "movieId":11,
+          "movieName":"도라에몽: 스탠바이미 2",
+          "movieGrade":"12",
+          "moviePosterUrl":"https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202105/17296_103_1.jpg"
         },
         {
-          "movieId": 6,
-          "movieName": "미나리",
-          "movieGrade": "12세이용가",
-          "moviePosterUrl": "https://an2-img.amz.wtchn.net/image/v2/2aa2e957ce3e3403b913c0ba3eeb34a1.jpg?jwt=ZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKaVlXTnJaM0p2ZFc1a0lqcDdJbklpT2pJMU5Td2laeUk2TWpVMUxDSmlJam95TlRWOUxDSmpjbTl3SWpwMGNuVmxMQ0pvWldsbmFIUWlPamN3TUN3aWNHRjBhQ0k2SWk5Mk1pOXpkRzl5WlM5cGJXRm5aUzh4TmpFek16YzNOakF6TkRRME9EZzROemcwSWl3aWNYVmhiR2wwZVNJNk9EQXNJbmRwWkhSb0lqbzBPVEI5Lk1SczBrUDBoeFQ1aUVRY2pmdTJZMV9uVEdNajNFZ2RTcVVzM25VRmZjQlk"
+          "movieId":4,
+          "movieName":"극장판 귀멸의 칼날 무한열차편",
+          "movieGrade":"15",
+          "moviePosterUrl":"https://an2-img.amz.wtchn.net/image/v2/bcbeef6a4c17508a5e18ca6b63246344.jpg?jwt=ZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKaVlXTnJaM0p2ZFc1a0lqcDdJbklpT2pJMU5Td2laeUk2TWpVMUxDSmlJam95TlRWOUxDSmpjbTl3SWpwMGNuVmxMQ0pvWldsbmFIUWlPamN3TUN3aWNHRjBhQ0k2SWk5Mk1pOXpkRzl5WlM5cGJXRm5aUzh4TmpFeE9UQTJOakkxTWpFek1UVXdOemt4SWl3aWNYVmhiR2wwZVNJNk9EQXNJbmRwWkhSb0lqbzBPVEI5Lnd2bjJJQXk4cmVSWXdNWFdERnk0QkRsZjN0ZFNQWUo1N1NoTEJiRWN3Ums"
         },
         {
-          "movieId": 7,
-          "movieName": "극장판 귀멸의 칼날 무한열차편",
-          "movieGrade": "15세이용가",
-          "moviePosterUrl": "https://an2-img.amz.wtchn.net/image/v2/bcbeef6a4c17508a5e18ca6b63246344.jpg?jwt=ZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKaVlXTnJaM0p2ZFc1a0lqcDdJbklpT2pJMU5Td2laeUk2TWpVMUxDSmlJam95TlRWOUxDSmpjbTl3SWpwMGNuVmxMQ0pvWldsbmFIUWlPamN3TUN3aWNHRjBhQ0k2SWk5Mk1pOXpkRzl5WlM5cGJXRm5aUzh4TmpFeE9UQTJOakkxTWpFek1UVXdOemt4SWl3aWNYVmhiR2wwZVNJNk9EQXNJbmRwWkhSb0lqbzBPVEI5Lnd2bjJJQXk4cmVSWXdNWFdERnk0QkRsZjN0ZFNQWUo1N1NoTEJiRWN3Ums"
+          "movieId":9,
+          "movieName":"극장판 콩순이: 장난감나라 대모험",
+          "movieGrade":"00",
+          "moviePosterUrl":"https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202105/17213_103_1.jpg"
         },
         {
-          "movieId": 8,
-          "movieName": "베르테르",
-          "movieGrade": "12세이용가",
-          "moviePosterUrl": "https://an2-img.amz.wtchn.net/image/v2/8db0626c9656e6ea558b4d1d2f3d9f9e.jpg?jwt=ZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKaVlXTnJaM0p2ZFc1a0lqcDdJbklpT2pJMU5Td2laeUk2TWpVMUxDSmlJam95TlRWOUxDSmpjbTl3SWpwMGNuVmxMQ0pvWldsbmFIUWlPamN3TUN3aWNHRjBhQ0k2SWk5Mk1pOXpkRzl5WlM5cGJXRm5aUzh4TmpFNU5URTBPREEzTURNeU5UZzNNakEzSWl3aWNYVmhiR2wwZVNJNk9EQXNJbmRwWkhSb0lqbzBPVEI5LmlSdURvb0t1c1dTbEZ0RDBFbjRRZUJpVXdsQTN0WV84TXR4MTFjTWNJWEE"
+          "movieId":5,
+          "movieName":"크루즈 패밀리: 뉴에이지",
+          "movieGrade":"00",
+          "moviePosterUrl":"https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202105/17201_103_1.jpg"
         },
         {
-          "movieId": 9,
-          "movieName": "내가 죽기를 바라는 자들",
-          "movieGrade": "18세이용가",
-          "moviePosterUrl": "https://an2-img.amz.wtchn.net/image/v2/813c8675b230d00a0da0e723f029d3d6.jpg?jwt=ZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKaVlXTnJaM0p2ZFc1a0lqcDdJbklpT2pJMU5Td2laeUk2TWpVMUxDSmlJam95TlRWOUxDSmpjbTl3SWpwMGNuVmxMQ0pvWldsbmFIUWlPamN3TUN3aWNHRjBhQ0k2SWk5Mk1pOXpkRzl5WlM5cGJXRm5aUzh4TmpFNU5URXpORFEyTVRNd05qa3lOREUySWl3aWNYVmhiR2wwZVNJNk9EQXNJbmRwWkhSb0lqbzBPVEI5Lkk2ZFJIVHNldjNvclA3OVhFOThiSHZHa1Q5bmUyN0NfYVdmd0t4N2tkN2c"
+          "movieId":30,
+          "movieName":"쇼크 웨이브 2",
+          "movieGrade":"15",
+          "moviePosterUrl":"https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202105/17434_103_1.jpg"
         }
       ]
     },
     {
-      "categoryId": 1,
-      "categoryName": "개봉 예정 영화",
-      "movies": [
+      "categoryName":"개봉 예정 영화",
+      "movies":[
         {
-          "movieId": 10,
-          "movieName": "스파이럴",
-          "movieGrade": "18세이용가",
-          "moviePosterUrl": "https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202105/17297_103_1.jpg"
+          "movieId":39,
+          "movieName":"썰",
+          "movieGrade":"18",
+          "moviePosterUrl":"https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202106/17457_103_1.jpg"
         },
         {
-          "movieId": 11,
-          "movieName": "아들의 이름으로",
-          "movieGrade": "12세이용가",
-          "moviePosterUrl": "https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202105/17328_103_1.jpg"
+          "movieId":33,
+          "movieName":"애플",
+          "movieGrade":"12",
+          "moviePosterUrl":"https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202105/17317_103_1.jpg"
         },
         {
-          "movieId": 12,
-          "movieName": "비커밍 아스트리드",
-          "movieGrade": "15세이용가",
-          "moviePosterUrl": "https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202105/17284_103_1.jpg"
+          "movieId":35,
+          "movieName":"컨저링",
+          "movieGrade":"15",
+          "moviePosterUrl":"https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/201309/6680_103_1.jpg"
         },
         {
-          "movieId": 13,
-          "movieName": "내겐 너무 소중한 너",
-          "movieGrade": "12세이용가",
-          "moviePosterUrl": "https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202105/17323_103_1.jpg"
+          "movieId":37,
+          "movieName":"＃위왓치유",
+          "movieGrade":"18",
+          "moviePosterUrl":"https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202106/17430_103_1.jpg"
+        },
+        {
+          "movieId":38,
+          "movieName":"까지발",
+          "movieGrade":"12",
+          "moviePosterUrl":"https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202106/17431_103_1.jpg"
+        },
+        {
+          "movieId":40,
+          "movieName":"낫아웃",
+          "movieGrade":"15",
+          "moviePosterUrl":"https://caching.lottecinema.co.kr//Media/MovieFile/MovieImg/202106/17450_103_1.jpg"
         }
       ]
-    },
-    {
-      "categoryId": 2,
-      "categoryName": "액션",
-      "movies": []
     }
   ]
 }
