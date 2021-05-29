@@ -21,7 +21,7 @@ interface Props {
 
 const Information = ({ data }: Props): JSX.Element => {
     const { closeModal } = useModal();
-    const { movieGen, movieRelease, movieTime, movieDistribute, movieName, movieDescription, director, actors } = data;
+    const { movieGen, movieRelease, movieTime, movieDistribute, movieName, movieDescription, directors, actors } = data;
 
     const descriptionList = useMemo(() => {
         return (
@@ -45,11 +45,11 @@ const Information = ({ data }: Props): JSX.Element => {
                     </Description>
                     <Description>
                         <dt>상영시간</dt>
-                        <dd>{movieTime}분</dd>
+                        <dd>{movieTime}</dd>
                     </Description>
                     <Description>
                         <dt>감독</dt>
-                        <dd>{director}</dd>
+                        <dd>{directors}</dd>
                     </Description>
                     <DescriptionLineBreak>
                         <dt>출연진</dt>
@@ -62,7 +62,7 @@ const Information = ({ data }: Props): JSX.Element => {
                 </StyledDescriptionList>
             </div>
         );
-    }, [actors, director, movieDescription, movieDistribute, movieGen, movieName, movieRelease, movieTime]);
+    }, [actors, directors, movieDescription, movieDistribute, movieGen, movieName, movieRelease, movieTime]);
 
     return (
         <StyledModalContainer>
@@ -95,7 +95,7 @@ const DescriptionLineBreak = styled(StyledDescription)`
     dd {
         margin: 0;
         padding: 12px 0 0 0;
-        white-space: normal;
+        white-space: pre-line;
     }
 `;
 
