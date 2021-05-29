@@ -198,19 +198,22 @@
             "showId": 1001,
             "theaterName": "1관",
             "showStartTime": "2021-05-14 14:10",
-            "seatsInfo": "168/240"
+            "seatsCapacity": 96,
+            "seatsAvailable": 93
           },
           {
             "showId": 1002,
             "theaterName": "2관",
             "showStartTime": "2021-05-14 15:10",
-            "seatsInfo": "209/212"
+            "seatsCapacity": 88,
+            "seatsAvailable": 88
           },
           {
             "showId": 1003,
             "theaterName": "1관",
             "showStartTime": "2021-05-14 16:40",
-            "seatsInfo": "189/240"
+            "seatsCapacity": 96,
+            "seatsAvailable": 96
           }
         ]
       },
@@ -221,19 +224,22 @@
             "showId": 1004,
             "theaterName": "1관",
             "showStartTime": "2021-05-15 10:20",
-            "seatsInfo": "230/240"
+            "seatsCapacity": 96,
+            "seatsAvailable": 63
           },
           {
             "showId": 1005,
             "theaterName": "2관",
             "showStartTime": "2021-05-15 11:10",
-            "seatsInfo": "208/212"
+            "seatsCapacity": 88,
+            "seatsAvailable": 83
           },
           {
             "showId": 1006,
             "theaterName": "1관",
             "showStartTime": "2021-05-15 13:40",
-            "seatsInfo": "239/240"
+            "seatsCapacity": 96,
+            "seatsAvailable": 94
           }
         ]
       }
