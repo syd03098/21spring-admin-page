@@ -335,16 +335,17 @@
     "email": "user@mail.com (비회원 전용, 회원은 생략 가능)",
     "password": "passwd (비회원 전용, 회원은 생략 가능)",
     "payType": 1,
-    "requestedSeat": [
+    "ticketAmount": [
       {
-        "seatNo": 332,
-        "customerType": 1
+        "customerTypeId": 1,
+        "amount": 1
       },
       {
-        "seatNo": 333,
-        "customerType": 2
+        "customerTypeId": 2,
+        "amount": 3
       }
-    ]
+    ],
+    "seatIds": [83, 84, 85, 86]
   }
   ```
 
@@ -504,10 +505,10 @@
   }
   ```
 
-### /user/tickets/{ticket\_id} DELETE
+### /user/tickets/{pay\_id} DELETE
 
 * 리퀘스트 성공시 예매 취소
 * 리퀘스트 실패시 거절
-  * 없는 ticketId 거나
+  * 없는 payId 거나
   * 유저가 예매한 티켓이 아니거나
   * 알수없는 오류
