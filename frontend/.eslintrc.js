@@ -1,7 +1,7 @@
 module.exports = {
     env: {
         browser: true,
-        es2021: true,
+        es6: true,
     },
     parser: '@typescript-eslint/parser',
     plugins: ['prettier', '@typescript-eslint'],
@@ -38,5 +38,6 @@ module.exports = {
         'no-console': 'off',
         'import/no-unresolved': 'off',
         'no-use-before-define': 'off',
+        'no-param-reassign': ['error', { props: true, ignorePropertyModificationsFor: ['draft'] }],
     },
 };
