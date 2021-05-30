@@ -1,26 +1,16 @@
 import React, { useMemo } from 'react';
-import { useModal } from '@stores/ModalStore';
-import { StyledPreventScroll } from '@utils/styleFunctions';
-import {
-    StyledModalContainer,
-    StyledModalInner,
-    StyledModalHeader,
-    StyledDescriptionList,
-    StyledDescription,
-} from '@components/organism/modal/information/style';
+import { StyledDescriptionList, StyledDescription } from '@components/organism/modal/information/style';
 import styled from 'styled-components';
-import Button from '@components/atom/Button';
 import Close from '@components/atom/icons/Close';
-import FlexBox from '@components/atom/FlexBox';
 import moment from 'moment/moment';
 import { MovieInfoResponseBody } from '@utils/api/movieInfo';
+import FullModalLayout from '@components/layouts/FullModalLayout';
 
 interface Props {
     data: MovieInfoResponseBody;
 }
 
 const Information = ({ data }: Props): JSX.Element => {
-    const { closeModal } = useModal();
     const { movieGen, movieRelease, movieTime, movieDistribute, movieName, movieDescription, directors, actors } = data;
 
     const descriptionList = useMemo(() => {
@@ -64,22 +54,7 @@ const Information = ({ data }: Props): JSX.Element => {
         );
     }, [actors, directors, movieDescription, movieDistribute, movieGen, movieName, movieRelease, movieTime]);
 
-    return (
-        <StyledModalContainer>
-            <StyledPreventScroll />
-            <StyledModalInner>
-                <StyledModalHeader>
-                    <FlexBox justify="left">
-                        <Button icon={<Close size={20} />} style={{ padding: '8px 0' }} onClick={closeModal} />
-                    </FlexBox>
-                    <FlexBox justify="left">
-                        <h2>기본정보</h2>
-                    </FlexBox>
-                </StyledModalHeader>
-                {descriptionList}
-            </StyledModalInner>
-        </StyledModalContainer>
-    );
+    return <FullModalLayout closeIcon={<Close size={20} />} title="기본정보" contents={descriptionList} />;
 };
 
 const Description = styled(StyledDescription)`
