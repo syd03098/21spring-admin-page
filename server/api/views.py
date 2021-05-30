@@ -774,15 +774,24 @@ class UserViewSet(viewsets.ViewSet):
                          responses={200: UserTicketSerializer})
     @action(detail=False, methods=['get'])
     def tickets(self, request, *args, **kwargs):
-        # TODO: count가 NoneType이 아닐 경우 pay개수만 반환 (취소표 제외)
-        # count = request.GET.get('count')
-
+        count = request.GET.get('count')
         # email = request.GET.get('email')
 
         userId = get_user(request)
         if not userId:
             # TODO: 비회원일시 email로 받아서 조회
             return HttpResponse(status=401)
+
+        if count is not None:
+            with connection.cursor() as cursor:
+                cursor.execute(f"""
+                    SELECT COUNT(*) FROM 
+                        (SELECT P.PAY_ID
+                         FROM TICKET T, PAY P
+                         WHERE P.PAY_ID=T.PAY_ID AND T.USR_ID='{userId}' 
+                               AND P.PAY_STATE<=3 GROUP BY P.PAY_ID);""")
+                count = cursor.fetchone()[0]
+            return JsonResponse({"count": count}, status=200)
 
         res = {}
         with connection.cursor() as cursor:
