@@ -379,6 +379,7 @@
 
 ### /user/tickets?count GET
   * 회원인경우
+  * 한번에 2인 이상 결제한 경우는 1개로 표시
   ```json
   "response": {
     "count": 3
