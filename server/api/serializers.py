@@ -190,3 +190,26 @@ class UserProfileSerializer(serializers.Serializer):
 class UserPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(min_length=6)
     newPassword = serializers.CharField(min_length=6)
+
+
+class PaySeatSerializer(serializers.Serializer):
+    seatRow = serializers.IntegerField()
+    seatCol = serializers.IntegerField()
+    customerType = serializers.IntegerField()
+
+
+class PayTicketSerializer(serializers.Serializer):
+    payId = serializers.IntegerField()
+    payState = serializers.IntegerField()
+    theaterName = serializers.CharField()
+    moviename = serializers.CharField()
+    showStartTime = serializers.DateTimeField()
+    showCount = serializers.IntegerField()
+    seatsList = PaySeatSerializer(many=True)
+    payDate = serializers.DateTimeField()
+    payPrice = serializers.IntegerField()
+
+
+class UserTicketSerializer(serializers.Serializer):
+    tickets = PayTicketSerializer(many=True)
+    canceled = PayTicketSerializer(many=True)
