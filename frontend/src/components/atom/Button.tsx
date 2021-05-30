@@ -76,35 +76,35 @@ const StyledButton = styled.button`
     }
     &:disabled {
         opacity: 0.5;
-        cursor: not-allowed;
+        cursor: initial;
     }
     &.primary {
         background-color: ${({ theme }) => theme.primary100};
         color: ${({ theme }) => theme.white};
-        &:hover {
+        &:hover:not(:disabled) {
             background-color: ${({ theme }) => lighten(0.1, theme.primary100)};
         }
-        &:active {
+        &:active:not(:disabled) {
             background-color: ${({ theme }) => darken(0.1, theme.primary100)};
         }
     }
     &.smoke {
         background-color: ${({ theme }) => theme.smoke80};
         color: ${({ theme }) => theme.white};
-        &:hover {
+        &:hover:not(:disabled) {
             background-color: ${({ theme }) => lighten(0.1, theme.smoke80)};
         }
-        &:active {
+        &:active:not(:disabled) {
             background-color: ${({ theme }) => darken(0.1, theme.smoke80)};
         }
     }
     &.pink {
         background-color: ${({ theme }) => theme.pink};
         color: ${({ theme }) => theme.white};
-        &:hover {
+        &:hover:not(:disabled) {
             background-color: ${({ theme }) => lighten(0.1, theme.pink)};
         }
-        &:active {
+        &:active:not(:disabled) {
             background-color: ${({ theme }) => darken(0.1, theme.pink)};
         }
     }

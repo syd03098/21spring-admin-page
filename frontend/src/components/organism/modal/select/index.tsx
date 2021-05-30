@@ -1,15 +1,11 @@
 import React, { useCallback, useState } from 'react';
 import { useModal } from '@stores/ModalStore';
-import { StyledModalContainer, StyledModalHeader, StyledModalInner } from '@components/organism/modal/style';
 import {
     StyledContentsWrap,
     StyledContentsInner,
     StyledSelectShowContainer,
     StyledSelectShowGridTemplate,
 } from '@components/organism/modal/select/style';
-import { StyledPreventScroll } from '@utils/styleFunctions';
-import FlexBox from '@components/atom/FlexBox';
-import Button from '@components/atom/Button';
 import ArrowLeft from '@components/atom/icons/ArrowLeft';
 import moment from 'moment/moment';
 import 'moment/locale/ko';
@@ -20,6 +16,9 @@ import ViewGrade from '@components/molecule/viewGrade';
 import { MovieGrade } from '@components/molecule/viewGrade/types';
 import ShowSelectCard from '@components/organism/modal/select/cards/ShowSelectCard';
 import DateSelectCard from '@components/organism/modal/select/cards/DateSelectCard';
+import { getTicketingDataResponseBody } from '@utils/api/ticktes';
+import Tickets from '@components/organism/modal/tickets';
+import FullModalLayout from '@components/layouts/FullModalLayout';
 
 interface Props {
     movieId: number;
@@ -30,7 +29,7 @@ const Select = ({ movieId, resources: initialData }: Props): JSX.Element => {
     const [selected, setSelected] = useState<number>(0);
     const [schedules, setSchedules] = useState<ScheduleResponseBody>(initialData);
     const { movieName, showSchedule, movieGrade } = schedules;
-    const { closeModal } = useModal();
+    const { appendModal } = useModal();
     const { appendToast } = useToast();
 
     const selectDateHandler = useCallback(
@@ -52,25 +51,40 @@ const Select = ({ movieId, resources: initialData }: Props): JSX.Element => {
         [appendToast, selected],
     );
 
-    const openTicketModalHandler = useCallback(async (showId: number) => {
-        // todo: 티켓 모달 띄우기
-        console.log('티켓');
-    }, []);
+    const openTicketModalHandler = useCallback(
+        async (showId: number) => {
+            try {
+                const response = await getTicketingDataResponseBody(showId);
+                const { showInfo, seats, seatFee } = response;
+                appendModal(
+                    <Tickets
+                        counterState={seatFee.map((props) => {
+                            return {
+                                ...props,
+                                amount: 0,
+                            };
+                        })}
+                        maxNumber={8}
+                        showInfo={showInfo}
+                        seatList={seats}
+                    />,
+                    'both',
+                );
+            } catch (err) {
+                appendToast('티켓 정보를 불러오는데 실패했습니다. 다시 시도해주세요.', {
+                    type: 'error',
+                    timeout: 8000,
+                });
+            }
+        },
+        [appendModal, appendToast],
+    );
 
     return (
-        <StyledModalContainer>
-            <StyledPreventScroll />
-            <StyledModalInner>
-                <StyledModalHeader>
-                    <FlexBox justify="left">
-                        <Button
-                            icon={<ArrowLeft size={24} />}
-                            onClick={closeModal}
-                            style={{ padding: '12px 18px 12px 0' }}
-                        />
-                    </FlexBox>
-                    <h2>상영일정선택</h2>
-                </StyledModalHeader>
+        <FullModalLayout
+            closeIcon={<ArrowLeft size={24} />}
+            title="상영일정선택"
+            contents={
                 <StyledContentsWrap>
                     <StyledContentsInner>
                         <HeaderRow>
@@ -120,8 +134,8 @@ const Select = ({ movieId, resources: initialData }: Props): JSX.Element => {
                         </StyledSelectShowContainer>
                     </StyledContentsInner>
                 </StyledContentsWrap>
-            </StyledModalInner>
-        </StyledModalContainer>
+            }
+        />
     );
 };
 
