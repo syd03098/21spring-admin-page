@@ -4,7 +4,7 @@ import itertools
 import jwt
 
 from core.user import (get_user, is_admin)
-from core.pay import pay
+from core.pay import (pay, cancel)
 from django.conf import settings
 from django.db import connection, transaction
 from django.http.response import HttpResponse, JsonResponse
@@ -543,7 +543,7 @@ class ShowSeatViewSet(viewsets.ViewSet):
         userId = get_user(request)
         if not userId:
             # TODO: 비회원용 예매
-            return HttpResponse(status=404, content="로그인이 필요합니다.")
+            return HttpResponse(status=401, content="로그인이 필요합니다.")
 
         show_id = int(self.kwargs.get('show_id'))
         # email = request.data.get('email')
@@ -680,6 +680,131 @@ class TheaterViewSet(viewsets.ViewSet):
 # }}}
 
 
+# {{{ TicketViewSet
+class TicketViewSet(viewsets.ViewSet):
+
+    # {{{ list
+    @swagger_auto_schema(manual_parameters=[
+        openapi.Parameter('count',
+                          openapi.IN_QUERY,
+                          description='개수',
+                          type=openapi.TYPE_STRING),
+        openapi.Parameter('email',
+                          openapi.IN_QUERY,
+                          description='이메일 (비회원 전용)',
+                          type=openapi.TYPE_STRING)
+    ],
+                         responses={200: UserTicketSerializer})
+    def list(self, request, *args, **kwargs):
+        count = request.GET.get('count')
+        # email = request.GET.get('email')
+
+        userId = get_user(request)
+        if not userId:
+            # TODO: 비회원일시 email로 받아서 조회
+            return HttpResponse(status=401)
+
+        if count is not None:
+            with connection.cursor() as cursor:
+                cursor.execute(f"""
+                    SELECT COUNT(*) FROM 
+                        (SELECT P.PAY_ID
+                         FROM TICKET T, PAY P
+                         WHERE P.PAY_ID=T.PAY_ID AND T.USR_ID='{userId}' 
+                               AND P.PAY_STATE<=3 GROUP BY P.PAY_ID);""")
+                count = cursor.fetchone()[0]
+            return JsonResponse({"count": count}, status=200)
+
+        res = {}
+        with connection.cursor() as cursor:
+            cursor.execute(f"""
+                    SELECT P.PAY_ID, P.PAY_STATE, TH.THEATER_NAME, M.MOVIE_NAME, 
+                           S.SHOW_START_TIME, S.SHOW_COUNT, ST.SEAT_ROW, ST.SEAT_COL, 
+                           T.CUSTOMER_TYPE_ID, P.PAY_DATE, P.PAY_PRICE 
+                    FROM TICKET T, PAY P, SEAT ST, SHOW S, THEATER TH, MOVIE M 
+                    WHERE T.USR_ID='{userId}' AND T.PAY_ID=P.PAY_ID AND T.SEAT_ID=ST.SEAT_ID AND 
+                          T.SHOW_ID=S.SHOW_ID AND S.THEATER_ID=TH.THEATER_ID AND S.MOVIE_ID=M.MOVIE_ID 
+                    ORDER BY PAY_ID;""")
+            fetched = cursor.fetchall()
+            tickets = filter(lambda x: x[1] <= 3, fetched)
+            canceled = filter(lambda x: x[1] >= 4, fetched)
+
+            def rows_to_pay(rows):
+                arr = list(rows)
+                pay = arr[0]
+                return {
+                    "payId": pay[0],
+                    "payState": pay[1],
+                    "theaterName": pay[2],
+                    "movieName": pay[3],
+                    "showStartTime": pay[4].strftime("%Y-%m-%d %H:%M:%S"),
+                    "showCount": pay[5],
+                    "seatsList": [{
+                        "seatRow": row[6],
+                        "seatCol": row[7],
+                        "customerType": row[8],
+                    } for row in arr],
+                    "payDate": pay[9].strftime("%Y-%m-%d %H:%M:%S"),
+                    "payPrice": pay[10]
+                }
+
+            res['tickets'] = [
+                rows_to_pay(rows)
+                for _, rows in itertools.groupby(tickets, lambda x: x[0])
+            ]
+            res['canceled'] = [
+                rows_to_pay(rows)
+                for _, rows in itertools.groupby(canceled, lambda x: x[0])
+            ]
+
+        return JsonResponse(res, status=200)
+
+    # }}}
+
+    # {{{ destroy
+    @transaction.atomic
+    def destroy(self, request, pk, *args, **kwargs):
+        userId = get_user(request)
+        if not userId:
+            # TODO: 비회원 예매취소
+            return HttpResponse(status=401, content="로그인이 필요합니다.")
+
+        pay_id = pk
+
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f"""SELECT P.PAY_STATE, P.PAY_TYPE, P.PAY_PRICE, T.USR_ID 
+                    FROM PAY P, TICKET T 
+                    WHERE P.PAY_ID={pay_id} AND P.PAY_ID=T.PAY_ID;""")
+            payusr = cursor.fetchone()
+            err = HttpResponse(status=404, content="결제번호가 올바르지 않습니다.")
+            if not payusr:
+                return err
+            (pay_state, pay_type, money, usr_id) = payusr
+            if usr_id != userId or pay_state > 3:
+                return err
+
+        sid = transaction.savepoint()
+        with connection.cursor() as cursor:
+            cursor.execute(f"""
+                    UPDATE TICKET 
+                    SET TICKET_STATE=2 
+                    WHERE PAY_ID={pay_id};""")
+
+        try:
+            cancel(pay_id, pay_type, money, userId)
+        except Exception as e:
+            transaction.savepoint_rollback(sid)
+            return HttpResponse(status=400, content=e)
+
+        return HttpResponse(status=204)
+
+    # }}}
+
+
+# }}}
+
+
 # {{{ UserViewSet
 class UserViewSet(viewsets.ViewSet):
 
@@ -760,84 +885,84 @@ class UserViewSet(viewsets.ViewSet):
 
     # }}} password
 
-    # {{{ tickets
-    @swagger_auto_schema(manual_parameters=[
-        openapi.Parameter('count',
-                          openapi.IN_QUERY,
-                          description='개수',
-                          type=openapi.TYPE_STRING),
-        openapi.Parameter('email',
-                          openapi.IN_QUERY,
-                          description='이메일 (비회원 전용)',
-                          type=openapi.TYPE_STRING)
-    ],
-                         responses={200: UserTicketSerializer})
-    @action(detail=False, methods=['get'])
-    def tickets(self, request, *args, **kwargs):
-        count = request.GET.get('count')
-        # email = request.GET.get('email')
+    # # {{{ tickets
+    # @swagger_auto_schema(manual_parameters=[
+    #     openapi.Parameter('count',
+    #                       openapi.IN_QUERY,
+    #                       description='개수',
+    #                       type=openapi.TYPE_STRING),
+    #     openapi.Parameter('email',
+    #                       openapi.IN_QUERY,
+    #                       description='이메일 (비회원 전용)',
+    #                       type=openapi.TYPE_STRING)
+    # ],
+    #                      responses={200: UserTicketSerializer})
+    # @action(detail=False, methods=['get'])
+    # def tickets(self, request, *args, **kwargs):
+    #     count = request.GET.get('count')
+    #     # email = request.GET.get('email')
 
-        userId = get_user(request)
-        if not userId:
-            # TODO: 비회원일시 email로 받아서 조회
-            return HttpResponse(status=401)
+    #     userId = get_user(request)
+    #     if not userId:
+    #         # TODO: 비회원일시 email로 받아서 조회
+    #         return HttpResponse(status=401)
 
-        if count is not None:
-            with connection.cursor() as cursor:
-                cursor.execute(f"""
-                    SELECT COUNT(*) FROM 
-                        (SELECT P.PAY_ID
-                         FROM TICKET T, PAY P
-                         WHERE P.PAY_ID=T.PAY_ID AND T.USR_ID='{userId}' 
-                               AND P.PAY_STATE<=3 GROUP BY P.PAY_ID);""")
-                count = cursor.fetchone()[0]
-            return JsonResponse({"count": count}, status=200)
+    #     if count is not None:
+    #         with connection.cursor() as cursor:
+    #             cursor.execute(f"""
+    #                 SELECT COUNT(*) FROM
+    #                     (SELECT P.PAY_ID
+    #                      FROM TICKET T, PAY P
+    #                      WHERE P.PAY_ID=T.PAY_ID AND T.USR_ID='{userId}'
+    #                            AND P.PAY_STATE<=3 GROUP BY P.PAY_ID);""")
+    #             count = cursor.fetchone()[0]
+    #         return JsonResponse({"count": count}, status=200)
 
-        res = {}
-        with connection.cursor() as cursor:
-            cursor.execute(f"""
-                    SELECT P.PAY_ID, P.PAY_STATE, TH.THEATER_NAME, M.MOVIE_NAME, 
-                           S.SHOW_START_TIME, S.SHOW_COUNT, ST.SEAT_ROW, ST.SEAT_COL, 
-                           T.CUSTOMER_TYPE_ID, P.PAY_DATE, P.PAY_PRICE 
-                    FROM TICKET T, PAY P, SEAT ST, SHOW S, THEATER TH, MOVIE M 
-                    WHERE T.USR_ID='{userId}' AND T.PAY_ID=P.PAY_ID AND T.SEAT_ID=ST.SEAT_ID AND 
-                          T.SHOW_ID=S.SHOW_ID AND S.THEATER_ID=TH.THEATER_ID AND S.MOVIE_ID=M.MOVIE_ID 
-                    ORDER BY PAY_ID;""")
-            fetched = cursor.fetchall()
-            tickets = filter(lambda x: x[1] <= 3, fetched)
-            canceled = filter(lambda x: x[1] >= 4, fetched)
+    #     res = {}
+    #     with connection.cursor() as cursor:
+    #         cursor.execute(f"""
+    #                 SELECT P.PAY_ID, P.PAY_STATE, TH.THEATER_NAME, M.MOVIE_NAME,
+    #                        S.SHOW_START_TIME, S.SHOW_COUNT, ST.SEAT_ROW, ST.SEAT_COL,
+    #                        T.CUSTOMER_TYPE_ID, P.PAY_DATE, P.PAY_PRICE
+    #                 FROM TICKET T, PAY P, SEAT ST, SHOW S, THEATER TH, MOVIE M
+    #                 WHERE T.USR_ID='{userId}' AND T.PAY_ID=P.PAY_ID AND T.SEAT_ID=ST.SEAT_ID AND
+    #                       T.SHOW_ID=S.SHOW_ID AND S.THEATER_ID=TH.THEATER_ID AND S.MOVIE_ID=M.MOVIE_ID
+    #                 ORDER BY PAY_ID;""")
+    #         fetched = cursor.fetchall()
+    #         tickets = filter(lambda x: x[1] <= 3, fetched)
+    #         canceled = filter(lambda x: x[1] >= 4, fetched)
 
-            def rows_to_pay(rows):
-                arr = list(rows)
-                pay = arr[0]
-                return {
-                    "payId": pay[0],
-                    "payState": pay[1],
-                    "theaterName": pay[2],
-                    "movieName": pay[3],
-                    "showStartTime": pay[4].strftime("%Y-%m-%d %H:%M:%S"),
-                    "showCount": pay[5],
-                    "seatsList": [{
-                        "seatRow": row[6],
-                        "seatCol": row[7],
-                        "customerType": row[8],
-                    } for row in arr],
-                    "payDate": pay[9].strftime("%Y-%m-%d %H:%M:%S"),
-                    "payPrice": pay[10]
-                }
+    #         def rows_to_pay(rows):
+    #             arr = list(rows)
+    #             pay = arr[0]
+    #             return {
+    #                 "payId": pay[0],
+    #                 "payState": pay[1],
+    #                 "theaterName": pay[2],
+    #                 "movieName": pay[3],
+    #                 "showStartTime": pay[4].strftime("%Y-%m-%d %H:%M:%S"),
+    #                 "showCount": pay[5],
+    #                 "seatsList": [{
+    #                     "seatRow": row[6],
+    #                     "seatCol": row[7],
+    #                     "customerType": row[8],
+    #                 } for row in arr],
+    #                 "payDate": pay[9].strftime("%Y-%m-%d %H:%M:%S"),
+    #                 "payPrice": pay[10]
+    #             }
 
-            res['tickets'] = [
-                rows_to_pay(rows)
-                for _, rows in itertools.groupby(tickets, lambda x: x[0])
-            ]
-            res['canceled'] = [
-                rows_to_pay(rows)
-                for _, rows in itertools.groupby(canceled, lambda x: x[0])
-            ]
+    #         res['tickets'] = [
+    #             rows_to_pay(rows)
+    #             for _, rows in itertools.groupby(tickets, lambda x: x[0])
+    #         ]
+    #         res['canceled'] = [
+    #             rows_to_pay(rows)
+    #             for _, rows in itertools.groupby(canceled, lambda x: x[0])
+    #         ]
 
-        return JsonResponse(res, status=200)
+    #     return JsonResponse(res, status=200)
 
-    # }}}
+    # # }}}
 
 
 # }}}
