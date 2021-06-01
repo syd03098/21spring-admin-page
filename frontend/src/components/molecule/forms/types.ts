@@ -7,3 +7,8 @@ export interface SignUpFormData extends LoginFormData {
     userName: string;
     email: string;
 }
+
+export interface EmailFormData {
+    email: string;
+    password: string;
+}

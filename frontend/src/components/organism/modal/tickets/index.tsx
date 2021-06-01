@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Seat, ShowInfo } from '@utils/api/ticktes/types';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import Flex from '@components/atom/FlexBox';
 import useSet from 'react-use/esm/useSet';
 import { CounterState, CountersResource } from '@components/organism/modal/tickets/types';
 import { useToast } from '@stores/ToastStore';
-import { StyledBottomFixed, StyledOptionControlArea } from '@components/organism/modal/tickets/style';
+import { StyledBottomFixed, StyledOptionControlArea, StyledSeatButton } from '@components/organism/modal/tickets/style';
 import Close from '@components/atom/icons/Close';
 import Counter from '@components/molecule/counter';
 import produce from 'immer';
@@ -46,10 +46,6 @@ const Tickets = ({ counterState: initialState, maxNumber, seatList, showInfo }: 
         }
         setReady(true);
     }, [countersData.ticketsLimit, selectedTicketSet.size]);
-
-    // todo: 포인트로 결제하는 api
-
-    // todo: 카드로 결제하는 api
 
     const onClickMinusHandler = useCallback(
         (idx: number) => {
@@ -95,7 +91,7 @@ const Tickets = ({ counterState: initialState, maxNumber, seatList, showInfo }: 
 
     return (
         <FullModalLayout
-            closeIcon={<Close size={24} />}
+            closeIcon={<Close size={20} />}
             title="인원/좌석 선택"
             contents={
                 <Flex justify="center" column="column" style={{ height: '100%' }}>
@@ -106,20 +102,21 @@ const Tickets = ({ counterState: initialState, maxNumber, seatList, showInfo }: 
                                 return (
                                     <Flex key={`row-${rowNameEn}`}>
                                         {row.map((seat) => (
-                                            <SeatButton
+                                            <StyledSeatButton
                                                 key={seat.seatNo}
                                                 selected={has(seat.seatNo)}
                                                 disabled={
                                                     (!has(seat.seatNo) &&
                                                         countersData.ticketsLimit !== 0 &&
                                                         countersData.ticketsLimit === selectedTicketSet.size) ||
+                                                    seat.seatType === 2 ||
                                                     seat.seatType === 0
                                                 }
                                                 onClick={() => onSelectSeatHandler(seat.seatNo)}
                                             >
                                                 {rowNameEn}
                                                 {seat.seatColumn}
-                                            </SeatButton>
+                                            </StyledSeatButton>
                                         ))}
                                     </Flex>
                                 );
@@ -130,11 +127,10 @@ const Tickets = ({ counterState: initialState, maxNumber, seatList, showInfo }: 
                         <StyledOptionControlArea>
                             <OptionOverView
                                 isReady={isReady}
-                                // runningTime={}
-                                // theaterName={}
-                                // thumbnail={}
+                                showInfo={showInfo}
                                 totalPrice={totalPrice}
-                                // movieName={}
+                                selectedTicket={[...selectedTicketSet]}
+                                ticketAmount={countersData.counters.map(({ movieFee, ...rest }) => rest)}
                             />
                             <ScrollableCounters>
                                 {countersData.counters.map(({ amount, customerTypeId }, idx) => (
@@ -175,15 +171,12 @@ const ScrollableCounters = styled.div`
     flex-wrap: nowrap;
     justify-content: space-between;
     padding-bottom: 12px;
-
     & > div:first-child {
         margin: 0 6px 0 0;
     }
-
     & > div:last-child {
         margin: 0 0 0 6px;
     }
-
     & > div:not(:first-child):not(:last-child) {
         margin: 0 6px;
     }
@@ -193,38 +186,6 @@ const TicketsDisplay = styled.div`
     width: min-content;
     padding: 36px 12px;
     margin: auto;
-`;
-
-const SeatButton = styled.button<{ selected: boolean }>`
-    display: inline-flex;
-    width: 28px;
-    height: 21px;
-    margin: 5px 2px;
-    border: transparent;
-    align-items: center;
-    justify-content: center;
-    background-color: ${({ theme }) => theme.smoke50};
-    border: 1px solid ${({ theme }) => theme.smoke80};
-    border-radius: 5px 5px 2px 2px;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    user-select: none;
-
-    ${(props) =>
-        props.selected &&
-        css`
-            background-color: ${({ theme }) => theme.pink};
-            color: ${({ theme }) => theme.white};
-            border: transparent;
-        `}
-
-    &:disabled {
-        background-color: ${({ theme }) => theme.black30};
-        border: transparent;
-        color: transparent;
-        cursor: initial;
-    }
 `;
 
 export default Tickets;
