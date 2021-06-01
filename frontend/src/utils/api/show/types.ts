@@ -11,3 +11,16 @@ export interface Show {
     showEndTime: string;
     theaterName: string;
 }
+
+export interface PurchaseTicketsForm {
+    email?: string;
+    password?: string;
+    payType: number;
+    ticketAmount: TicketAmount[];
+    seatIds: number[];
+}
+
+export interface TicketAmount {
+    customerTypeId: number;
+    amount: number;
+}
