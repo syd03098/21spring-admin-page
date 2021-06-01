@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const StyledBottomFixed = styled.div`
     flex: 0 0 auto;
@@ -14,4 +14,34 @@ export const StyledOptionControlArea = styled.div`
     position: relative;
     max-width: 720px;
     margin: 0 auto;
+`;
+
+export const StyledSeatButton = styled.button<{ selected: boolean }>`
+    display: inline-flex;
+    width: 28px;
+    height: 21px;
+    margin: 5px 2px;
+    border: transparent;
+    align-items: center;
+    justify-content: center;
+    background-color: ${({ theme }) => theme.smoke50};
+    border: 1px solid ${({ theme }) => theme.smoke80};
+    border-radius: 5px 5px 2px 2px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+    ${(props) =>
+        props.selected &&
+        css`
+            background-color: ${({ theme }) => theme.pink};
+            color: ${({ theme }) => theme.white};
+            border: transparent;
+        `}
+    &:disabled {
+        background-color: ${({ theme }) => theme.black30};
+        border: transparent;
+        color: transparent;
+        cursor: initial;
+    }
 `;
