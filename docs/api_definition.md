@@ -273,6 +273,7 @@
       "showInfo": {
         "movieName": "센과 치히로의 행방불명",
         "movieGrade": "12",
+        "moviePosterUrl": "https://an2-img.amz.wtchn.net/image/v2/7faba67745c016695f1b44622a1ae835.jpg?jwt=ZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKaVlXTnJaM0p2ZFc1a0lqcDdJbklpT2pJMU5Td2laeUk2TWpVMUxDSmlJam95TlRWOUxDSmpjbTl3SWpwMGNuVmxMQ0pvWldsbmFIUWlPalF3TUN3aWNHRjBhQ0k2SWk5Mk1TOTVNM2xxWldObWVqTjVaVzUxZUdoMmRUbHNkaUlzSW5GMVlXeHBkSGtpT2pnd0xDSjNhV1IwYUNJNk1qZ3dmUS54VnBhZE0yOU1iX2N0cjg4QnJURnJncGhZZnhIOUVBbk5wSVMxcXRRUlZV",
         "showId": 1001,
         "showStartTime": "2021-05-01 11:20:00",
         "showEndTime": "2021-05-01 13:40:00",
