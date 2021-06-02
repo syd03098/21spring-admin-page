@@ -7,7 +7,7 @@ from api.model.models import (
 
 
 # {{{ pay
-def pay_card(money, userId) -> int:
+def pay_card(money, userId, member) -> int:
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     with connection.cursor() as cursor:
         cursor.execute("INSERT INTO PAY VALUES (PAY_SEQ.NEXTVAL, 1, 2, " \
@@ -15,15 +15,19 @@ def pay_card(money, userId) -> int:
                 f"TO_DATE('{now}', 'YYYY-MM-DD HH24:MI:SS') );")
         cursor.execute("SELECT PAY_SEQ.CURRVAL FROM DUAL;")
         pay_id = cursor.fetchone()[0]
-        cursor.execute(f"SELECT USR_POINT FROM USR WHERE USR_ID='{userId}';")
-        point = cursor.fetchone()[0] + money // 10
-        cursor.execute(
-            f"UPDATE USR SET USR_POINT={point} " \
-                    f"WHERE USR_ID='{userId}';")
+        if member:
+            cursor.execute(
+                f"SELECT USR_POINT FROM USR WHERE USR_ID='{userId}';")
+            point = cursor.fetchone()[0] + money // 10
+            cursor.execute(
+                f"UPDATE USR SET USR_POINT={point} " \
+                        f"WHERE USR_ID='{userId}';")
     return pay_id
 
 
-def pay_point(money, userId) -> int:
+def pay_point(money, userId, member) -> int:
+    if not member:
+        raise Exception("비회원은 포인트 결제를 할 수 없습니다.")
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     user = Usr.objects.raw(f"SELECT * FROM USR WHERE USR_ID='{userId}'")[0]
     point = user.usr_point
@@ -41,7 +45,7 @@ def pay_point(money, userId) -> int:
     return pay_id
 
 
-def pay_cash(money, userId) -> int:
+def pay_cash(money, userId, member) -> int:
     with connection.cursor() as cursor:
         cursor.execute("INSERT INTO PAY VALUES (PAY_SEQ.NEXTVAL, 3, 1, " \
                 f"{money}, NULL, NULL);")
@@ -50,7 +54,7 @@ def pay_cash(money, userId) -> int:
     return pay_id
 
 
-def pay(pay_type: int, money: int, userId: str) -> int:
+def pay(pay_type: int, money: int, userId: str, member: bool) -> int:
     _pay = {
         1: pay_card,
         2: pay_point,
@@ -59,7 +63,7 @@ def pay(pay_type: int, money: int, userId: str) -> int:
     pay = _pay.get(pay_type)
     if not pay:
         raise Exception(f"payType: {pay_type}은 올바르지 않은 결제 유형입니다.")
-    return pay(money, userId)
+    return pay(money, userId, member)
 
 
 # }}} pay
