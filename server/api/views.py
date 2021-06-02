@@ -708,34 +708,53 @@ class TicketViewSet(viewsets.ViewSet):
                          responses={200: UserTicketSerializer})
     def list(self, request, *args, **kwargs):
         count = request.GET.get('count')
-        # email = request.GET.get('email')
+        email = request.GET.get('email')
 
         userId = get_user(request)
-        if not userId:
-            # TODO: 비회원일시 email로 받아서 조회
-            return HttpResponse(status=401)
+        if not userId and not email:
+            return HttpResponse(status=400, content="비회원은 이메일을 입력해야 합니다.")
 
         if count is not None:
             with connection.cursor() as cursor:
-                cursor.execute(f"""
-                    SELECT COUNT(*) FROM 
-                        (SELECT P.PAY_ID
-                         FROM TICKET T, PAY P
-                         WHERE P.PAY_ID=T.PAY_ID AND T.USR_ID='{userId}' 
-                               AND P.PAY_STATE<=3 GROUP BY P.PAY_ID);""")
+                if userId:
+                    cursor.execute(f"""
+                        SELECT COUNT(*) FROM 
+                            (SELECT P.PAY_ID
+                             FROM TICKET T, PAY P
+                             WHERE P.PAY_ID=T.PAY_ID AND T.USR_ID='{userId}' 
+                                   AND P.PAY_STATE<=3 GROUP BY P.PAY_ID);""")
+                else:
+                    cursor.execute(f"""
+                        SELECT COUNT(*) FROM 
+                            (SELECT P.PAY_ID
+                             FROM TICKET T, PAY P
+                             WHERE P.PAY_ID=T.PAY_ID AND T.USR_ID IN 
+                                    (SELECT USR_ID FROM USR WHERE USR_EMAIL='{email}')
+                                   AND P.PAY_STATE<=3 GROUP BY P.PAY_ID);""")
                 count = cursor.fetchone()[0]
             return JsonResponse({"count": count}, status=200)
 
         res = {}
         with connection.cursor() as cursor:
-            cursor.execute(f"""
-                    SELECT P.PAY_ID, P.PAY_STATE, TH.THEATER_NAME, M.MOVIE_NAME, 
-                           S.SHOW_START_TIME, S.SHOW_COUNT, ST.SEAT_ROW, ST.SEAT_COL, 
-                           T.CUSTOMER_TYPE_ID, P.PAY_DATE, P.PAY_PRICE 
-                    FROM TICKET T, PAY P, SEAT ST, SHOW S, THEATER TH, MOVIE M 
-                    WHERE T.USR_ID='{userId}' AND T.PAY_ID=P.PAY_ID AND T.SEAT_ID=ST.SEAT_ID AND 
-                          T.SHOW_ID=S.SHOW_ID AND S.THEATER_ID=TH.THEATER_ID AND S.MOVIE_ID=M.MOVIE_ID 
-                    ORDER BY PAY_ID;""")
+            if userId:
+                cursor.execute(f"""
+                        SELECT P.PAY_ID, P.PAY_STATE, TH.THEATER_NAME, M.MOVIE_NAME, 
+                               S.SHOW_START_TIME, S.SHOW_COUNT, ST.SEAT_ROW, ST.SEAT_COL, 
+                               T.CUSTOMER_TYPE_ID, P.PAY_DATE, P.PAY_PRICE 
+                        FROM TICKET T, PAY P, SEAT ST, SHOW S, THEATER TH, MOVIE M 
+                        WHERE T.USR_ID='{userId}' AND T.PAY_ID=P.PAY_ID AND T.SEAT_ID=ST.SEAT_ID AND 
+                              T.SHOW_ID=S.SHOW_ID AND S.THEATER_ID=TH.THEATER_ID AND S.MOVIE_ID=M.MOVIE_ID 
+                        ORDER BY PAY_ID;""")
+            else:
+                cursor.execute(f"""
+                        SELECT P.PAY_ID, P.PAY_STATE, TH.THEATER_NAME, M.MOVIE_NAME, 
+                               S.SHOW_START_TIME, S.SHOW_COUNT, ST.SEAT_ROW, ST.SEAT_COL, 
+                               T.CUSTOMER_TYPE_ID, P.PAY_DATE, P.PAY_PRICE 
+                        FROM TICKET T, PAY P, SEAT ST, SHOW S, THEATER TH, MOVIE M 
+                        WHERE T.USR_ID IN (SELECT USR_ID FROM USR WHERE USR_EMAIL='{email}') AND 
+                              T.PAY_ID=P.PAY_ID AND T.SEAT_ID=ST.SEAT_ID AND 
+                              T.SHOW_ID=S.SHOW_ID AND S.THEATER_ID=TH.THEATER_ID AND S.MOVIE_ID=M.MOVIE_ID 
+                        ORDER BY PAY_ID;""")
             fetched = cursor.fetchall()
             tickets = filter(lambda x: x[1] <= 3, fetched)
             canceled = filter(lambda x: x[1] >= 4, fetched)
