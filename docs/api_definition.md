@@ -374,9 +374,19 @@
   {
     "userId": "dlawnsdud",
     "userName": "임준영",
-    "email": "dlawnsdud@gmail.com",
+    "email": "dlawnsdud@gmail.com"
   }
   ```
+
+  * 비회원인경우
+    * /user/profile?email=dlawnsdud@gmail.com
+    ```json
+      {
+      "userId": null,
+      "userName": null,
+      "email": "dlawnsdud@gmail.com"
+    }
+    ```
 
 ### /user/tickets?count GET
   * 회원인경우
@@ -443,10 +453,11 @@
   ```
 
 ### /user/tickets?email={email} GET
+  * 비회원, 회원 모두 동일
+
   * 비회원인경우
   ```json  
   {
-    "email":"dlawnsdud@gmail.com",
     "tickets":[
       {
          "payId": 353948,
