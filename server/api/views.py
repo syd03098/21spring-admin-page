@@ -541,13 +541,12 @@ class ShowSeatViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
 
         userId = get_user(request)
-        if not userId:
-            # TODO: 비회원용 예매
-            return HttpResponse(status=401, content="로그인이 필요합니다.")
+        email = request.data.get('email')
+        password = hashlib.sha256(
+            request.data.get('password', '000000').encode()).hexdigest()
+        member = userId is not None
 
         show_id = int(self.kwargs.get('show_id'))
-        # email = request.data.get('email')
-        # password = request.data.get('password')
         pay_type = request.data.get('payType')
         ticket_amount = request.data.get('ticketAmount')
         seat_ids = request.data.get('seatIds')
@@ -575,9 +574,21 @@ class ShowSeatViewSet(viewsets.ViewSet):
                 money += fee[cus['customerTypeId']] * cus['amount']
 
         sid = transaction.savepoint()
+        if not userId:
+            if not email:
+                return HttpResponse(status=400,
+                                    content="비회원 예매는 이메일을 입력해야 합니다.")
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    f"""INSERT INTO USR (USR_ID, USR_NAME, USR_EMAIL, USR_PASSWORD, USR_TYPE) 
+                        VALUES ('$'||USR_SEQ.NEXTVAL, 'GUEST', '{email}', '{password}', 2);"""
+                )
+                cursor.execute("SELECT '$'||USR_SEQ.CURRVAL FROM DUAL;")
+                userId = cursor.fetchone()[0]
         try:
-            pay_id = pay(pay_type, money, userId)
+            pay_id = pay(pay_type, money, userId, member)
         except Exception as e:
+            transaction.savepoint_rollback(sid)
             return HttpResponse(status=400, content=e)
 
         with connection.cursor() as cursor:
