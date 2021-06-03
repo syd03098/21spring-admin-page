@@ -1,31 +1,34 @@
 import React from 'react';
-import movieMock from '@utils/jsons/movies.json';
 import styled from 'styled-components';
-import { SwiperMovies } from '@components/organism/horizontalSwiper/types';
 import HorizontalSwiperRow from '@components/organism/horizontalSwiper/HorizontalSwiperRow';
 import Chat from '@components/atom/icons/Chat';
 import { flexCenter } from '@utils/styleFunctions';
+import { SwiperMovieResources } from '@utils/api/movie/types';
 
-const HorizontalSwiper = (): JSX.Element => {
+interface Props {
+    resources: SwiperMovieResources;
+}
+
+const HorizontalSwiper = ({ resources }: Props): JSX.Element => {
     // todo: store 를 하나 마련하자 entranceInfoStore?
-    const swiperMovies: SwiperMovies = movieMock as SwiperMovies;
+    const { currentTime, categories } = resources;
     return (
         <Article>
-            {swiperMovies.categories.map(
+            {categories.map(
                 (category) =>
                     category.movies.length !== 0 && (
                         <Section key={`section-${category.categoryName}`}>
                             <Contents>
                                 <TopArea>
                                     <h2>{category.categoryName}</h2>
-                                    <p>{new Date(swiperMovies.currentTime).toLocaleTimeString()} 기준</p>
+                                    <p>{new Date(currentTime).toLocaleTimeString()} 기준</p>
                                 </TopArea>
                                 <HorizontalSwiperRow movieCategory={category} />
                             </Contents>
                         </Section>
                     ),
             )}
-            {swiperMovies.categories.length === 0 && (
+            {categories.length === 0 && (
                 <NoMovies>
                     <Chat />
                     <p>등록된 영화가없습니다.</p>
