@@ -1,14 +1,21 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Ticket from '@components/atom/icons/Ticket';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import Globe from '@components/atom/Globe';
+import { useTickets } from '@pages/ticketContext';
 
 const TicketStatus = (): JSX.Element => {
+    const { count: fetchedCount } = useTickets();
+
+    const displayedCount: string = useMemo(() => {
+        return fetchedCount > 9 ? '+9' : String(fetchedCount);
+    }, [fetchedCount]);
+
     return (
         <TicketWrap href="/profile">
             <TicketContents>
                 <Ticket size={30} />
-                <GlobeContainer>0</GlobeContainer>
+                <GlobeContainer active={fetchedCount > 0}>{displayedCount}</GlobeContainer>
             </TicketContents>
         </TicketWrap>
     );
@@ -27,7 +34,7 @@ const TicketContents = styled.div`
     color: ${({ theme }) => theme.black80};
 `;
 
-const GlobeContainer = styled(Globe)`
+const GlobeContainer = styled(Globe)<{ active: boolean }>`
     background-color: ${({ theme }) => theme.smoke100};
     width: 16px;
     height: 16px;
@@ -39,6 +46,12 @@ const GlobeContainer = styled(Globe)`
     font-size: 11px;
     font-weight: 500;
     color: ${({ theme }) => theme.white};
+
+    ${(props) =>
+        props.active &&
+        css`
+            background-color: ${({ theme }) => theme.pink};
+        `}
 `;
 
 export default TicketStatus;

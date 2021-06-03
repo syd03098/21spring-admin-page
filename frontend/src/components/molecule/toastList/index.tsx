@@ -25,10 +25,9 @@ const ToastList = (): JSX.Element => {
 
 const ToastListWrap = styled.ul`
     position: fixed;
-    right: 0;
-    bottom: 0;
+    top: 90px;
+    right: 6px;
     margin: 0;
-    padding: 0 4px;
     list-style: none;
     z-index: 2000;
 `;

@@ -17,13 +17,14 @@ import { TicketAmount } from '@utils/api/show/types';
 import { requestPurchaseTickets } from '@utils/api/show';
 import { EmailFormData } from '@components/molecule/forms/types';
 import { useToast } from '@stores/ToastStore';
-import { useAuth } from '@pages/context';
+import { useAuth } from '@pages/authContext';
 import usePortalHook from '@hooks/usePortalHook';
 import SmallPopup from '@components/molecule/smallPopup';
+import { useTickets } from '@pages/ticketContext';
 
 interface Props {
     showInfo: ShowInfo;
-    totalPrice?: number;
+    totalPrice: number;
     selectedTicket: number[];
     ticketAmount: TicketAmount[];
     isReady: boolean;
@@ -37,10 +38,11 @@ const OptionOverView = ({ showInfo, totalPrice, selectedTicket, ticketAmount, is
         closePortal: closeNonMemberForm,
         isPortalOpen: isNonMemberFormOpened,
     } = usePortalHook();
+    const { moviePosterUrl, movieName, movieGrade, theaterName, showStartTime, showEndTime, showId } = showInfo;
     const { closeModal } = useModal();
     const { appendToast } = useToast();
-    const { moviePosterUrl, movieName, movieGrade, theaterName, showStartTime, showEndTime, showId } = showInfo;
     const { logined } = useAuth();
+    const { count, setCount } = useTickets();
 
     const runningTime = useMemo(() => {
         const start = moment(showStartTime).format('MM.DD(dd) HH:mm');
@@ -63,36 +65,33 @@ const OptionOverView = ({ showInfo, totalPrice, selectedTicket, ticketAmount, is
         [movieGrade, movieName, runningTime, theaterName, totalPrice],
     );
 
-    // todo: 포인트로 결제하는 api
-    //
-
     const onRequestPurchaseHandler = useCallback(
-        async (emailForm?: EmailFormData) => {
+        async (payType: number, emailForm?: EmailFormData) => {
             try {
                 const response = await requestPurchaseTickets(showId, {
                     email: emailForm && emailForm.email,
-                    password: emailForm && emailForm.password,
-                    payType: 1,
+                    payType,
                     seatIds: selectedTicket,
                     ticketAmount,
                 });
                 const { status } = response;
                 if (status === 201) {
                     closeModal();
+                    setCount(count + 1);
                     appendToast('예매에 성공했습니다. 자세한 내역은 예매내역에서 확인하세요.', {
                         type: 'success',
                         timeout: 10000,
                     });
                 }
             } catch (err) {
-                appendToast('알수없는 오류가 발생했습니다. 다시 시도해주세요.', {
+                appendToast('예매중 오류가 발생했습니다. 잠시후 다시 시도해주세요.', {
                     type: 'error',
                     timeout: 5000,
                 });
                 setSending(false);
             }
         },
-        [appendToast, closeModal, selectedTicket, showId, ticketAmount],
+        [appendToast, closeModal, count, selectedTicket, setCount, showId, ticketAmount],
     );
 
     return (
@@ -110,7 +109,7 @@ const OptionOverView = ({ showInfo, totalPrice, selectedTicket, ticketAmount, is
                     onClick={async () => {
                         if (logined) {
                             setSending(true);
-                            await onRequestPurchaseHandler();
+                            await onRequestPurchaseHandler(1);
                         } else {
                             openNonMemberForm();
                         }
@@ -118,7 +117,14 @@ const OptionOverView = ({ showInfo, totalPrice, selectedTicket, ticketAmount, is
                 >
                     결제하기
                 </Button>
-                <Button type="default" disabled={!isReady || isSending}>
+                <Button
+                    type="default"
+                    disabled={!isReady || isSending || !logined}
+                    onClick={async () => {
+                        setSending(true);
+                        await onRequestPurchaseHandler(2);
+                    }}
+                >
                     포인트결제
                 </Button>
             </StyledOptionControlArea>
@@ -127,11 +133,11 @@ const OptionOverView = ({ showInfo, totalPrice, selectedTicket, ticketAmount, is
                     <SmallPopup
                         contents={
                             <EmailForm
-                                message="예약한 티켓을 열람할때 사용할 이메일과 패스워드를 입력하세요."
+                                message="예약한 티켓을 열람할때 사용할 이메일을 입력하세요."
                                 isDisabled={isSending}
                                 onSubmit={async (form: EmailFormData) => {
                                     setSending(true);
-                                    await onRequestPurchaseHandler(form);
+                                    await onRequestPurchaseHandler(1, form);
                                 }}
                             />
                         }
