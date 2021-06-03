@@ -358,7 +358,7 @@ class ShowViewSet(viewsets.ViewSet):
                     f"TO_DATE('{now}', 'YYYY-MM-DD HH24:MI:SS') < S.SHOW_START_TIME;")
             shows = cursor.fetchall()
             cursor.execute(
-                "SELECT COUNT(SHOW_ID), SHOW_ID FROM TICKET GROUP BY SHOW_ID;")
+                "SELECT COUNT(SHOW_ID), SHOW_ID FROM TICKET WHERE TICKET_STATE=1 GROUP BY SHOW_ID;")
             cnt = {c[1]: c[0] for c in cursor.fetchall()}
             for _, show_group in itertools.groupby(shows,
                                                    lambda x: x[2].date()):
