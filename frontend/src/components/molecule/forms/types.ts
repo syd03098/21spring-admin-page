@@ -10,5 +10,9 @@ export interface SignUpFormData extends LoginFormData {
 
 export interface EmailFormData {
     email: string;
+}
+
+export interface ChangePasswordFormData {
     password: string;
+    newPassword: string;
 }
