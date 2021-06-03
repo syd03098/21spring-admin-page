@@ -114,6 +114,7 @@ class ShowSerializer(serializers.Serializer):
 class ShowInfoSerializer(serializers.Serializer):
     movieName = serializers.CharField()
     movieGrade = serializers.CharField()
+    moviePosterUrl = serializers.CharField()
     showId = serializers.IntegerField()
     showStartTime = serializers.DateTimeField()
     showEndTime = serializers.DateTimeField()
