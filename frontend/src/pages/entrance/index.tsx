@@ -9,7 +9,7 @@ import Loading from '@pages/Loading';
 const Entrance = (): JSX.Element => {
     const [isReady, setReady] = useState<boolean>(false);
     const [resources, setResources] = useState<SwiperMovieResources>({
-        currentTime: new Date().getTime(),
+        currentTime: '',
         categories: [],
     });
 

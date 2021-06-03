@@ -4,6 +4,7 @@ import HorizontalSwiperRow from '@components/organism/horizontalSwiper/Horizonta
 import Chat from '@components/atom/icons/Chat';
 import { flexCenter } from '@utils/styleFunctions';
 import { SwiperMovieResources } from '@utils/api/movie/types';
+import moment from 'moment/moment';
 
 interface Props {
     resources: SwiperMovieResources;
@@ -11,7 +12,9 @@ interface Props {
 
 const HorizontalSwiper = ({ resources }: Props): JSX.Element => {
     // todo: store 를 하나 마련하자 entranceInfoStore?
-    const { currentTime, categories } = resources;
+    const { currentTime: fetchedTime, categories } = resources;
+    const displayedTime = moment(fetchedTime).format('yy.MM.DD hh:m');
+
     return (
         <Article>
             {categories.map(
@@ -21,7 +24,7 @@ const HorizontalSwiper = ({ resources }: Props): JSX.Element => {
                             <Contents>
                                 <TopArea>
                                     <h2>{category.categoryName}</h2>
-                                    <p>{new Date(currentTime).toLocaleTimeString()} 기준</p>
+                                    <p>{displayedTime} 기준</p>
                                 </TopArea>
                                 <HorizontalSwiperRow movieCategory={category} />
                             </Contents>
