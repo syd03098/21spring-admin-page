@@ -1,7 +1,7 @@
 import { MovieGrade } from '@components/molecule/viewGrade/types';
 
 export type SwiperMovieResources = {
-    currentTime: number;
+    currentTime: string;
     categories: SwiperMovieCategory[];
 };
 

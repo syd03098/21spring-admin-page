@@ -96,7 +96,7 @@ const Select = ({ movieId, resources: initialData }: Props): JSX.Element => {
                                 {showSchedule.map((schedule, num) => {
                                     const momentObject = moment(schedule.showDate);
                                     const dateKr = momentObject.format('(dd)');
-                                    const dateString = momentObject.format('M.DD');
+                                    const dateString = momentObject.format('M.dd');
                                     return (
                                         <DateSelectCard
                                             key={dateString}
@@ -112,8 +112,8 @@ const Select = ({ movieId, resources: initialData }: Props): JSX.Element => {
                         <StyledSelectShowContainer>
                             <StyledSelectShowGridTemplate>
                                 {showSchedule[selected].showList.map((show) => {
-                                    const startTime = moment(show.showStartTime).format('HH:MM');
-                                    const endTime = moment(show.showEndTime).format('HH:MM');
+                                    const startTime = moment(show.showStartTime).format('HH:mm');
+                                    const endTime = moment(show.showEndTime).format('HH:mm');
                                     return (
                                         <ShowSelectCard
                                             key={show.showId}
