@@ -508,6 +508,8 @@ class ShowSeatViewSet(viewsets.ViewSet):
                     movie.movie_name,
                 "movieGrade":
                     movie.movie_grade,
+                "moviePosterUrl":
+                    movie.poster_url,
                 "showId":
                     show_id,
                 "showStartTime":
@@ -916,85 +918,6 @@ class UserViewSet(viewsets.ViewSet):
             return HttpResponse(status=200)
 
     # }}} password
-
-    # # {{{ tickets
-    # @swagger_auto_schema(manual_parameters=[
-    #     openapi.Parameter('count',
-    #                       openapi.IN_QUERY,
-    #                       description='개수',
-    #                       type=openapi.TYPE_STRING),
-    #     openapi.Parameter('email',
-    #                       openapi.IN_QUERY,
-    #                       description='이메일 (비회원 전용)',
-    #                       type=openapi.TYPE_STRING)
-    # ],
-    #                      responses={200: UserTicketSerializer})
-    # @action(detail=False, methods=['get'])
-    # def tickets(self, request, *args, **kwargs):
-    #     count = request.GET.get('count')
-    #     # email = request.GET.get('email')
-
-    #     userId = get_user(request)
-    #     if not userId:
-    #         # TODO: 비회원일시 email로 받아서 조회
-    #         return HttpResponse(status=401)
-
-    #     if count is not None:
-    #         with connection.cursor() as cursor:
-    #             cursor.execute(f"""
-    #                 SELECT COUNT(*) FROM
-    #                     (SELECT P.PAY_ID
-    #                      FROM TICKET T, PAY P
-    #                      WHERE P.PAY_ID=T.PAY_ID AND T.USR_ID='{userId}'
-    #                            AND P.PAY_STATE<=3 GROUP BY P.PAY_ID);""")
-    #             count = cursor.fetchone()[0]
-    #         return JsonResponse({"count": count}, status=200)
-
-    #     res = {}
-    #     with connection.cursor() as cursor:
-    #         cursor.execute(f"""
-    #                 SELECT P.PAY_ID, P.PAY_STATE, TH.THEATER_NAME, M.MOVIE_NAME,
-    #                        S.SHOW_START_TIME, S.SHOW_COUNT, ST.SEAT_ROW, ST.SEAT_COL,
-    #                        T.CUSTOMER_TYPE_ID, P.PAY_DATE, P.PAY_PRICE
-    #                 FROM TICKET T, PAY P, SEAT ST, SHOW S, THEATER TH, MOVIE M
-    #                 WHERE T.USR_ID='{userId}' AND T.PAY_ID=P.PAY_ID AND T.SEAT_ID=ST.SEAT_ID AND
-    #                       T.SHOW_ID=S.SHOW_ID AND S.THEATER_ID=TH.THEATER_ID AND S.MOVIE_ID=M.MOVIE_ID
-    #                 ORDER BY PAY_ID;""")
-    #         fetched = cursor.fetchall()
-    #         tickets = filter(lambda x: x[1] <= 3, fetched)
-    #         canceled = filter(lambda x: x[1] >= 4, fetched)
-
-    #         def rows_to_pay(rows):
-    #             arr = list(rows)
-    #             pay = arr[0]
-    #             return {
-    #                 "payId": pay[0],
-    #                 "payState": pay[1],
-    #                 "theaterName": pay[2],
-    #                 "movieName": pay[3],
-    #                 "showStartTime": pay[4].strftime("%Y-%m-%d %H:%M:%S"),
-    #                 "showCount": pay[5],
-    #                 "seatsList": [{
-    #                     "seatRow": row[6],
-    #                     "seatCol": row[7],
-    #                     "customerType": row[8],
-    #                 } for row in arr],
-    #                 "payDate": pay[9].strftime("%Y-%m-%d %H:%M:%S"),
-    #                 "payPrice": pay[10]
-    #             }
-
-    #         res['tickets'] = [
-    #             rows_to_pay(rows)
-    #             for _, rows in itertools.groupby(tickets, lambda x: x[0])
-    #         ]
-    #         res['canceled'] = [
-    #             rows_to_pay(rows)
-    #             for _, rows in itertools.groupby(canceled, lambda x: x[0])
-    #         ]
-
-    #     return JsonResponse(res, status=200)
-
-    # # }}}
 
 
 # }}}
