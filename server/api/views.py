@@ -153,17 +153,6 @@ class AuthViewSet(viewsets.ViewSet):
 
 # {{{ MovieViewSet
 class MovieViewSet(viewsets.ViewSet):
-    # queryset = Movie.objects.all()
-    # serializer_class = MovieSerializer
-    # http_method_names = ['get', 'post', 'patch', 'delete']
-
-    # def get_serializer_class(self):
-    #     m = self.request.method
-    #     if m == 'POST':
-    #         return MovieCreateSerializer
-    #     elif self.action == 'retrieve':
-    #         return MovieRetrieveSerializer
-    #     return MovieSerializer
 
     # {{{ list
     @swagger_auto_schema(responses={200: MovieListSerializer})
@@ -460,6 +449,26 @@ class ShowViewSet(viewsets.ViewSet):
                                 f"SHOW_TOTAL_COUNT={show_count} WHERE MOVIE_ID={movie_id};"
                     )
         return HttpResponse(status=201)
+
+    # }}}
+
+    # {{{ destroy
+    def destroy(self, request, pk, *args, **kwargs):
+        if not is_admin(request):
+            return HttpResponse(status=401)
+
+        show_id = pk
+        cursor = connection.cursor()
+        cursor.execute(
+            f'SELECT 1 FROM DUAL WHERE EXISTS (SELECT * FROM TICKET WHERE SHOW_ID={show_id});'
+        )
+        if cursor.fetchone():
+            cursor.close()
+            return HttpResponse(status=409, content="선택한 영화에 대한 상영정보가 존재합니다.")
+
+        cursor.execute(f"DELETE FROM SHOW WHERE SHOW_ID={show_id}")
+        cursor.close()
+        return HttpResponse(status=204)
 
     # }}}
 
