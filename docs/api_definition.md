@@ -197,21 +197,24 @@
           {
             "showId": 1001,
             "theaterName": "1관",
-            "showStartTime": "2021-05-14 14:10",
+            "showStartTime": "2021-05-14 14:10:00",
+            "showEndTime": "2021-05-14 15:30:00",
             "seatsCapacity": 96,
             "seatsAvailable": 93
           },
           {
             "showId": 1002,
             "theaterName": "2관",
-            "showStartTime": "2021-05-14 15:10",
+            "showStartTime": "2021-05-14 15:10:00",
+            "showEndTime": "2021-05-14 16:30:00",
             "seatsCapacity": 88,
             "seatsAvailable": 88
           },
           {
             "showId": 1003,
             "theaterName": "1관",
-            "showStartTime": "2021-05-14 16:40",
+            "showStartTime": "2021-05-14 16:40:00",
+            "showEndTime": "2021-05-14 17:00:00",
             "seatsCapacity": 96,
             "seatsAvailable": 96
           }

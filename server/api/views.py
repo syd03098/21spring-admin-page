@@ -358,16 +358,27 @@ class ShowViewSet(viewsets.ViewSet):
                     f"TO_DATE('{now}', 'YYYY-MM-DD HH24:MI:SS') < S.SHOW_START_TIME;")
             shows = cursor.fetchall()
             cursor.execute(
-                "SELECT COUNT(SHOW_ID), SHOW_ID FROM TICKET WHERE TICKET_STATE=1 GROUP BY SHOW_ID;")
+                "SELECT COUNT(SHOW_ID), SHOW_ID FROM TICKET WHERE TICKET_STATE=1 GROUP BY SHOW_ID;"
+            )
             cnt = {c[1]: c[0] for c in cursor.fetchall()}
             for _, show_group in itertools.groupby(shows,
                                                    lambda x: x[2].date()):
                 showList = [{
-                    "showId": show[0],
-                    "theaterName": show[1],
-                    "showStartTime": show[2].strftime("%Y-%m-%d %H:%M:%S"),
-                    "seatsCapacity": show[3],
-                    "seatsAvailable": show[3] - cnt.get(show[0], 0)
+                    "showId":
+                        show[0],
+                    "theaterName":
+                        show[1],
+                    "showStartTime":
+                        show[2].strftime("%Y-%m-%d %H:%M:%S"),
+                    "showEndTime":
+                        (show[2] +
+                         (datetime.datetime.combine(datetime.date.min,
+                                                    movie.movie_time) -
+                          datetime.datetime.min)).strftime("%Y-%m-%d %H:%M:%S"),
+                    "seatsCapacity":
+                        show[3],
+                    "seatsAvailable":
+                        show[3] - cnt.get(show[0], 0)
                 } for show in show_group]
                 showList.sort(key=lambda x: x["showStartTime"])
                 res["showSchedule"].append({

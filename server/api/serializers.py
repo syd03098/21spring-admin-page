@@ -96,6 +96,7 @@ class ShowListSerializer(serializers.Serializer):
     showId = serializers.IntegerField()
     theaterName = serializers.CharField()
     showStartTime = serializers.DateTimeField()
+    showEndTime = serializers.DateTimeField()
     seatsCapacity = serializers.IntegerField()
     seatsAvailable = serializers.IntegerField()
 
