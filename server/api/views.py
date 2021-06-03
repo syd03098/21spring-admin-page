@@ -350,10 +350,12 @@ class ShowViewSet(viewsets.ViewSet):
             "showSchedule": []
         }
 
+        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         with connection.cursor() as cursor:
             cursor.execute("SELECT S.SHOW_ID, T.THEATER_NAME, S.SHOW_START_TIME, T.THEATER_CAP " \
                     "FROM SHOW S, THEATER T WHERE S.THEATER_ID=T.THEATER_ID AND " \
-                    f"S.MOVIE_ID={movie_id}")
+                    f"S.MOVIE_ID={movie_id} AND " \
+                    f"TO_DATE('{now}', 'YYYY-MM-DD HH24:MI:SS') < S.SHOW_START_TIME;")
             shows = cursor.fetchall()
             cursor.execute(
                 "SELECT COUNT(SHOW_ID), SHOW_ID FROM TICKET GROUP BY SHOW_ID;")
