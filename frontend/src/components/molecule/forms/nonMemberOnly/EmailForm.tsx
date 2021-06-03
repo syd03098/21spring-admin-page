@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+
 import {
     StyledError,
     StyledFieldSet,
@@ -16,7 +17,7 @@ interface Props {
     isDisabled?: boolean;
 }
 
-// 비회원 전용, 이메일과 비밀번호를 입력받음
+// 비회원 전용, 이메일을 입력받음
 const EmailForm = ({ message, onSubmit, isDisabled }: Props): JSX.Element => {
     const {
         handleSubmit,
@@ -35,7 +36,7 @@ const EmailForm = ({ message, onSubmit, isDisabled }: Props): JSX.Element => {
         <form onSubmit={handleSubmit(submitHandler)}>
             <StyledFieldSet>
                 <StyledLabel>이메일</StyledLabel>
-                {errors.userId && <StyledError>{errors.userId.message}</StyledError>}
+                {errors.email && <StyledError>{errors.email.message}</StyledError>}
                 <StyledInput
                     type="text"
                     placeholder="이메일"
@@ -46,15 +47,6 @@ const EmailForm = ({ message, onSubmit, isDisabled }: Props): JSX.Element => {
                         },
                         required: 'require',
                     })}
-                />
-            </StyledFieldSet>
-            <StyledFieldSet>
-                <StyledLabel>패스워드</StyledLabel>
-                {errors.password && <StyledError>{errors.password.message}</StyledError>}
-                <StyledInput
-                    type="password"
-                    placeholder="패스워드"
-                    {...register('password', { required: 'require' })}
                 />
             </StyledFieldSet>
             <Message>{message}</Message>

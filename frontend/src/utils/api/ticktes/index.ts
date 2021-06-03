@@ -14,3 +14,12 @@ export const getTicketingDataResponseBody = async (showId: number): Promise<Seat
         .then((res) => res.data)
         .catch(() => seatsInfoJson as SeatsInfoResponseBody);
 };
+
+export const getNumberOfTickets = async (): Promise<{ count: number }> => {
+    const response = await axios.get('/api/user/tickets?count');
+    return {
+        ...response.data,
+    } as {
+        count: number;
+    };
+};

@@ -13,7 +13,7 @@ import {
     StyledCenteredLogo,
 } from '@components/organism/globalNavbar/style';
 import { useToast } from '@stores/ToastStore';
-import { useAuth } from '@pages/context';
+import { useAuth } from '@pages/authContext';
 
 const GlobalNavbar = (): JSX.Element => {
     const { logined } = useAuth();

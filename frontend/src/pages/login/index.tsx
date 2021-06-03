@@ -7,7 +7,7 @@ import UOSIcon from '@components/atom/icons/Uos';
 import { LoginFormData, SignUpFormData } from '@components/molecule/forms/types';
 import { sendLoginRequest, sendSignUpRequest } from '@utils/api/auth';
 import ErrorBlock from '@components/molecule/errorBlock';
-import { useAuth } from '@pages/context';
+import { useAuth } from '@pages/authContext';
 
 const Login = (): JSX.Element => {
     const [error, setError] = useState<string | null>(null);
@@ -49,7 +49,7 @@ const Login = (): JSX.Element => {
                     password: data.password,
                 });
                 if (response === 201) {
-                    setLogined(false);
+                    setLogined(true);
                     history.goBack();
                 }
             } catch (e) {
