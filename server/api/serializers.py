@@ -2,15 +2,21 @@ import re
 
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
-from django.db import connection
 
-from api.model.models import Movie, TheaterType
+
+def validate_max_length(max_length):
+
+    def _validate_max_length(value):
+        if len(value.encode('utf-8')) > max_length:
+            raise ValidationError(f"해당 필드는 {max_length}바이트까지만 올 수 있습니다.")
+
+    return _validate_max_length
 
 
 class UsrCreateSerializer(serializers.Serializer):
-    userId = serializers.CharField(max_length=16)
-    userName = serializers.CharField(max_length=30)
-    email = serializers.CharField(max_length=50)
+    userId = serializers.CharField(validators=[validate_max_length(16)])
+    userName = serializers.CharField(validators=[validate_max_length(30)])
+    email = serializers.CharField(validators=[validate_max_length(50)])
     password = serializers.CharField(min_length=6)
 
     def validate_userId(self, value):
@@ -20,7 +26,7 @@ class UsrCreateSerializer(serializers.Serializer):
 
 
 class UsrLoginSerializer(serializers.Serializer):
-    userId = serializers.CharField(max_length=16)
+    userId = serializers.CharField(validators=[validate_max_length(16)])
     password = serializers.CharField(min_length=6)
 
     def validate_userId(self, value):
@@ -29,24 +35,24 @@ class UsrLoginSerializer(serializers.Serializer):
         return value
 
 
-class UsrSerializer(serializers.Serializer):
-    userId = serializers.CharField(max_length=16)
-    userName = serializers.CharField(max_length=30)
-    email = serializers.CharField(max_length=50)
-    isAdmin = serializers.BooleanField()
-
-
 class MovieCreateSerializer(serializers.Serializer):
-    movieName = serializers.CharField(max_length=60)
+    movieName = serializers.CharField(validators=[validate_max_length(60)])
     movieTime = serializers.TimeField(required=False)
-    movieDescription = serializers.CharField(max_length=4000, required=False)
-    movieDistribute = serializers.CharField(max_length=60, required=False)
+    movieDescription = serializers.CharField(
+        validators=[validate_max_length(4000)], required=False)
+    movieDistribute = serializers.CharField(
+        validators=[validate_max_length(60)], required=False)
     movieRelease = serializers.DateField(required=False)
-    movieGen = serializers.CharField(max_length=60, required=False)
-    directors = serializers.CharField(max_length=60, required=False)
-    actors = serializers.CharField(max_length=300, required=False)
-    moviePosterUrl = serializers.CharField(max_length=500, required=False)
-    movieGrade = serializers.CharField(max_length=2, required=False)
+    movieGen = serializers.CharField(validators=[validate_max_length(60)],
+                                     required=False)
+    directors = serializers.CharField(validators=[validate_max_length(60)],
+                                      required=False)
+    actors = serializers.CharField(validators=[validate_max_length(300)],
+                                   required=False)
+    moviePosterUrl = serializers.CharField(
+        validators=[validate_max_length(500)], required=False)
+    movieGrade = serializers.CharField(validators=[validate_max_length(2)],
+                                       required=False)
 
     def validate_movieGrade(self, value):
         if not re.match('^\\d{2}$', value):
@@ -56,23 +62,31 @@ class MovieCreateSerializer(serializers.Serializer):
 
 class MovieRetrieveSerializer(serializers.Serializer):
     movieId = serializers.IntegerField()
-    movieName = serializers.CharField(max_length=60)
+    movieName = serializers.CharField(validators=[validate_max_length(60)])
     movieTime = serializers.TimeField(required=False)
-    movieDescription = serializers.CharField(max_length=4000, required=False)
-    movieDistribute = serializers.CharField(max_length=60, required=False)
+    movieDescription = serializers.CharField(
+        validators=[validate_max_length(4000)], required=False)
+    movieDistribute = serializers.CharField(
+        validators=[validate_max_length(60)], required=False)
     movieRelease = serializers.DateField(required=False)
-    movieGen = serializers.CharField(max_length=60, required=False)
-    directors = serializers.CharField(max_length=60, required=False)
-    actors = serializers.CharField(max_length=300, required=False)
-    moviePosterUrl = serializers.CharField(max_length=500, required=False)
-    movieGrade = serializers.CharField(max_length=2, required=False)
+    movieGen = serializers.CharField(validators=[validate_max_length(60)],
+                                     required=False)
+    directors = serializers.CharField(validators=[validate_max_length(60)],
+                                      required=False)
+    actors = serializers.CharField(validators=[validate_max_length(300)],
+                                   required=False)
+    moviePosterUrl = serializers.CharField(
+        validators=[validate_max_length(500)], required=False)
+    movieGrade = serializers.CharField(validators=[validate_max_length(2)],
+                                       required=False)
 
 
 class MovieSerializer(serializers.Serializer):
     movieId = serializers.IntegerField()
-    movieName = serializers.CharField(max_length=60)
-    movieGrade = serializers.CharField(max_length=2)
-    moviePosterUrl = serializers.CharField(max_length=500)
+    movieName = serializers.CharField(validators=[validate_max_length(60)])
+    movieGrade = serializers.CharField(validators=[validate_max_length(2)])
+    moviePosterUrl = serializers.CharField(
+        validators=[validate_max_length(500)])
 
 
 class MovieCategorySerializer(serializers.Serializer):
@@ -149,7 +163,8 @@ class TicketAmountSerializer(serializers.Serializer):
 
 
 class TicketingSerializer(serializers.Serializer):
-    email = serializers.CharField(max_length=50, required=False)
+    email = serializers.CharField(validators=[validate_max_length(50)],
+                                  required=False)
     password = serializers.CharField(min_length=6, required=False)
     payType = serializers.IntegerField()
     ticketAmount = TicketAmountSerializer(many=True)
@@ -173,7 +188,8 @@ class TheaterCreateSerializer(serializers.Serializer):
     theaterType = serializers.IntegerField()
     theaterRow = serializers.IntegerField(required=False)
     theaterCol = serializers.IntegerField(required=False)
-    theaterName = serializers.CharField(max_length=30, required=False)
+    theaterName = serializers.CharField(validators=[validate_max_length(30)],
+                                        required=False)
     impSeats = serializers.ListField(child=serializers.ListField(
         child=serializers.IntegerField(), min_length=2, max_length=2),
                                      required=False)
@@ -184,9 +200,9 @@ class UserPointSerializer(serializers.Serializer):
 
 
 class UserProfileSerializer(serializers.Serializer):
-    userId = serializers.CharField(max_length=16)
-    userName = serializers.CharField(max_length=30)
-    email = serializers.CharField(max_length=50)
+    userId = serializers.CharField(validators=[validate_max_length(16)])
+    userName = serializers.CharField(validators=[validate_max_length(30)])
+    email = serializers.CharField(validators=[validate_max_length(50)])
 
 
 class UserPasswordSerializer(serializers.Serializer):
