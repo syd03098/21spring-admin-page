@@ -104,6 +104,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'server.urls'
 
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SWAGGER_SETTINGS = {
     'LOGIN_URL': '/admin/login',
     'LOGOUT_URL': '/admin/logout',
