@@ -81,6 +81,37 @@ class MovieRetrieveSerializer(serializers.Serializer):
                                        required=False)
 
 
+class MoviePatchSerializer(serializers.Serializer):
+    movieName = serializers.CharField(validators=[validate_max_length(60)],
+                                      required=False)
+    movieTime = serializers.TimeField(required=False)
+    movieDescription = serializers.CharField(
+        validators=[validate_max_length(4000)], required=False)
+    movieDistribute = serializers.CharField(
+        validators=[validate_max_length(60)], required=False)
+    movieRelease = serializers.DateField(required=False)
+    movieGen = serializers.CharField(validators=[validate_max_length(60)],
+                                     required=False)
+    directors = serializers.CharField(validators=[validate_max_length(60)],
+                                      required=False)
+    actors = serializers.CharField(validators=[validate_max_length(300)],
+                                   required=False)
+    moviePosterUrl = serializers.CharField(
+        validators=[validate_max_length(500)], required=False)
+    movieGrade = serializers.CharField(validators=[validate_max_length(2)],
+                                       required=False)
+
+    def validate_movieGrade(self, value):
+        if not re.match('^\\d{2}$', value):
+            raise ValidationError('영화등급은 숫자 두자리만 올 수 있습니다.')
+        return value
+
+    def validate(self, data):
+        if len(data) == 0:
+            raise ValidationError('하나 이상의 값이 와야 합니다.')
+        return data
+
+
 class MovieSerializer(serializers.Serializer):
     movieId = serializers.IntegerField()
     movieName = serializers.CharField(validators=[validate_max_length(60)])

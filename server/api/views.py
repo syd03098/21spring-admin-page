@@ -7,7 +7,7 @@ from core.user import (get_user, is_admin)
 from core.pay import (pay, cancel)
 from django.conf import settings
 from django.db import connection, transaction
-from django.http.response import HttpResponse, JsonResponse
+from django.http.response import HttpResponse, HttpResponsePermanentRedirect, JsonResponse
 from drf_yasg import openapi
 from drf_yasg.utils import no_body, swagger_auto_schema
 from rest_framework import viewsets
@@ -24,6 +24,7 @@ from api.model.models import (
 
 from .serializers import (
     MovieListSerializer,
+    MoviePatchSerializer,
     MovieRetrieveSerializer,
     MovieCreateSerializer,
     ShowCreateSerializer,
@@ -282,9 +283,89 @@ class MovieViewSet(viewsets.ViewSet):
 
     # }}}
 
-    @swagger_auto_schema(auto_schema=None)
+    @swagger_auto_schema(request_body=MoviePatchSerializer,
+                         responses={200: MoviePatchSerializer})
     def partial_update(self, request, pk, *args, **kwargs):
-        return HttpResponse(status=501)
+        if not is_admin(request):
+            return HttpResponse(status=401)
+
+        serializer = MoviePatchSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        movie_release = request.data.get('movieRelease')  # Nullable
+
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f"""SELECT MOVIE_NAME, MOVIE_TIME, MOVIE_DESC, MOVIE_DISTR, 
+                               MOVIE_RELEASE, MOVIE_GEN, DIRECTORS, ACTORS, POSTER_URL, 
+                               MOVIE_GRADE FROM MOVIE WHERE MOVIE_ID={pk};""")
+            _res = cursor.fetchone()
+            if not _res:
+                return HttpResponse(status=404)
+            _res = list(_res)
+            if movie_release:
+                cursor.execute(f"""SELECT * FROM SHOW WHERE MOVIE_ID={pk} AND 
+                    SHOW_START_TIME < TO_DATE('{movie_release}', 'YYYY-MM-DD');"""
+                              )
+                if cursor.fetchone():
+                    return HttpResponse(status=404,
+                                        content="개봉예정일보다 먼저 상영하는 상영정보가 존재합니다.")
+
+            qs = []
+            for col in request.data:
+                if col == "movieName":
+                    qs.append(f"MOVIE_NAME='{request.data.get('movieName')}'")
+                    _res[0] = request.data.get('movieName')
+                elif col == "movieTime":
+                    qs.append(
+                        f"MOVIE_TIME=TO_DATE('{request.data.get('movieName')}', 'HH24:MI:SS')"
+                    )
+                    _res[1] = request.data.get('movieTime')
+                elif col == "movieDescription":
+                    desc = request.data.get('movieDescription').replace(
+                        "'", "''")
+                    qs.append(f"MOVIE_DESC='{desc}'")
+                    _res[2] = request.data.get('movieDescription')
+                elif col == "movieDistribute":
+                    qs.append(
+                        f"MOVIE_DISTR='{request.data.get('movieDistribute')}'")
+                    _res[3] = request.data.get('movieDistribute')
+                elif col == "movieRelease":
+                    qs.append(f"MOVIE_RELEASE='{movie_release}'")
+                    _res[4] = request.data.get('movieRelease')
+                elif col == "movieGen":
+                    qs.append(f"MOVIE_GEN='{request.data.get('movieGen')}'")
+                    _res[5] = request.data.get('movieGen')
+                elif col == "directors":
+                    qs.append(f"DIRECTORS='{request.data.get('directors')}'")
+                    _res[6] = request.data.get('directors')
+                elif col == "actors":
+                    qs.append(f"ACTORS='{request.data.get('actors')}'")
+                    _res[7] = request.data.get('actors')
+                elif col == "moviePosterUrl":
+                    qs.append(
+                        f"POSTER_URL='{request.data.get('moviePosterUrl')}'")
+                    _res[8] = request.data.get('moviePosterUrl')
+                elif col == "movieGrade":
+                    qs.append(
+                        f"MOVIE_GRADE='{request.data.get('movie_grade')}'")
+                    _res[9] = request.data.get('movieGrade')
+
+            cursor.execute(
+                f"UPDATE MOVIE SET {','.join(qs)} WHERE MOVIE_ID={pk};")
+            res = {
+                "movieName": _res[0],
+                "movieTime": _res[1],
+                "movieDescription": _res[2],
+                "movieDistribute": _res[3],
+                "movieRelease": _res[4],
+                "movieGen": _res[5],
+                "directors": _res[6],
+                "actors": _res[7],
+                "moviePosterUrl": _res[8],
+                "movieGrade": _res[9],
+            }
+        return JsonResponse(res, status=200)
 
     # {{{ destroy
     def destroy(self, request, pk, *args, **kwargs):
