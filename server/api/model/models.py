@@ -133,6 +133,19 @@ class Usr(models.Model):
     def __str__(self):
         return str(self.usr_id)
 
+    @property
+    def is_active(self):
+        return True
+
+    @property
+    def is_staff(self):
+        return self.usr_type == 0
+
+    @property
+    def last_login(self):
+        from datetime import datetime
+        return datetime.now()
+
     class Meta:
         managed = False
         db_table = 'usr'

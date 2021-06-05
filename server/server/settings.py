@@ -161,6 +161,7 @@ else:
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
+AUTHENTICATION_BACKENDS = ['core.admin.UsrBackend']
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME':
