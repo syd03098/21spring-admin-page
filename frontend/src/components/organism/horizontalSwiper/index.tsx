@@ -12,7 +12,7 @@ interface Props {
 
 const HorizontalSwiper = ({ resources }: Props): JSX.Element => {
     const { currentTime: fetchedTime, categories } = resources;
-    const displayedTime = moment(fetchedTime).format('yy.MM.DD HH:m');
+    const displayedTime = moment(fetchedTime).format('yy.MM.DD HH:mm');
 
     return (
         <Article>
