@@ -6,26 +6,17 @@
 * 401 Unauthorized
 
 ### /auth/logout POST
-* 200 OK
-* 성공하면 쿠키 삭제
+* 200 OK 성공하면 쿠키 삭제
 
 ### /auth/login POST
   ```json
   "request": {
-    "userId": "dlawnsdud",
-    "password": "dlawnsdud1234"
+    "userId": "1string",
+    "password": "string"
   }
   ```
 
   * 200 OK
-  ```json
-  "response": {
-    "userId": "dlawnsdud",
-    "userName": "임준영",
-    "email": "dlawnsdud@gmail.com",
-    "isAdmin": true
-  }
-  ```
 
   * 400 Bad Request
   ```json
@@ -46,22 +37,14 @@
 * 존재하지 않는 아이디이면 승인후 로그인처리, 쿠키 설정
   ```json
   "request": {
-    "userId": "idid",
-    "userName": "임준영",
-    "email": "dlawnsdud@gmail.com",
-    "password": "1234567890"
+    "userId": "1string",
+    "userName": "string",
+    "email": "1string@gmail.com",
+    "password": "string"
   }
   ```
 
   * 201 Created
-  ```json
-  "response": {
-      "userId": "idid",
-      "userName": "임준영",
-      "email": "dlawnsdud@gmail.com",
-      "isAdmin": false
-  }
-  ```
 
   * 400 Bad Request
   ```json
@@ -79,7 +62,7 @@
 
 ## * 영화 /movies
 
-### /movies GET - 완성X
+### /movies GET
 * 메인페이지 영화 모음, 현재 개봉한 영화, 개봉 예정 영화로 나눠서 보내주면됨
 * 예매 불가능한 영화들, 즉 예약할수있는 상영일정이 없는 영화들은 불러오면 안됨.
   ```
@@ -173,7 +156,6 @@
     "director": "감독1, 감독2",
     "actors": "배우1, 배우2, 배우3",
     "movieGen": "action, drama",
-    "moviePosterUrl": "http://~~~~123.png",
     "movieDescription": "영화설명"
   }
   ```
@@ -252,6 +234,7 @@
   * 404 Not Found
 
 ### /shows POST
+* 영화 일정 등록하기
 * ```json
   {
     "movieId": 4,
@@ -337,7 +320,6 @@
 * ```json
   {
     "email": "user@mail.com (비회원 전용, 회원은 생략 가능)",
-    "password": "passwd (비회원 전용, 회원은 생략 가능)",
     "payType": 1,
     "ticketAmount": [
       {
