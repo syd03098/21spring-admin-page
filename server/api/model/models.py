@@ -130,6 +130,9 @@ class Usr(models.Model):
     usr_point = models.BigIntegerField(blank=True, null=True)
     usr_type = models.BigIntegerField()
 
+    def __str__(self):
+        return str(self.usr_id)
+
     class Meta:
         managed = False
         db_table = 'usr'
