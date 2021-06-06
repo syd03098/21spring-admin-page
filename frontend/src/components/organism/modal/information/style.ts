@@ -39,7 +39,7 @@ export const StyledModalHeader = styled.div`
 export const StyledDescriptionList = styled.ul`
     list-style: none;
     margin: 16px auto 0;
-    padding: 0;
+    padding: 0 0 64px 0;
     max-width: 720px;
 `;
 
