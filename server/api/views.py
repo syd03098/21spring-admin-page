@@ -173,11 +173,11 @@ class MovieViewSet(viewsets.ViewSet):
         }
         with connection.cursor() as cursor:
             cursor.execute(
-                    "SELECT DISTINCT M.MOVIE_ID, M.MOVIE_NAME, M.MOVIE_GRADE, M.POSTER_URL " \
-                            "FROM MOVIE M, SHOW S WHERE " \
+                    "SELECT DISTINCT M.MOVIE_ID, M.MOVIE_NAME, M.MOVIE_GRADE, M.POSTER_URL, " \
+                            "M.MOVIE_RELEASE FROM MOVIE M, SHOW S WHERE " \
                             f"TO_DATE('{now}', 'YYYY-MM-DD HH24:MI:SS') >= M.MOVIE_RELEASE AND " \
                             f"TO_DATE('{now}', 'YYYY-MM-DD HH24:MI:SS') < S.SHOW_START_TIME AND " \
-                            "M.MOVIE_ID = S.MOVIE_ID;")
+                            "M.MOVIE_ID = S.MOVIE_ID ORDER BY MOVIE_RELEASE ASC;")
             res["categories"][0]["movies"] = list(
                 map(
                     lambda m: {
@@ -187,10 +187,10 @@ class MovieViewSet(viewsets.ViewSet):
                         "moviePosterUrl": m[3]
                     }, cursor.fetchall()))
             cursor.execute(
-                    "SELECT DISTINCT M.MOVIE_ID, M.MOVIE_NAME, M.MOVIE_GRADE, M.POSTER_URL " \
-                            "FROM MOVIE M, SHOW S WHERE " \
+                    "SELECT DISTINCT M.MOVIE_ID, M.MOVIE_NAME, M.MOVIE_GRADE, M.POSTER_URL, " \
+                            "M.MOVIE_RELEASE FROM MOVIE M, SHOW S WHERE " \
                             f"TO_DATE('{now}', 'YYYY-MM-DD HH24:MI:SS') < M.MOVIE_RELEASE AND " \
-                            "M.MOVIE_ID = S.MOVIE_ID;")
+                            "M.MOVIE_ID = S.MOVIE_ID ORDER BY MOVIE_RELEASE ASC;")
             res["categories"][1]["movies"] = list(
                 map(
                     lambda m: {
