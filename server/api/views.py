@@ -425,12 +425,14 @@ class ShowViewSet(viewsets.ViewSet):
             cursor.execute("SELECT S.SHOW_ID, T.THEATER_NAME, S.SHOW_START_TIME, T.THEATER_CAP " \
                     "FROM SHOW S, THEATER T WHERE S.THEATER_ID=T.THEATER_ID AND " \
                     f"S.MOVIE_ID={movie_id} AND " \
-                    f"TO_DATE('{now}', 'YYYY-MM-DD HH24:MI:SS') < S.SHOW_START_TIME;")
+                    f"TO_DATE('{now}', 'YYYY-MM-DD HH24:MI:SS') < S.SHOW_START_TIME " \
+                    "ORDER BY S.SHOW_START_TIME;")
             shows = cursor.fetchall()
             cursor.execute(
                 "SELECT COUNT(SHOW_ID), SHOW_ID FROM TICKET WHERE TICKET_STATE=1 GROUP BY SHOW_ID;"
             )
             cnt = {c[1]: c[0] for c in cursor.fetchall()}
+
             for _, show_group in itertools.groupby(shows,
                                                    lambda x: x[2].date()):
                 showList = [{
@@ -450,7 +452,7 @@ class ShowViewSet(viewsets.ViewSet):
                     "seatsAvailable":
                         show[3] - cnt.get(show[0], 0)
                 } for show in show_group]
-                showList.sort(key=lambda x: x["showStartTime"])
+                # showList.sort(key=lambda x: x["showStartTime"])
                 res["showSchedule"].append({
                     "showDate":
                         datetime.datetime.strptime(showList[0]["showStartTime"],
@@ -459,7 +461,7 @@ class ShowViewSet(viewsets.ViewSet):
                         showList
                 })
 
-        res["showSchedule"].sort(key=lambda x: x["showDate"])
+        # res["showSchedule"].sort(key=lambda x: x["showDate"])
         return JsonResponse(res, status=200)
 
     # }}}
