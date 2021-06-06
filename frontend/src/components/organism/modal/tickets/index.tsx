@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Seat, ShowInfo } from '@utils/api/ticktes/types';
+import { Seat, ShowInfo } from '@utils/api/tickets/types';
 import styled from 'styled-components';
 import Flex from '@components/atom/FlexBox';
 import useSet from 'react-use/esm/useSet';

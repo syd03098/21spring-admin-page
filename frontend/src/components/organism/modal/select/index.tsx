@@ -16,7 +16,7 @@ import ViewGrade from '@components/molecule/viewGrade';
 import { MovieGrade } from '@components/molecule/viewGrade/types';
 import ShowSelectCard from '@components/organism/modal/select/cards/ShowSelectCard';
 import DateSelectCard from '@components/organism/modal/select/cards/DateSelectCard';
-import { getTicketingDataResponseBody } from '@utils/api/ticktes';
+import { getTicketingDataResponseBody } from '@utils/api/tickets';
 import Tickets from '@components/organism/modal/tickets';
 import FullModalLayout from '@components/layouts/FullModalLayout';
 

@@ -9,7 +9,7 @@ import {
 import { MovieGrade } from '@components/molecule/viewGrade/types';
 import ViewGrade from '@components/molecule/viewGrade';
 import FlexBox from '@components/atom/FlexBox';
-import { ShowInfo } from '@utils/api/ticktes/types';
+import { ShowInfo } from '@utils/api/tickets/types';
 import moment from 'moment/moment';
 import { useModal } from '@stores/ModalStore';
 import EmailForm from '@components/molecule/forms/nonMemberOnly/EmailForm';
@@ -83,11 +83,18 @@ const OptionOverView = ({ showInfo, totalPrice, selectedTicket, ticketAmount, is
                         timeout: 10000,
                     });
                 }
-            } catch (err) {
-                appendToast('예매중 오류가 발생했습니다. 잠시후 다시 시도해주세요.', {
-                    type: 'error',
-                    timeout: 5000,
-                });
+            } catch (e) {
+                if (e.response) {
+                    appendToast(e.response.data, {
+                        type: 'error',
+                        timeout: 5000,
+                    });
+                } else {
+                    appendToast('알수없는 오류가 발생했습니다. 잠시후 다시 시도해주세요.', {
+                        type: 'error',
+                        timeout: 5000,
+                    });
+                }
                 setSending(false);
             }
         },
