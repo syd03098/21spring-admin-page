@@ -1,6 +1,5 @@
 import axios from 'axios';
-import seatsInfoJson from '@utils/jsons/seats.json';
-import { Seat, SeatFee, ShowInfo } from '@utils/api/ticktes/types';
+import { Seat, SeatFee, ShowInfo } from '@utils/api/tickets/types';
 
 export interface SeatsInfoResponseBody {
     showInfo: ShowInfo;
@@ -9,10 +8,10 @@ export interface SeatsInfoResponseBody {
 }
 
 export const getTicketingDataResponseBody = async (showId: number): Promise<SeatsInfoResponseBody> => {
-    return axios
-        .get(`/api/shows/${showId}/seats`)
-        .then((res) => res.data)
-        .catch(() => seatsInfoJson as SeatsInfoResponseBody);
+    const response = await axios.get(`/api/shows/${showId}/seats`);
+    return {
+        ...response.data,
+    } as SeatsInfoResponseBody;
 };
 
 export const getNumberOfTickets = async (): Promise<{ count: number }> => {

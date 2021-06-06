@@ -21,22 +21,24 @@ import TicketGroup from '@components/molecule/ticketGroup';
 import TabButton from '@components/molecule/TabButton';
 import ChangePasswordForm from '@components/molecule/changePasswordForm';
 
-export type ProfileTab = 'tickets' | 'canceled' | 'changePassword';
+export type ProfileTab = 'tickets' | 'canceled' | 'changePassword' | '';
+
+interface TicketList {
+    canceled: TicketDetail[];
+    tickets: TicketDetail[];
+}
 
 const Profile = (): JSX.Element => {
     const [isReady, setReady] = useState(false);
     const [currentTab, setCurrentTab] = useState<ProfileTab>('tickets');
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-    const [ticketPackage, setTicketPackage] = useState<{ canceled: TicketDetail[]; tickets: TicketDetail[] }>({
-        canceled: [],
-        tickets: [],
-    });
+    const [ticketPackage, setTicketPackage] = useState<TicketList | null>(null);
     const { logined } = useAuth();
     const { appendToast } = useToast();
 
     const fetchProfilePageResources = useCallback(
         async (form?: EmailFormData) => {
-            Promise.all([logined ? fetchUserProfile() : null, getTickets()])
+            Promise.all([logined ? fetchUserProfile() : null, getTickets(form)])
                 .then(([profile, tickets]) => {
                     if (logined) {
                         setUserProfile(profile);
@@ -49,31 +51,25 @@ const Profile = (): JSX.Element => {
                         });
                         setTicketPackage(tickets);
                     }
-                    setReady(true);
                 })
                 .catch(() => {
+                    setTicketPackage({
+                        tickets: [],
+                        canceled: [],
+                    });
                     appendToast('회원정보를 가져오는데 실패했습니다. 다시 시도해주세요.', {
                         type: 'error',
                         timeout: 8000,
                     });
-                    setReady(true);
-                });
+                })
+                .finally(() => setReady(true));
         },
         [appendToast, logined],
     );
 
     const profileContents = useMemo(() => {
-        if (!logined) {
-            return (
-                <StyledEmailFormWrap>
-                    <StyledEmailFormContents>
-                        <EmailForm
-                            message="비회원 예매시 입력한 이메일을 입력해주세요."
-                            onSubmit={fetchProfilePageResources}
-                        />
-                    </StyledEmailFormContents>
-                </StyledEmailFormWrap>
-            );
+        if (!ticketPackage) {
+            return <></>;
         }
         const { tickets, canceled } = ticketPackage;
         switch (currentTab) {
@@ -86,7 +82,7 @@ const Profile = (): JSX.Element => {
             default:
                 return <></>;
         }
-    }, [currentTab, fetchProfilePageResources, logined, ticketPackage]);
+    }, [currentTab, ticketPackage]);
 
     useEffectOnce(() => {
         if (!logined) {
@@ -101,30 +97,44 @@ const Profile = (): JSX.Element => {
         <>
             <GlobalNavbar />
             <FlexBox column="column">
-                {userProfile && (
-                    <StyledMastheadContainer>
-                        <Masthead userInfo={userProfile} onChangeTab={() => setCurrentTab('changePassword')} />
-                    </StyledMastheadContainer>
-                )}
-                {userProfile && (
-                    <StyledSelectTabWrap>
-                        <StyledTabSelectNav>
-                            <TabButton
-                                active={currentTab === 'tickets'}
-                                count={ticketPackage.tickets.length}
-                                name="예매내역"
-                                onSelectTab={() => setCurrentTab('tickets')}
+                {!logined && !userProfile && !ticketPackage && (
+                    <StyledEmailFormWrap>
+                        <StyledEmailFormContents>
+                            <EmailForm
+                                message="비회원 예매시 입력한 이메일을 입력해주세요."
+                                onSubmit={fetchProfilePageResources}
                             />
-                            <TabButton
-                                active={currentTab === 'canceled'}
-                                count={ticketPackage.canceled.length}
-                                name="취소내역"
-                                onSelectTab={() => setCurrentTab('canceled')}
-                            />
-                        </StyledTabSelectNav>
-                    </StyledSelectTabWrap>
+                        </StyledEmailFormContents>
+                    </StyledEmailFormWrap>
                 )}
-                {profileContents}
+                {userProfile && ticketPackage && (
+                    <>
+                        {userProfile && (
+                            <StyledMastheadContainer>
+                                <Masthead userInfo={userProfile} onChangeTab={() => setCurrentTab('changePassword')} />
+                            </StyledMastheadContainer>
+                        )}
+                        {userProfile && (
+                            <StyledSelectTabWrap>
+                                <StyledTabSelectNav>
+                                    <TabButton
+                                        active={currentTab === 'tickets'}
+                                        count={ticketPackage.tickets.length}
+                                        name="예매내역"
+                                        onSelectTab={() => setCurrentTab('tickets')}
+                                    />
+                                    <TabButton
+                                        active={currentTab === 'canceled'}
+                                        count={ticketPackage.canceled.length}
+                                        name="취소내역"
+                                        onSelectTab={() => setCurrentTab('canceled')}
+                                    />
+                                </StyledTabSelectNav>
+                            </StyledSelectTabWrap>
+                        )}
+                        {profileContents}
+                    </>
+                )}
             </FlexBox>
         </>
     );

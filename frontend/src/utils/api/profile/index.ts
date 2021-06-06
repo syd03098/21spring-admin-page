@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { TicketDetail, UserProfile } from '@utils/api/profile/types';
-import { ChangePasswordFormData } from '@components/molecule/forms/types';
+import { ChangePasswordFormData, EmailFormData } from '@components/molecule/forms/types';
 
 export const fetchUserProfile = async (): Promise<UserProfile> => {
     const response = await axios.get('/api/user/profile');
@@ -9,8 +9,14 @@ export const fetchUserProfile = async (): Promise<UserProfile> => {
     } as UserProfile;
 };
 
-export const getTickets = async (): Promise<{ canceled: TicketDetail[]; tickets: TicketDetail[] }> => {
-    const response = await axios.get('/api/user/tickets');
+export const getTickets = async (
+    form?: EmailFormData,
+): Promise<{ canceled: TicketDetail[]; tickets: TicketDetail[] }> => {
+    const response = await axios.get(`/api/user/tickets`, {
+        params: {
+            ...(form ? { email: form.email } : {}),
+        },
+    });
     return {
         ...response.data,
     } as {

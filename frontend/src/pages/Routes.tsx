@@ -1,4 +1,4 @@
-import React, { lazy, useEffect, useLayoutEffect, useState } from 'react';
+import React, { lazy, useEffect, useState } from 'react';
 import { Route, Switch, BrowserRouter as Router } from 'react-router-dom';
 import ToastList from '@components/molecule/toastList';
 import SharedModal from '@components/organism/modal';
@@ -8,7 +8,7 @@ import { useAuth } from '@pages/authContext';
 import useEffectOnce from 'react-use/esm/useEffectOnce';
 import Loading from '@pages/Loading';
 import { useTickets } from '@pages/ticketContext';
-import { getNumberOfTickets } from '@utils/api/ticktes';
+import { getNumberOfTickets } from '@utils/api/tickets';
 
 const login = lazy(() => import('@pages/login'));
 const entrance = lazy(() => import('@pages/entrance'));
