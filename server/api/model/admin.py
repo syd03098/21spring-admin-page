@@ -19,6 +19,8 @@ class FeeAdmin(admin.ModelAdmin):
     def _customer_type(self, obj):
         return obj.customer_type.customer_type_name
 
+    _theater_type.admin_order_field = 'theater_type'
+    _customer_type.admin_order_field = 'customer_type'
     list_display = ('_theater_type', '_customer_type', 'movie_fee')
 
 
@@ -37,6 +39,8 @@ class MovieAdmin(admin.ModelAdmin):
             return None
         return release_date.strftime("%Y-%m-%d")
 
+    _movie_time.admin_order_field = 'movie_time'
+    _movie_release.admin_order_field = 'movie_release'
     list_display = ('movie_id', 'movie_name', '_movie_time', '_movie_release',
                     'show_total_count')
 
@@ -76,6 +80,9 @@ class PayAdmin(admin.ModelAdmin):
             return None
         return pay_date.strftime("%Y-%m-%d %H:%M:%S")
 
+    _pay_type.admin_order_field = 'pay_type'
+    _pay_state.admin_order_field = 'pay_state'
+    _pay_date.admin_order_field = 'pay_date'
     list_display = ('pay_id', '_pay_type', '_pay_state', 'pay_price',
                     'pay_aprv_num', '_pay_date')
 
@@ -98,8 +105,11 @@ class ShowAdmin(admin.ModelAdmin):
     def _movie_name(self, obj):
         return obj.movie.movie_name
 
+    _show_start_time.admin_order_field = 'show_start_time'
+    _movie_name.admin_order_field = 'movie__movie_name'
     list_display = ('show_id', 'theater', '_show_start_time', 'show_count',
                     '_movie_name')
+    search_fields = ('movie__movie_name',)
 
 
 @admin.register(TheaterType)
@@ -123,9 +133,16 @@ class TicketAdmin(admin.ModelAdmin):
     def _usr(self, obj):
         return str(obj.usr)
 
+    def _customer_type(self, obj):
+        _type = {1: "성인", 2: "청소년", 3: "노약자"}
+        return _type.get(obj.ticket_state, "알수없음")
+
+    _ticket_state.admin_order_field = 'ticket_state'
+    _usr.admin_order_field = 'usr__usr_id'
+    _customer_type.admin_order_field = 'customer_type'
     list_display = ('ticket_id', '_ticket_state', 'pay', 'seat', '_usr', 'show',
-                    'customer_type')
-    search_fields = ('ticket_state',)
+                    '_customer_type')
+    search_fields = ('ticket_state', 'usr__usr_id')
 
 
 @admin.register(Usr)
@@ -135,5 +152,6 @@ class UsrAdmin(admin.ModelAdmin):
         _type = {0: "관리자", 1: "회원", 2: "비회원"}
         return _type.get(obj.usr_type, "알수없음")
 
+    _usr_type.admin_order_field = 'usr_type'
     list_display = ('usr_id', 'usr_name', 'usr_email', 'usr_point', '_usr_type')
     search_fields = ('usr_type',)
