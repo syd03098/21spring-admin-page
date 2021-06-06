@@ -96,7 +96,7 @@ const Select = ({ movieId, resources: initialData }: Props): JSX.Element => {
                                 {showSchedule.map((schedule, num) => {
                                     const momentObject = moment(schedule.showDate);
                                     const dateKr = momentObject.format('(dd)');
-                                    const dateString = momentObject.format('M.dd');
+                                    const dateString = momentObject.format('M.DD');
                                     return (
                                         <DateSelectCard
                                             key={dateString}
