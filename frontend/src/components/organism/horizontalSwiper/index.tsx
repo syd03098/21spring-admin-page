@@ -11,9 +11,8 @@ interface Props {
 }
 
 const HorizontalSwiper = ({ resources }: Props): JSX.Element => {
-    // todo: store 를 하나 마련하자 entranceInfoStore?
     const { currentTime: fetchedTime, categories } = resources;
-    const displayedTime = moment(fetchedTime).format('yy.MM.DD hh:m');
+    const displayedTime = moment(fetchedTime).format('yy.MM.DD HH:m');
 
     return (
         <Article>

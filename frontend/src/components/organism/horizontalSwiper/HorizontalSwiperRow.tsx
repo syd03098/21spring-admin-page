@@ -27,7 +27,6 @@ const HorizontalSwiperRow = ({ movieCategory }: Props): JSX.Element => {
         display: 'inline-block',
         position: 'relative',
     });
-    // todo: useModal 과 연결하여 영화정보, 영화상영정보 띄우기
 
     const updateSwiperState = useCallback((swiper: SwiperType) => {
         setSwiperComponent(swiper);
