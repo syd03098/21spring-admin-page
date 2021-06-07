@@ -497,7 +497,8 @@ class ShowViewSet(viewsets.ViewSet):
                 f"SELECT * FROM (SELECT * FROM THEATER WHERE THEATER_ID={theater_id}) WHERE ROWNUM=1;"
             )[0]
         except IndexError:
-            return HttpResponse(status=400)
+            return HttpResponse(status=400,
+                                content="영화 개봉일 또는 상영관 번호를 다시 한번 확인해주세요.")
 
         def delta(movie_time: datetime.time) -> datetime.timedelta:
             return datetime.datetime.combine(datetime.date.min,
@@ -505,7 +506,11 @@ class ShowViewSet(viewsets.ViewSet):
 
         start_time_dt = datetime.datetime.strptime(show_start_time,
                                                    '%Y-%m-%d %H:%M:%S')
-        movie_time_delta = delta(movie.movie_time)
+        if movie.movie_time:
+            movie_time_delta = delta(movie.movie_time)
+        else:
+            return HttpResponse(status=400,
+                                content=f"{movie_id}번 영화에 상영시간 정보가 없습니다.")
         show_end_time = start_time_dt + movie_time_delta
 
         yesterday = start_time_dt - datetime.timedelta(1)
