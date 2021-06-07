@@ -322,7 +322,7 @@ class MovieViewSet(viewsets.ViewSet):
                     _res[0] = request.data.get('movieName')
                 elif col == "movieTime":
                     qs.append(
-                        f"MOVIE_TIME=TO_DATE('{request.data.get('movieName')}', 'HH24:MI:SS')"
+                        f"MOVIE_TIME=TO_DATE('{request.data.get('movieTime')}', 'HH24:MI:SS')"
                     )
                     _res[1] = request.data.get('movieTime')
                 elif col == "movieDescription":
@@ -352,7 +352,7 @@ class MovieViewSet(viewsets.ViewSet):
                     _res[8] = request.data.get('moviePosterUrl')
                 elif col == "movieGrade":
                     qs.append(
-                        f"MOVIE_GRADE='{request.data.get('movie_grade')}'")
+                        f"MOVIE_GRADE='{request.data.get('movieGrade')}'")
                     _res[9] = request.data.get('movieGrade')
 
             cursor.execute(
