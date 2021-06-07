@@ -44,14 +44,7 @@ from .serializers import (
 # {{{ AuthViewSet
 class AuthViewSet(viewsets.ViewSet):
 
-    # def get_serializer_class(self):
-    #     action = self.action
-    #     if action == 'signup':
-    #         return UsrCreateSerializer
-    #     elif action == 'login':
-    #         return UsrLoginSerializer
-    #     return serializers.Serializer
-
+    # {{{ validation
     @action(detail=False, methods=['get'])
     def validation(self, request, *args, **kwargs):
         userId = get_user(request)
@@ -69,6 +62,9 @@ class AuthViewSet(viewsets.ViewSet):
         else:
             return HttpResponse(status=200)
 
+    # }}}
+
+    # {{{ signup
     @swagger_auto_schema(request_body=UsrCreateSerializer,
                          responses={201: None})
     @action(detail=False, methods=['post'])
@@ -106,6 +102,9 @@ class AuthViewSet(viewsets.ViewSet):
 
         return Response(status=409, data='이미 존재하는 아이디입니다.')
 
+    # }}}
+
+    # {{{ login
     @swagger_auto_schema(request_body=UsrLoginSerializer, responses={200: None})
     @action(detail=False, methods=['post'])
     def login(self, request, *args, **kwargs):
@@ -141,12 +140,17 @@ class AuthViewSet(viewsets.ViewSet):
             response.set_cookie('jwt', token, httponly=False)
             return response
 
+    # }}}
+
+    # {{{ logout
     @swagger_auto_schema(request_body=no_body, responses={200: None})
     @action(detail=False, methods=['post'])
     def logout(self, request, *args, **kwargs):
         response = HttpResponse(status=200)
         response.delete_cookie('jwt')
         return response
+
+    # }}}
 
 
 # }}}
@@ -157,7 +161,6 @@ class MovieViewSet(viewsets.ViewSet):
 
     # {{{ list
     @swagger_auto_schema(responses={200: MovieListSerializer})
-    # @transaction.atomic
     def list(self, request, *args, **kwargs):
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         res = {
@@ -283,6 +286,7 @@ class MovieViewSet(viewsets.ViewSet):
 
     # }}}
 
+    # {{{ partial_update
     @swagger_auto_schema(request_body=MoviePatchSerializer,
                          responses={200: MoviePatchSerializer})
     def partial_update(self, request, pk, *args, **kwargs):
@@ -308,7 +312,7 @@ class MovieViewSet(viewsets.ViewSet):
                     SHOW_START_TIME < TO_DATE('{movie_release}', 'YYYY-MM-DD');"""
                               )
                 if cursor.fetchone():
-                    return HttpResponse(status=404,
+                    return HttpResponse(status=400,
                                         content="개봉예정일보다 먼저 상영하는 상영정보가 존재합니다.")
 
             qs = []
@@ -366,6 +370,8 @@ class MovieViewSet(viewsets.ViewSet):
                 "movieGrade": _res[9],
             }
         return JsonResponse(res, status=200)
+
+    # }}}
 
     # {{{ destroy
     def destroy(self, request, pk, *args, **kwargs):
@@ -547,7 +553,7 @@ class ShowViewSet(viewsets.ViewSet):
         )
         if cursor.fetchone():
             cursor.close()
-            return HttpResponse(status=409, content="선택한 영화에 대한 상영정보가 존재합니다.")
+            return HttpResponse(status=409, content="선택한 상영에 대한 결제정보가 존재합니다.")
 
         cursor.execute(f"DELETE FROM SHOW WHERE SHOW_ID={show_id}")
         cursor.close()
@@ -743,6 +749,7 @@ class ShowSeatViewSet(viewsets.ViewSet):
 # {{{ TheaterViewSet
 class TheaterViewSet(viewsets.ViewSet):
 
+    # {{{ create
     @swagger_auto_schema(request_body=TheaterCreateSerializer)
     @transaction.atomic
     def create(self, request, *args, **kwargs):
@@ -779,7 +786,8 @@ class TheaterViewSet(viewsets.ViewSet):
                                 f"VALUES (THEATER_SEQ.NEXTVAL, {theater_type_id}, " \
                                 + (f"{theater_row}, {theater_col}, ") \
                                 + (f"{len(seats)}, ") \
-                                + (f"'{theater_name}');" if theater_name else "CONCAT(THEATER_SEQ.NEXTVAL, '관'));")
+                                + (f"'{theater_name}');" if theater_name
+                                    else "CONCAT(THEATER_SEQ.NEXTVAL, '관'));")
                     )
             for r in range(1, theater_row + 1):
                 for c in range(1, theater_col + 1):
@@ -793,6 +801,8 @@ class TheaterViewSet(viewsets.ViewSet):
                                         f"{seat_type});"
                             )
         return HttpResponse(status=201)
+
+    # }}}
 
 
 # }}}
@@ -903,7 +913,6 @@ class TicketViewSet(viewsets.ViewSet):
     def destroy(self, request, pk, *args, **kwargs):
         userId = get_user(request)
         if not userId:
-            # TODO: 비회원 예매취소
             return HttpResponse(status=401, content="로그인이 필요합니다.")
 
         pay_id = pk
@@ -927,7 +936,6 @@ class TicketViewSet(viewsets.ViewSet):
                     UPDATE TICKET 
                     SET TICKET_STATE=2 
                     WHERE PAY_ID={pay_id};""")
-
         try:
             cancel(pay_id, pay_type, money, userId)
         except Exception as e:
