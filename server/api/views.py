@@ -606,8 +606,7 @@ class ShowSeatViewSet(viewsets.ViewSet):
             cursor.execute(
                 f"""SELECT S.SEAT_ID, S.SEAT_ROW, S.SEAT_COL, S.SEAT_TYPE, T.TICKET_STATE 
                     FROM (SELECT * FROM TICKET 
-                                   WHERE SHOW_ID={show_id} AND 
-                                         (TICKET_STATE=1 OR TICKET_STATE IS NULL) ) T, SEAT S 
+                                   WHERE SHOW_ID={show_id} AND TICKET_STATE=1) T, SEAT S 
                     WHERE T.SEAT_ID(+)=S.SEAT_ID AND S.THEATER_ID={theater_id} 
                     ORDER BY S.SEAT_ID;""")
             seats = [{
