@@ -55,7 +55,7 @@ class Pay(models.Model):
     pay_state = models.BigIntegerField()
     pay_price = models.BigIntegerField(blank=True, null=True)
     pay_aprv_num = models.BigIntegerField(blank=True, null=True)
-    pay_date = models.DateField(blank=True, null=True)
+    pay_date = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         managed = False
